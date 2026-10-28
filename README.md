@@ -89,7 +89,9 @@ It verifies playback pause/restart, scrubbing, player selection, compatibility g
 
 ## GitHub Pages
 
-Vite uses `base: './'` and all assets are bundled locally. To deploy, enable GitHub Pages with **GitHub Actions** as source, push this project, then manually run the **Deploy to GitHub Pages** workflow from the default branch. The workflow installs from the lockfile, runs tests, builds, and uploads `dist/`. Nothing has been published by creating this project. For other static hosts, serve the contents of `dist/`.
+Run `npm run test:pages` after a build to verify that a plain static server can load the app both at a custom-domain root and under `/baseball/`. This check uses the same installed Chromium as the browser smoke test.
+
+Vite uses `base: './'` and all assets are bundled locally. To deploy, enable GitHub Pages with **GitHub Actions** as source, push this project, then push to `main` (or manually run **Deploy to GitHub Pages**). The workflow runs automatically for every push to `main`. The workflow installs from the lockfile, runs tests, builds, and uploads `dist/`. The root `CNAME` is copied into the deployment artifact to preserve the custom domain. **Do not use “Deploy from a branch” with `main / (root)`: that publishes the development entry point instead of the compiled application and produces a blank screen.** After switching the Pages source to GitHub Actions, run the workflow once if the last push has already finished. For other static hosts, serve the contents of `dist/`.
 
 ## Current scope
 
