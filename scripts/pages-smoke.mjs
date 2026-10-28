@@ -56,6 +56,17 @@ try {
       await page.locator(".current-phase-title").innerText(),
       "Contact",
     );
+    await page.locator(".app-modes button").last().click();
+    assert.match(
+      await page.locator(".field-heading h1").innerText(),
+      /Dynamic play/,
+    );
+    assert.equal(await page.locator(".hit-destination").count(), 1);
+    await page.locator(".reading-nav button").last().click();
+    assert.equal(
+      await page.locator(".current-phase-title").innerText(),
+      "Contact",
+    );
     const assets = await page
       .locator("script[src],link[rel=stylesheet]")
       .evaluateAll((nodes) =>

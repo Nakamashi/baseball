@@ -840,3 +840,204 @@ html[lang="ja"] .scenario-card strong {
     font-size: 11px;
   }
 }
+/* Version 2 shares the original compact field and transport layout. */
+.utility {
+  justify-content: space-between;
+  gap: 10px;
+}
+.app-modes {
+  display: flex;
+  gap: 5px;
+  min-width: 0;
+}
+.app-modes button {
+  min-height: 30px;
+  padding: 4px 10px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.app-modes button[aria-pressed="true"] {
+  background: #28513d;
+  color: #fff;
+  border-color: #28513d;
+}
+.setup-link {
+  white-space: nowrap;
+  margin-left: auto;
+}
+.game-context {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 10px;
+  color: #607353;
+  margin: -3px 0 8px;
+  flex-shrink: 0;
+}
+.draft-notice {
+  font-size: 10px;
+  line-height: 1.4;
+  padding: 6px 8px;
+  background: #fff0d6;
+  border-radius: 4px;
+  margin: 0 0 7px;
+  flex-shrink: 0;
+}
+.notice {
+  font-size: 12px;
+  line-height: 1.6;
+  background: #fff0d6;
+  padding: 10px;
+  border-radius: 5px;
+}
+.segmented {
+  display: flex;
+  gap: 4px;
+}
+.segmented button {
+  min-height: 32px;
+  min-width: 32px;
+  padding: 4px;
+}
+.segmented .active,
+.pick-location.active {
+  background: #28513d;
+  color: white;
+}
+.dynamic-runners {
+  border: 0;
+  padding: 0;
+  margin: 12px 0;
+  font-size: 11px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.dynamic-runners legend {
+  margin-bottom: 9px;
+}
+.dynamic-runners label {
+  white-space: nowrap;
+}
+.count-row input[type="number"] {
+  display: block;
+  min-width: 0;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #d5dbcf;
+  border-radius: 5px;
+  background: #fffef9;
+  margin: 5px 0 10px;
+  color: inherit;
+  font-size: 12px;
+}
+.pick-location {
+  font-size: 11px;
+  width: 100%;
+  margin-top: 4px;
+}
+.generate-box {
+  position: sticky;
+  bottom: 0;
+  background: #f5f4ed;
+  padding: 10px 0 0;
+  z-index: 2;
+  border-top: 1px solid #dce0d5;
+}
+.generate-button {
+  background: #28513d;
+  color: #fff;
+  width: 100%;
+  border-color: #28513d;
+}
+.generate-box .hint {
+  font-size: 10px;
+  margin: 7px 0;
+}
+.scope-note {
+  font-size: 10px;
+  line-height: 1.6;
+}
+.hit-destination {
+  cursor: crosshair;
+  outline: none;
+}
+.hit-destination:focus circle {
+  stroke: white;
+  stroke-width: 5;
+}
+.tactics-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 10px;
+  margin-top: 12px;
+}
+.tactics-legend span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.tactics-legend i {
+  width: 20px;
+  border-top: 3px dashed #c5e4ec;
+}
+.tactics-legend .assignmentCover i {
+  border-color: #6bb1de;
+}
+.tactics-legend .assignmentRelay i {
+  border-color: #c39a36;
+}
+.tactics-legend .assignmentBackup i {
+  border-color: #83a45e;
+}
+.dynamic-events p {
+  font-size: 11px;
+  border-bottom: 1px solid #dce0d5;
+  padding-bottom: 8px;
+}
+.dynamic-events time {
+  font-size: 10px;
+  color: #6a7e5a;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 600px) {
+  .utility {
+    height: 34px;
+    gap: 4px;
+  }
+  .utility > label {
+    font-size: 0;
+    gap: 0;
+  }
+  .utility > label select {
+    font-size: 11px;
+    width: 84px;
+  }
+  .app-modes button {
+    font-size: 10px;
+    padding: 4px 7px;
+    min-height: 30px;
+  }
+  .field-heading {
+    flex-wrap: wrap;
+  }
+  .field-heading h1 {
+    flex: 1;
+  }
+  .setup-link {
+    font-size: 10px;
+  }
+  .field-heading .live-badge {
+    font-size: 8px;
+  }
+  .game-context {
+    font-size: 9px;
+    margin-bottom: 5px;
+  }
+  .segmented button {
+    min-height: 38px;
+    min-width: 38px;
+  }
+}

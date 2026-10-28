@@ -1,6 +1,6 @@
 # Field Notes — Baseball Coaching Lab
 
-A browser-based defensive play simulator for coaches and new players. Select one of 24 authored plays, follow any of the nine defenders or individual runners, and inspect every stage of the play. This is an instructional diagram, not a game or a prediction engine.
+A bilingual browser-based defensive play simulator for coaches and new players. **Play encyclopedia** keeps all 24 authored plays. **Dynamic simulator (Phase 2A)** generates fair ground-ball and outfield-hit plays from continuous field coordinates, the game situation, and coaching settings. Follow any of the nine defenders or individual runners and inspect every stage of the play. This is an instructional diagram, not a game or a prediction engine.
 
 ## Run
 
@@ -32,6 +32,21 @@ Use `npm ci` rather than `npm install` for a repeatable lockfile installation.
 - Gold circles are runners. Dark circles are defenders. The cream marker is the ball; a halo indicates possession. A red × means out and a green/gold ✓ means scored. Ghosted out/scored runners stay visible for review, rather than disappearing.
 
 The field and playback controls fit in the viewport at the tested laptop, tablet and phone sizes. On desktop, the sidebars scroll independently. On phones, the field comes first, then the reading/player panels and the catalogue. Sections can collapse; the field preserves its proportions.
+
+## Dynamic simulator — Phase 2A
+
+Switch modes using the compact buttons at the top. The encyclopedia remains available with its guided, supported-situation selection.
+
+1. Set outs and any combination of runners. Count, inning/half, home/away scores and fielding team are supported; half and fielding team remain consistent automatically.
+2. Choose a ground ball or outfield base hit, strength, runner aggression, runner speed and defensive strategy. The recommended strategy can be applied or overridden.
+3. Click fair territory to select a continuous destination. Use **Place hit location** to place directly over a player, enter X/Y coordinates, or focus the destination marker and use arrow keys. An infield ball should use Ground ball; Outfield base hit requires an outfield location.
+4. Click **Generate play**. Draft edits pause and disable playback until generated, so the displayed play never silently changes to an unrelated input.
+5. Use the same field, focus panel, reading arrows, step-by-step pauses and timeline as the encyclopedia. Optional path colors identify fielding, coverage, cutoff/relay and backup duties. The event log follows the current timeline position.
+6. Change one input or the throwing target and generate again. Coach overrides include first, second, third, home, hold, and an outfield cutoff-and-hold. Coverage, throwing lanes, backups and runner choices are recalculated. An ill-advised throw can let trailing runners advance.
+
+All generated coaching text is available in English and Japanese. The field and playback controls retain the compact viewport layout; the settings and teaching sidebars scroll independently on desktop. On phones, **Configure play** jumps to settings and generation returns to the field.
+
+Phase 2A uses deterministic timing, not guaranteed outcomes. Close plays are labeled. The simulator supports direct throws, cutoff returns, long relays, feasible ground-ball double-play attempts, force versus tag resolution, and third-out scoring rules. Cutoff conventions and youth timing assumptions are editable in code. See [dynamic engine architecture and limits](docs/DYNAMIC.md).
 
 ## Play catalogue
 
@@ -71,9 +86,10 @@ Cutoff convention: 2B handles LF-to-middle returns, SS cuts RF-to-third throws, 
 - `src/components/BaseballField.tsx`: generic SVG renderer, unaware of scenario IDs.
 - `src/App.tsx`: guided catalogue, situation controls, playback and teaching panels.
 - `src/i18n/`: typed English/Japanese UI messages, Japanese coaching catalogue and translated sentence templates.
-- `src/tests/`: engine and scenario integrity tests.
+- `src/dynamic/`: generated play provider, movement/interception, defensive assignments, baserunning, throwing, events, bilingual message templates and timeline compilation.
+- `src/tests/`: scripted and generated engine, translation and scenario integrity tests.
 
-See [scenario authoring and architecture](docs/SCENARIOS.md). For Version 2, inject another implementation of `PlayProvider` that returns the same `PlayScenario` schema. The sampler, SVG renderer and playback hook can remain unchanged. The current provider intentionally does not generate plays. Teaching translations are applied at the display boundary without changing interpolation, play identities, or timeline execution. See [translation maintenance](docs/TRANSLATIONS.md).
+See [scenario authoring and architecture](docs/SCENARIOS.md). `ScriptedPlayProvider` and `DynamicPlayProvider` share the `PlayProvider` boundary and produce the same `PlayScenario` format. The sampler, SVG renderer and playback hook are shared; generated phases additionally carry structured assignments and event metadata. Teaching translations are applied at the display boundary without changing interpolation, play identities, or timeline execution. See [translation maintenance](docs/TRANSLATIONS.md).
 
 ## Browser smoke checks
 
@@ -81,6 +97,7 @@ An optional Playwright Core script uses an already installed Chromium; it does n
 
 ```sh
 npm run test:browser
+npm run test:dynamic:browser
 # If needed:
 CHROMIUM_PATH=/path/to/chromium APP_URL=http://127.0.0.1:5173 npm run test:browser
 ```
@@ -95,4 +112,8 @@ Vite uses `base: './'` and all assets are bundled locally. To deploy, enable Git
 
 ## Current scope
 
-All 24 requested situations are implemented in English and Japanese. There is no dynamic provider, tactical randomization, custom free-form play creation, saved-play persistence, physics engine or online service. The language preference is stored locally. Ball-height arcs and literal running speeds are not modeled. Game-state base occupancy records the last established base during transit, and updates at authored resolution events; the SVG positions show actual in-transit locations. When the third out occurs, inning occupancy is cleared while markers remain for teaching. Automated checks establish structural consistency and expected scripted behavior; they are not a substitute for a coach's tactical review.
+All 24 scripted situations remain available in English and Japanese. Phase 2A dynamically generates fair ground balls and common outfield hits. Dynamic fly balls, tag-ups, line drives, bunts, bobbles, overthrows, custom defensive-position editing, quizzes, printouts and a saved side-by-side comparison view are not implemented. Fly balls/bunts and their rules still exist in the authored encyclopedia. Changing a throwing target and regenerating provides an alternative-play demonstration; it does not store earlier runs.
+
+The engine uses simplified youth speeds and deterministic estimates. It models outfield-hit travel to the selected location and ground-ball interception along the path, with no detailed aerodynamics or collision physics. Generated base occupancy describes stationary runners; in-transit runners are represented by their timeline positions. Runs are provisional until the play's third-out rules are settled. At the third out, inning occupancy is cleared and remaining movement stops. This is one ball-in-play at a time, not a complete match engine. See the documented assumptions before adapting to your team.
+
+No backend, external APIs, runtime network assets or accounts are required. Only the language preference is stored locally. GitHub Pages deployment and the existing custom domain configuration remain unchanged.

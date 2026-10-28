@@ -14,6 +14,9 @@ interface Props {
   onSelect: (id: PlayerId) => void;
   layers: Layers;
   locale: Locale;
+  destination?: Point;
+  onLocation?: (p: Point) => void;
+  picking?: boolean;
 }
 export function BaseballField({
   frame,
@@ -21,6 +24,9 @@ export function BaseballField({
   onSelect,
   layers,
   locale,
+  destination,
+  onLocation,
+  picking,
 }: Props) {
   const t = ui(locale),
     text = playText(locale);
@@ -32,6 +38,23 @@ export function BaseballField({
       viewBox="0 0 1000 900"
       role="img"
       aria-label={t("fieldLabel")}
+      onClick={(e) => {
+        if (!onLocation) return;
+        const point = e.currentTarget.createSVGPoint();
+        point.x = e.clientX;
+        point.y = e.clientY;
+        const matrix = e.currentTarget.getScreenCTM();
+        if (matrix) onLocation(point.matrixTransform(matrix.inverse()));
+      }}
+      onClickCapture={(e) => {
+        if (!picking || !onLocation) return;
+        e.stopPropagation();
+        const point = e.currentTarget.createSVGPoint();
+        point.x = e.clientX;
+        point.y = e.clientY;
+        const matrix = e.currentTarget.getScreenCTM();
+        if (matrix) onLocation(point.matrixTransform(matrix.inverse()));
+      }}
     >
       <defs>
         <pattern
@@ -134,7 +157,26 @@ export function BaseballField({
             key={m.player}
             points={path(m.path)}
             fill="none"
-            stroke={runner ? "#ffd18a" : "#c5e4ec"}
+            stroke={
+              runner
+                ? "#ffd18a"
+                : frame.phase.assignments?.find((a) => a.player === m.player)
+                      ?.type === "CoverBase"
+                  ? "#b8e1ff"
+                  : ["Cutoff", "Relay"].includes(
+                        frame.phase.assignments?.find(
+                          (a) => a.player === m.player,
+                        )?.type ?? "",
+                      )
+                    ? "#ffdc77"
+                    : ["BackupFielder", "BackupThrow"].includes(
+                          frame.phase.assignments?.find(
+                            (a) => a.player === m.player,
+                          )?.type ?? "",
+                        )
+                      ? "#cbeaa6"
+                      : "#c5e4ec"
+            }
             strokeWidth={selected === m.player ? 5 : 3}
             strokeDasharray={runner ? "10 6" : "5 6"}
             opacity={selected && selected !== m.player ? 0.7 : 0.9}
@@ -221,6 +263,34 @@ export function BaseballField({
           </g>
         );
       })}
+      {destination && (
+        <g
+          className="hit-destination"
+          role="button"
+          tabIndex={0}
+          aria-label={t("hitLocation")}
+          transform={`translate(${destination.x} ${destination.y})`}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => {
+            const delta: Record<string, Point> = {
+              ArrowLeft: { x: -10, y: 0 },
+              ArrowRight: { x: 10, y: 0 },
+              ArrowUp: { x: 0, y: -10 },
+              ArrowDown: { x: 0, y: 10 },
+            };
+            if (delta[e.key] && onLocation) {
+              e.preventDefault();
+              onLocation({
+                x: destination.x + delta[e.key].x,
+                y: destination.y + delta[e.key].y,
+              });
+            }
+          }}
+        >
+          <circle r="19" fill="#fff3b355" stroke="#ffce6a" strokeWidth="3" />
+          <path d="M-28 0H28 M0 -28V28" stroke="#ffce6a" strokeWidth="2" />
+        </g>
+      )}
       <g
         pointerEvents="none"
         transform={`translate(${frame.ball.x + 9} ${frame.ball.y - 22})`}

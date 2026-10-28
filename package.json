@@ -1,6 +1,6 @@
 {
   "name": "baseball-coach",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,8 @@
     "test": "vitest run",
     "preview": "vite preview --host 0.0.0.0",
     "test:browser": "node scripts/browser-smoke.mjs",
-    "test:pages": "node scripts/pages-smoke.mjs"
+    "test:pages": "node scripts/pages-smoke.mjs",
+    "test:dynamic:browser": "node scripts/dynamic-browser-smoke.mjs"
   },
   "dependencies": {
     "react": "^19.1.0",

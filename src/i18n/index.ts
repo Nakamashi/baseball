@@ -1,3 +1,4 @@
+import { formatDynamic } from "../dynamic/messages";
 import { jaPlaybook } from "./ja-playbook";
 import { ui, type Locale } from "./ui";
 import type { GameState } from "../simulation/types";
@@ -15,6 +16,8 @@ const directions: Record<string, string> = {
   "middle infield": "内野中央",
 };
 export function japanese(source: string): string {
+  const generated = formatDynamic(source, "ja");
+  if (generated !== undefined) return generated;
   const text = source.trim();
   if (jaPlaybook[text]) return jaPlaybook[text];
   const prefixes: Record<string, string> = {
@@ -38,7 +41,11 @@ export function japanese(source: string): string {
     directions[m[1]]
   )
     return `${directions[m[1]]}方向への打球です。野手が同時に動き、捕球、塁のカバー、バックアップを分担します。`;
-  if ((m = text.match(/^Throw to (1B|2B|P) at first\.( One out ends the inning\.)?$/)))
+  if (
+    (m = text.match(
+      /^Throw to (1B|2B|P) at first\.( One out ends the inning\.)?$/,
+    ))
+  )
     return `一塁の${m[1]}へ送球します。${m[2] ? "このアウトで攻守交代です。" : ""}`;
   if ((m = text.match(/^Throw to (2B|SS) covering second for the force\.$/)))
     return `二塁に入る${m[1]}へ送球し、フォースアウトを取ります。`;
@@ -55,7 +62,8 @@ export function japanese(source: string): string {
   throw new Error(`Missing Japanese translation: ${text}`);
 }
 export const playText = (locale: Locale) => (source: string) =>
-  locale === "ja" ? japanese(source) : source;
+  formatDynamic(source, locale) ??
+  (locale === "ja" ? japanese(source) : source);
 export function situationText(state: GameState, locale: Locale) {
   const t = ui(locale);
   const runners = Object.entries(state.runners);

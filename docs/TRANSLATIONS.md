@@ -14,11 +14,18 @@ Update dictionary keys when editing the corresponding English sentence. New vari
 
 Keep sentences suitable for junior-high players. Preserve rule distinctions: a force out is フォースアウト; a tag is タッチ; returning to the original base after a caught ball is 帰塁/踏み直し; tagging up to advance is タッチアップ. Do not translate an appeal as an automatic force out. When teaching a conditional choice, translate the condition as well as the action.
 
+## Dynamic play messages
+
+`src/dynamic/messages.ts` defines typed English and Japanese templates for generated responsibilities, decisions, events and results. Engine output carries `@v2:` message references and primitive parameters, not preselected display language. `playText` formats them at the rendering boundary, so switching languages preserves the generated timeline. Never render the internal reference directly. Add both translations and test every required placeholder when adding a message. Player IDs remain stable; base names and ball types are localized during formatting.
+
+The dynamic engine tests enumerate generated content across base/out configurations, destinations, strategies, strengths and coach overrides. They check Japanese coverage as well as tactical invariants. Keep the static authored-play audit too; the modes coexist.
+
 ## Required verification
 
 - `npm test`: checks every UI key and all 24 scenarios' category, title, objective, result, notes, alternatives, phase labels/narration, and every defender/runner's action, reason, and supporting responsibility. New untranslated play content fails with the missing sentences.
 - `npm run build`: verifies the typed UI dictionary.
 - `npm run test:browser`: with a running dev server, checks English and Japanese rendering, all play phases, language persistence, timeline preservation when switching languages, and layout at six screen sizes.
+- `npm run test:dynamic:browser`: checks continuous picking, draft protection, generation, overrides, shared playback and Japanese dynamic explanations on desktop and phones.
 - `npm run test:pages`: after a build, verifies loading from plain static hosting at `/` and `/baseball/`.
 
 The Pages workflow runs `npm test` before building and deploying, so missing translations prevent a release. Automated coverage establishes completeness, not linguistic or tactical review; Japanese-speaking coaches can refine translations centrally without changing the engine.

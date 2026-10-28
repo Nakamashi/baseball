@@ -1,4 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { scenarios } from "./scenarios";
 import { sample } from "./simulation/timeline";
 import { catalogueChoices, situationKey } from "./simulation/catalogue";
@@ -12,12 +18,30 @@ import {
   ui,
   type Locale,
 } from "./i18n";
+import { DynamicControls } from "./components/DynamicControls";
+import {
+  DynamicPlayProvider,
+  defaultSettings,
+  validateSettings,
+} from "./dynamic/provider";
+import { message as dynamicMessage } from "./dynamic/messages";
+import { isPlayable } from "./dynamic/geometry";
+import type { DynamicSettings, DynamicScenario } from "./dynamic/types";
 const categories = [...new Set(scenarios.map((s) => s.category))];
 export default function App() {
   const [locale, setLocale] = useState<Locale>(initialLocale);
   const t = ui(locale),
     text = playText(locale);
-  const [scenario, setScenario] = useState(scenarios[0]),
+  const [viewMode, setViewMode] = useState<"encyclopedia" | "dynamic">(
+    "encyclopedia",
+  );
+  const [settings, setSettings] = useState<DynamicSettings>(defaultSettings);
+  const [generated, setGenerated] = useState<DynamicScenario>(() =>
+    new DynamicPlayProvider().generate(defaultSettings()),
+  );
+  const [generationError, setGenerationError] = useState(""),
+    [picking, setPicking] = useState(false);
+  const [scriptedScenario, setScenario] = useState(scenarios[0]),
     [category, setCategory] = useState("all"),
     [situation, setSituation] = useState("all"),
     [query, setQuery] = useState("");
@@ -30,7 +54,50 @@ export default function App() {
     runners: true,
     annotations: true,
   });
+  const scenario = viewMode === "dynamic" ? generated : scriptedScenario;
+  const pending =
+    viewMode === "dynamic" &&
+    JSON.stringify(settings) !== JSON.stringify(generated.dynamic.settings);
   const playback = usePlayback(scenario);
+  const displayedCount = viewMode === "dynamic" ? frameCount() : count;
+  function frameCount() {
+    return {
+      balls: generated.initial.balls,
+      strikes: generated.initial.strikes,
+    };
+  }
+  const updateSettings: Dispatch<SetStateAction<DynamicSettings>> = (
+    update,
+  ) => {
+    playback.restart();
+    setSettings(update);
+    setGenerationError("");
+  };
+  function generate() {
+    const error = validateSettings(settings);
+    if (error) {
+      setGenerationError(error);
+      return;
+    }
+    setGenerated(new DynamicPlayProvider().generate(settings));
+    setGenerationError("");
+    setPicking(false);
+    playback.restart();
+    document
+      .querySelector(".simulation")
+      ?.scrollIntoView({ block: "start", behavior: "smooth" });
+  }
+  function pick(point: { x: number; y: number }) {
+    if (!isPlayable(point)) {
+      setGenerationError(dynamicMessage("invalid"));
+      return;
+    }
+    updateSettings((current) => ({
+      ...current,
+      ball: { ...current.ball, destination: { x: point.x, y: point.y } },
+    }));
+    setPicking(false);
+  }
   const frame = useMemo(
     () => sample(scenario, playback.time),
     [scenario, playback.time],
@@ -82,11 +149,26 @@ export default function App() {
   }
   const focus = selected ? frame.phase.responsibilities[selected] : null;
   const phaseIndex = scenario.phases.indexOf(frame.phase);
-  const previousDisabled = playback.time === 0,
-    nextDisabled = playback.time >= playback.total;
+  const previousDisabled = pending || playback.time === 0,
+    nextDisabled = pending || playback.time >= playback.total;
   return (
     <main>
       <div className="utility">
+        <nav className="app-modes" aria-label={t("mode")}>
+          {(["encyclopedia", "dynamic"] as const).map((mode) => (
+            <button
+              key={mode}
+              aria-pressed={viewMode === mode}
+              onClick={() => {
+                playback.restart();
+                setViewMode(mode);
+                setPicking(false);
+              }}
+            >
+              {t(mode === "dynamic" ? "simulator" : "encyclopedia")}
+            </button>
+          ))}
+        </nav>
         <label>
           {t("language")}
           <select
@@ -101,121 +183,172 @@ export default function App() {
       </div>
       <div className="workspace">
         <aside className="left-panel">
-          <details open className="panel situation">
-            <summary>{t("choosePlay")}</summary>
-            <div className="panel-content">
-              <label className="select-label">
-                {t("category")}
-                <select
-                  aria-label={t("category")}
-                  value={category}
-                  onChange={(e) => changeCategory(e.target.value)}
-                >
-                  <option value="all">{t("all")}</option>
-                  {categories.map((c) => (
-                    <option key={c} value={c}>
-                      {text(c)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="select-label">
-                {t("situation")}
-                <select
-                  aria-label={t("situation")}
-                  value={situation}
-                  onChange={(e) => changeSituation(e.target.value)}
-                >
-                  <option value="all">{t("allSituations")}</option>
-                  {choices.situations.map((s) => (
-                    <option key={situationKey(s)} value={situationKey(s)}>
-                      {situationText(s.initial, locale)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <p className="current-situation">
-                {situationText(scenario.initial, locale)}
-              </p>
-              <details className="count-context">
-                <summary>
-                  {t("context")} {count.balls} – {count.strikes}
-                </summary>
-                <div className="count-row">
-                  {(["balls", "strikes"] as const).map((key) => (
-                    <label key={key}>
-                      {t(key)}
-                      <select
-                        aria-label={t(key)}
-                        value={count[key]}
-                        onChange={(e) =>
-                          setCount({ ...count, [key]: +e.target.value })
-                        }
-                      >
-                        {Array.from(
-                          { length: key === "balls" ? 4 : 3 },
-                          (_, n) => (
-                            <option key={n}>{n}</option>
-                          ),
-                        )}
-                      </select>
-                    </label>
-                  ))}
+          {viewMode === "dynamic" ? (
+            <DynamicControls
+              settings={settings}
+              setSettings={updateSettings}
+              locale={locale}
+              onGenerate={generate}
+              pending={pending}
+              error={
+                generationError
+                  ? generationError.startsWith("@v2:")
+                    ? text(generationError)
+                    : generationError
+                  : undefined
+              }
+              picking={picking}
+              setPicking={setPicking}
+            />
+          ) : (
+            <>
+              <details open className="panel situation">
+                <summary>{t("choosePlay")}</summary>
+                <div className="panel-content">
+                  <label className="select-label">
+                    {t("category")}
+                    <select
+                      aria-label={t("category")}
+                      value={category}
+                      onChange={(e) => changeCategory(e.target.value)}
+                    >
+                      <option value="all">{t("all")}</option>
+                      {categories.map((c) => (
+                        <option key={c} value={c}>
+                          {text(c)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="select-label">
+                    {t("situation")}
+                    <select
+                      aria-label={t("situation")}
+                      value={situation}
+                      onChange={(e) => changeSituation(e.target.value)}
+                    >
+                      <option value="all">{t("allSituations")}</option>
+                      {choices.situations.map((s) => (
+                        <option key={situationKey(s)} value={situationKey(s)}>
+                          {situationText(s.initial, locale)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <p className="current-situation">
+                    {situationText(scenario.initial, locale)}
+                  </p>
+                  <details className="count-context">
+                    <summary>
+                      {t("context")} {count.balls} – {count.strikes}
+                    </summary>
+                    <div className="count-row">
+                      {(["balls", "strikes"] as const).map((key) => (
+                        <label key={key}>
+                          {t(key)}
+                          <select
+                            aria-label={t(key)}
+                            value={count[key]}
+                            onChange={(e) =>
+                              setCount({ ...count, [key]: +e.target.value })
+                            }
+                          >
+                            {Array.from(
+                              { length: key === "balls" ? 4 : 3 },
+                              (_, n) => (
+                                <option key={n}>{n}</option>
+                              ),
+                            )}
+                          </select>
+                        </label>
+                      ))}
+                    </div>
+                  </details>
                 </div>
               </details>
-            </div>
-          </details>
-          <details open className="panel library">
-            <summary>
-              <span>{t("library")}</span>
-              <span className="number">{available.length}</span>
-            </summary>
-            <div className="panel-content">
-              <input
-                className="search"
-                type="search"
-                aria-label={t("search")}
-                placeholder={t("searchPlaceholder")}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-              <div className="catalogue">
-                {available.map((s) => (
-                  <button
-                    key={s.id}
-                    data-scenario={s.id}
-                    className={`scenario-card ${s.id === scenario.id ? "chosen" : ""}`}
-                    onClick={() => choose(s)}
-                  >
-                    <span className="scenario-id">{s.id}</span>
-                    <span>
-                      <strong>{text(s.title)}</strong>
-                      <small>{situationText(s.initial, locale)}</small>
-                    </span>
-                    {s.id === scenario.id && (
-                      <span className="chosen-dot">●</span>
-                    )}
-                  </button>
-                ))}
-              </div>
-              {!available.length && (
-                <div role="status" className="empty">
-                  <p>{t("noSearch")}</p>
-                  <button onClick={() => setQuery("")}>
-                    {t("clearSearch")}
-                  </button>
+              <details open className="panel library">
+                <summary>
+                  <span>{t("library")}</span>
+                  <span className="number">{available.length}</span>
+                </summary>
+                <div className="panel-content">
+                  <input
+                    className="search"
+                    type="search"
+                    aria-label={t("search")}
+                    placeholder={t("searchPlaceholder")}
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                  />
+                  <div className="catalogue">
+                    {available.map((s) => (
+                      <button
+                        key={s.id}
+                        data-scenario={s.id}
+                        className={`scenario-card ${s.id === scenario.id ? "chosen" : ""}`}
+                        onClick={() => choose(s)}
+                      >
+                        <span className="scenario-id">{s.id}</span>
+                        <span>
+                          <strong>{text(s.title)}</strong>
+                          <small>{situationText(s.initial, locale)}</small>
+                        </span>
+                        {s.id === scenario.id && (
+                          <span className="chosen-dot">●</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                  {!available.length && (
+                    <div role="status" className="empty">
+                      <p>{t("noSearch")}</p>
+                      <button onClick={() => setQuery("")}>
+                        {t("clearSearch")}
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </details>
+              </details>
+            </>
+          )}{" "}
         </aside>
         <section className="simulation">
           <div className="field-heading">
             <h1>{text(scenario.title)}</h1>
+            {viewMode === "dynamic" && (
+              <button
+                className="text-button setup-link"
+                onClick={() =>
+                  document
+                    .getElementById("dynamic-controls")
+                    ?.scrollIntoView({ behavior: "smooth", block: "start" })
+                }
+              >
+                {t("configure")}
+              </button>
+            )}
             <span className="live-badge">
               {t(playback.mode === "step" ? "teaching" : "fullPlay")}
             </span>
           </div>
+          {viewMode === "dynamic" && (
+            <div className="game-context">
+              <span>
+                {t(frame.state.half === "bottom" ? "bottom" : "top")}{" "}
+                {frame.state.inning} · {t("fieldingTeam")}:{" "}
+                {t(frame.state.fieldingTeam === "away" ? "away" : "home")}
+              </span>
+              <span>
+                {t("away")} {frame.state.awayScore} : {frame.state.homeScore}{" "}
+                {t("home")}
+              </span>
+            </div>
+          )}
+          {pending && (
+            <p className="draft-notice" role="status">
+              {t("draftChanged")}
+            </p>
+          )}
           <div className="scoreboard">
             <span>
               <small>{t("outs")}</small>
@@ -234,7 +367,7 @@ export default function App() {
             <span>
               <small>{t("count")}</small>
               <strong>
-                {count.balls} – {count.strikes}
+                {displayedCount.balls} – {displayedCount.strikes}
               </strong>
             </span>
             <span>
@@ -255,6 +388,11 @@ export default function App() {
               onSelect={setSelected}
               layers={layers}
               locale={locale}
+              destination={
+                viewMode === "dynamic" ? settings.ball.destination : undefined
+              }
+              onLocation={viewMode === "dynamic" ? pick : undefined}
+              picking={picking}
             />
           </div>
           <p className="field-hint">{t("fieldHint")}</p>
@@ -275,7 +413,11 @@ export default function App() {
               >
                 ‹
               </button>
-              <button className="play-button" onClick={playback.toggle}>
+              <button
+                className="play-button"
+                disabled={pending}
+                onClick={playback.toggle}
+              >
                 {t(playback.playing ? "pause" : "play")}
               </button>
               <button
@@ -303,11 +445,12 @@ export default function App() {
             </div>
             <div className="timeline">
               <input
+                disabled={pending}
                 aria-label={t("timeline")}
                 type="range"
                 min="0"
                 max={playback.total}
-                step="0.01"
+                step="any"
                 value={playback.time}
                 onChange={(e) => playback.seek(+e.target.value)}
               />
@@ -332,6 +475,23 @@ export default function App() {
                 </label>
               ))}
             </div>
+            {viewMode === "dynamic" && (
+              <div className="tactics-legend">
+                {(
+                  [
+                    "assignmentField",
+                    "assignmentCover",
+                    "assignmentRelay",
+                    "assignmentBackup",
+                  ] as const
+                ).map((key) => (
+                  <span key={key} className={key}>
+                    <i />
+                    {t(key)}
+                  </span>
+                ))}
+              </div>
+            )}
           </details>
         </section>
         <aside className="right-panel">
@@ -429,6 +589,21 @@ export default function App() {
               <p>{t("positionKey")}</p>
             </details>
           </section>
+          {viewMode === "dynamic" && (
+            <details className="panel dynamic-events">
+              <summary>{t("eventLog")}</summary>
+              <div className="panel-content">
+                {generated.dynamic.events
+                  .filter((event) => event.time <= playback.time + 0.000001)
+                  .map((event) => (
+                    <p key={event.id}>
+                      <time>{event.time.toFixed(1)}s</time>{" "}
+                      {text(event.explanation)}
+                    </p>
+                  ))}
+              </div>
+            </details>
+          )}
           <details className="panel responsibilities">
             <summary>{t("allRoles")}</summary>
             <div className="panel-content">
