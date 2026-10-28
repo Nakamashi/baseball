@@ -1,5 +1,10 @@
 import { interpolate } from "./geometry";
-import { interpolate as interpolatePhysical } from "../dynamic/geometry";
+import {
+  interpolate as interpolatePhysical,
+  toWorld,
+  fromWorld,
+} from "../dynamic/geometry";
+import { sampleTimed } from "./timedPath";
 import type { PlayScenario, PlayerId, Point, Snapshot } from "./types";
 export function duration(s: PlayScenario) {
   return Number(
@@ -21,24 +26,52 @@ export function sample(s: PlayScenario, time: number): Snapshot {
     if (p.start > t) break;
     const u = Math.min(1, (t - p.start) / p.duration);
     for (const m of p.movements)
-      locations[m.player] = interpolatePath(m.path, u);
+      locations[m.player] = m.samples
+        ? sampleTimed(m.samples, Math.max(0, t - p.start)).point
+        : interpolatePath(m.path, u);
   }
   const progress = Math.min(1, (t - phase.start) / phase.duration);
   const owner =
     phase.ball.kind === "held"
-      ? phase.ball.owner
+      ? phase.ball.secure === false
+        ? undefined
+        : phase.ball.owner
       : progress >= 1
         ? phase.ball.receiver
         : undefined;
   const ball = owner
     ? locations[owner]
     : phase.ball.kind === "travel"
-      ? interpolatePath(phase.ball.path, progress)
-      : locations[phase.ball.owner];
+      ? phase.ball.samples
+        ? sampleTimed(phase.ball.samples, t - phase.start).point
+        : interpolatePath(phase.ball.path, progress)
+      : phase.ball.gloveOffset
+        ? fromWorld({
+            x:
+              toWorld(locations[phase.ball.owner]).x +
+              phase.ball.gloveOffset.x * (1 - progress),
+            y:
+              toWorld(locations[phase.ball.owner]).y +
+              phase.ball.gloveOffset.y * (1 - progress),
+          })
+        : locations[phase.ball.owner];
   return {
     time: t,
     phase,
     ball,
+    ballHeight:
+      phase.ball.kind === "travel" && phase.ball.samples
+        ? (sampleTimed(phase.ball.samples, t - phase.start).height ?? 0)
+        : phase.ball.kind === "held"
+          ? (phase.ball.height ?? (phase.assignments ? 0.8 : 0)) +
+            ((phase.ball.endHeight ??
+              phase.ball.height ??
+              (phase.assignments ? 0.8 : 0)) -
+              (phase.ball.height ?? (phase.assignments ? 0.8 : 0))) *
+              progress
+          : phase.assignments && phase.ball.style === "throw"
+            ? 0.8
+            : 0,
     owner,
     state: structuredClone(phase.state),
     players: Object.entries(locations).map(([id, position]) => ({

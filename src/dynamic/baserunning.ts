@@ -1,7 +1,7 @@
 import type { Base } from "../simulation/types";
 import type { BattedBall, DynamicSettings, OffensiveRunner } from "./types";
 import { assumptions } from "./conventions";
-import { isOutfield, metres, bases } from "./geometry";
+import { isOutfield, isOutfieldHit, metres, bases } from "./geometry";
 import { runningTime } from "./runningGeometry";
 import { message as m } from "./messages";
 import { isForced, ThrowingEngine } from "./defense";
@@ -16,15 +16,21 @@ export class BaserunningDecisionEngine {
         speed: assumptions.runnerSpeed[settings.runnerSpeed],
         decision: "advance" as const,
         status: "active" as const,
+        runVelocity: 0,
+        startDelay: assumptions.batterStart,
       },
       ...Object.entries(settings.state.runners).map(([id, base]) => ({
         id: id as OffensiveRunner["id"],
         originBase: Number(base),
-        progress: Number(base) + 0.08,
+        progress:
+          Number(base) +
+          assumptions.secondaryLeadMetres / assumptions.baseMetres,
         goal: Number(base),
         speed: assumptions.runnerSpeed[settings.runnerSpeed],
         decision: "hold" as const,
         status: "active" as const,
+        runVelocity: 0,
+        startDelay: assumptions.reaction,
       })),
     ].sort((a, b) => b.originBase - a.originBase);
   }
@@ -35,8 +41,7 @@ export class BaserunningDecisionEngine {
     elapsed: number,
     upgrade: boolean,
   ) {
-    const hit =
-        settings.ball.type === "Base hit" || isOutfield(ball.fieldingPoint),
+    const hit = settings.ball.type !== "Ground ball" || isOutfieldHit(ball),
       throwing = new ThrowingEngine();
     let leadGoal = 5;
     const hint =

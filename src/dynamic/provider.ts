@@ -2,6 +2,7 @@ import {
   advanceProgress,
   runningTime,
   remainingRunningTime,
+  runningAdvance,
 } from "./runningGeometry";
 import type {
   BallEvent,
@@ -11,12 +12,29 @@ import type {
   Point,
   Position,
 } from "../simulation/types";
+import { sliceTimed } from "../simulation/timedPath";
+import { sampleTimed } from "../simulation/timedPath";
+import { isAirborneType, ballPhysics } from "./trajectory";
+import {
+  prepareAirReads,
+  releaseTagUps,
+  qualifiesInfieldFly,
+} from "./airborne";
 import { MovementEngine } from "./movement";
 import { BaserunningDecisionEngine } from "./baserunning";
 import { DefensiveDecisionEngine, isForced } from "./defense";
 import { TimelineBuilder } from "./timelineBuilder";
 import { assumptions, recommendStrategy } from "./conventions";
-import { bases, isPlayable, isOutfield, metres, runnerPoint } from "./geometry";
+import {
+  bases,
+  isPlayable,
+  isFairAim,
+  isOutfield,
+  isOutfieldHit,
+  metres,
+  runnerPoint,
+  toWorld,
+} from "./geometry";
 import { message as m } from "./messages";
 import type {
   DynamicScenario,
@@ -41,8 +59,8 @@ export function defaultSettings(): DynamicSettings {
       strategy: "standard",
     },
     ball: {
-      type: "Base hit",
-      destination: { x: 790, y: 290 },
+      type: "Ground ball",
+      destination: { x: 396, y: 473 },
       strength: "normal",
     },
     aggression: "normal",
@@ -56,7 +74,9 @@ export function validateSettings(
   const s = settings.state,
     values = Object.values(s.runners);
   if (
-    !isPlayable(settings.ball.destination) ||
+    !(isAirborneType(settings.ball.type)
+      ? isFairAim(settings.ball.destination)
+      : isPlayable(settings.ball.destination)) ||
     ![0, 1, 2].includes(s.outs) ||
     ![0, 1, 2, 3].includes(s.balls) ||
     ![0, 1, 2].includes(s.strikes) ||
@@ -73,13 +93,8 @@ export function validateSettings(
     !["top", "bottom"].includes(s.half)
   )
     return m("invalid");
-  if (!["Ground ball", "Base hit"].includes(settings.ball.type))
+  if (!["Ground ball", "Fly ball", "Line drive"].includes(settings.ball.type))
     return m("unsupported");
-  if (
-    settings.ball.type === "Base hit" &&
-    !isOutfield(settings.ball.destination)
-  )
-    return m("infieldHit");
   if (
     !["soft", "normal", "hard"].includes(settings.ball.strength) ||
     !["conservative", "normal", "aggressive"].includes(settings.aggression) ||
@@ -95,7 +110,10 @@ export class DynamicPlayProvider implements PlayProvider {
     state: GameState,
     event: Pick<BallEvent, "type" | "direction"> & Partial<BallEvent>,
   ) {
-    if (!event.location || !["Ground ball", "Base hit"].includes(event.type))
+    if (
+      !event.location ||
+      !["Ground ball", "Fly ball", "Line drive"].includes(event.type)
+    )
       return { supported: false as const, reason: m("unsupported") };
     const settings = {
       ...this.settings,
@@ -142,15 +160,44 @@ export class DynamicPlayProvider implements PlayProvider {
     );
     const decisions: ThrowDecision[] = [],
       diagnostics: DefensiveAuditFrame[] = [];
+    defense.motion = (player) => ({
+      position: builder.locations[player],
+      velocity: builder.velocities[player],
+      reaction: Math.max(0, assumptions.reaction - builder.liveTime),
+    });
+    ball.infieldFly = qualifiesInfieldFly(settings, ball);
     let closePlays = 0,
       owner = ball.fielder,
       inFlight = false;
     running.plan(settings, ball, runners, 0, true);
+    prepareAirReads(settings, ball, runners);
+    if (ball.boundary)
+      for (const r of runners) {
+        r.goal = Math.min(
+          4,
+          r.originBase + (ball.boundary === "home-run" ? 4 : 2),
+        );
+        r.approach = "round";
+        r.decision = "advance";
+        r.plan = {
+          candidates: [],
+          reason: m(
+            ball.boundary === "home-run" ? "homeRunWhy" : "boundaryDoubleWhy",
+          ),
+        };
+      }
+    for (const r of runners) {
+      startingPositions[r.id] = runnerPoint(r.progress);
+      builder.locations[r.id] = runnerPoint(r.progress);
+    }
     // Anticipate from the same decision rules, using projected runner positions.
     // This gets backups moving at contact rather than after the throw is released.
     const forecast = structuredClone(runners);
     for (const r of forecast) {
-      r.progress = advanceProgress(r, r.goal, ball.fieldingTime * r.speed);
+      const at = runningAdvance(r, r.goal, ball.fieldingTime);
+      r.progress = at.progress;
+      r.runVelocity = at.velocity;
+      r.startDelay = at.delay;
       if (r.progress >= 4) r.status = "scored";
     }
     running.plan(settings, ball, forecast, ball.fieldingTime, true);
@@ -164,7 +211,10 @@ export class DynamicPlayProvider implements PlayProvider {
       "fielded",
       { seconds: ball.fieldingTime, runners },
     ).target;
+    if (ball.boundary) activeTarget = "hold";
     let activeBall = ball;
+    let lockedCutoff: Position | undefined,
+      lockedReceiver: Position | undefined;
     let deadlines: Partial<Record<Position, number>> = {};
     let stage: "contact" | "fielded" | "received" | "complete" = "contact";
     let layout = defense.assign(
@@ -178,6 +228,7 @@ export class DynamicPlayProvider implements PlayProvider {
         runners,
         outs: builder.state.outs,
         ballInFlight: inFlight,
+        ballDead: !!ball.boundary,
         receptionTimes: Object.fromEntries(
           Object.entries(deadlines).map(([p, t]) => [
             p,
@@ -187,6 +238,7 @@ export class DynamicPlayProvider implements PlayProvider {
       },
     );
     const reassess = (trigger: string) => {
+      const latestBall = builder.phases.at(-1)?.ball;
       layout = defense.assign(
         settings,
         activeBall,
@@ -198,6 +250,9 @@ export class DynamicPlayProvider implements PlayProvider {
           runners,
           outs: builder.state.outs,
           ballInFlight: inFlight,
+          ballDead: !!ball.boundary,
+          fixedCutoff: lockedCutoff,
+          fixedReceiver: lockedReceiver,
           receptionTimes: Object.fromEntries(
             Object.entries(deadlines).map(([p, t]) => [
               p,
@@ -214,15 +269,28 @@ export class DynamicPlayProvider implements PlayProvider {
           state: {
             ...builder.state,
             phase: trigger,
-            ballStatus: inFlight
-              ? "throwing"
-              : stage === "contact"
-                ? builder.time < 1
-                  ? "ready"
-                  : "rolling"
+            ballStatus:
+              builder.time < 1
+                ? "ready"
                 : stage === "complete"
                   ? "complete"
-                  : "held",
+                  : ball.status === "out-of-play"
+                    ? "dead"
+                    : inFlight
+                      ? latestBall?.kind === "held" &&
+                        latestBall.secure === false
+                        ? "gathering"
+                        : "throwing"
+                      : stage === "contact"
+                        ? builder.liveTime >= (ball.touchTime ?? Infinity)
+                          ? "gathering"
+                          : (sampleTimed(
+                                ball.trajectory!.frames,
+                                builder.liveTime,
+                              ).height ?? 0) > 0.05
+                            ? "airborne"
+                            : "rolling"
+                        : "held",
           },
           runners,
           owner,
@@ -249,29 +317,139 @@ export class DynamicPlayProvider implements PlayProvider {
       false,
     );
     builder.event("BallContact", m("contact", { fielder: owner }));
-    const ballArrival =
-      (ball.travelTime * metres(bases.home, ball.fieldingPoint)) /
-      metres(bases.home, ball.destination);
-    builder.interval("Contact", m("contact", { fielder: owner }), ballArrival, {
-      kind: "travel",
-      path: [bases.home, ball.fieldingPoint],
-      style: "hit",
-    });
-    builder.interval(
-      "Retrieve & align",
-      m("retrieve", { fielder: owner }),
-      Math.max(0.001, ball.fieldingTime - ballArrival),
-      {
-        kind: "travel",
-        path: [ball.fieldingPoint, ball.fieldingPoint],
-        style: "hit",
-        receiver: owner,
-      },
-    );
-    builder.event("BallFielded", m("fielded", { fielder: owner }), owner);
-    ball.status = "fielded";
-    stage = "fielded";
-    running.plan(settings, ball, runners, builder.liveTime, true);
+    const touch = ball.touchTime!;
+    const trajectory = ball.trajectory!;
+    const cues: {
+      t: number;
+      kind: "bounce" | "landing" | "passed" | "infield-fly";
+    }[] = trajectory.events
+      .filter(
+        (e) =>
+          (e.type === "landing" || e.type === "bounce") && e.t < touch - 1e-8,
+      )
+      .map((e) => ({
+        t: e.t,
+        kind: e.type === "landing" ? "landing" : "bounce",
+      }));
+    if (
+      settings.ball.type === "Ground ball" &&
+      isOutfield(ball.fieldingPoint)
+    ) {
+      const passed = trajectory.frames.find(
+        (f) => metres(bases.home, f.point) > 39,
+      );
+      if (passed && passed.t < touch)
+        cues.push({ t: passed.t, kind: "passed" });
+    }
+    if (ball.infieldFly) {
+      const apex = trajectory.frames.reduce((a, b) =>
+        (b.height ?? 0) > (a.height ?? 0) ? b : a,
+      );
+      cues.push({ t: Math.min(touch, apex.t), kind: "infield-fly" });
+    }
+    cues.sort((a, b) => a.t - b.t);
+    let ballTime = 0;
+    const follow = (end: number) => {
+      if (end - ballTime < 1e-7) return;
+      const samples = sliceTimed(trajectory.frames, ballTime, end);
+      builder.interval(
+        ballTime === 0 ? "Contact" : m("phaseFlight"),
+        m("movingBallWhy", { fielder: owner }),
+        end - ballTime,
+        {
+          kind: "travel",
+          path: [samples[0].point, samples.at(-1)!.point],
+          style: "hit",
+          samples,
+          receiver:
+            Math.abs(end - touch) < 1e-8 && !ball.boundary ? owner : undefined,
+        },
+      );
+      ballTime = end;
+    };
+    for (const cue of cues) {
+      follow(cue.t);
+      if (cue.kind === "infield-fly") {
+        builder.event("InfieldFly", m("infieldFlyWhy"), "BR");
+        builder.retire("BR", 1, false, "infield-fly");
+        for (const r of runners) r.forceRemoved = true;
+      } else if (cue.kind === "passed") {
+        builder.event("BallPassedInfield", m("passedWhy"));
+        reassess("Ball passed infield");
+      } else {
+        builder.event("BallBounce", m("bounceWhy"));
+        if (
+          cue.kind === "landing" &&
+          isAirborneType(settings.ball.type) &&
+          !ball.caught &&
+          !ball.boundary
+        ) {
+          running.plan(settings, ball, runners, builder.liveTime, true);
+          for (const r of runners) r.airborneRead = undefined;
+          reassess("Landing / runners released");
+        }
+      }
+    }
+    follow(touch);
+    if (ball.boundary) {
+      ball.status = "out-of-play";
+      builder.event(
+        "BallBoundary",
+        m(ball.boundary === "home-run" ? "homeRunWhy" : "boundaryDoubleWhy"),
+      );
+      stage = "received";
+      reassess("Ball crossed boundary / award");
+    } else {
+      if (
+        metres(builder.locations[owner], ball.touchPoint!) >
+        assumptions.fieldingReach + 0.005
+      )
+        throw new Error(
+          `Interception mismatch: ${owner} gap ${metres(builder.locations[owner], ball.touchPoint!)} body ${JSON.stringify(builder.locations[owner])} ball ${JSON.stringify(ball.touchPoint)} target ${JSON.stringify(ball.pursuitTarget)} delay ${ball.pursuitDelay}`,
+        );
+      builder.event("BallTouched", m("gatherWhy", { fielder: owner }), owner);
+      if (ball.caught) {
+        releaseTagUps(settings, ball, runners);
+        for (const r of runners)
+          if (r.id !== "BR" && !r.retouchBase && r.goal > r.originBase)
+            builder.event(
+              "RunnerTaggedUp",
+              m("tagUpWhy"),
+              r.id,
+              r.originBase as 1 | 2 | 3,
+            );
+      }
+      builder.interval(
+        m(ball.caught ? "phaseCatch" : "phaseGather"),
+        m("gatherWhy", { fielder: owner }),
+        ball.fieldingTime - touch,
+        {
+          kind: "held",
+          owner,
+          secure: false,
+          height: sampleTimed(trajectory.frames, touch).height ?? 0,
+          endHeight: 0.8,
+          gloveOffset: {
+            x:
+              toWorld(ball.touchPoint!).x - toWorld(builder.locations[owner]).x,
+            y:
+              toWorld(ball.touchPoint!).y - toWorld(builder.locations[owner]).y,
+          },
+        },
+      );
+      stage = "fielded";
+      if (ball.caught) {
+        builder.event("BallCaught", m("catchOut", { runner: "BR" }), owner);
+        builder.retire("BR", 1, false, "catch");
+        for (const r of runners) r.forceRemoved = true;
+      }
+      builder.event("BallFielded", m("fielded", { fielder: owner }), owner);
+      ball.status = ball.caught ? "caught" : "fielded";
+      ball.fieldingPoint = { ...builder.locations[owner] };
+      stage = "fielded";
+      if (!ball.caught)
+        running.plan(settings, ball, runners, builder.liveTime, true);
+    }
     let decision = defense.choose(
       settings,
       ball,
@@ -281,7 +459,7 @@ export class DynamicPlayProvider implements PlayProvider {
     );
     // A throw toward a lead runner can open an extra base for a trailing runner.
     // Preserve committed goals here; retreat is a separate cutoff decision.
-    if (decision.target !== "hold") {
+    if (!ball.caught && !ball.boundary && decision.target !== "hold") {
       const committed = new Map(runners.map((r) => [r.id, r.goal]));
       running.plan(
         { ...settings, throwTarget: decision.target },
@@ -307,9 +485,25 @@ export class DynamicPlayProvider implements PlayProvider {
         builder.locations,
       );
     }
+    if (ball.boundary || builder.state.outs === 3)
+      decision = {
+        target: "hold",
+        force: false,
+        reason: m(
+          ball.boundary
+            ? ball.boundary === "home-run"
+              ? "homeRunWhy"
+              : "boundaryDoubleWhy"
+            : "catchOut",
+          { runner: "BR" },
+        ),
+        override: false,
+        alternatives: [],
+      };
     record(decision);
     let additionalOutfieldThrow = true;
     const performThrow = (next: ThrowDecision, directOnly = false): void => {
+      if (ball.boundary || builder.state.outs >= 3) return;
       const target = next.target;
       activeTarget = target;
       deadlines = {};
@@ -324,6 +518,8 @@ export class DynamicPlayProvider implements PlayProvider {
         return;
       }
       const plan = layout;
+      lockedCutoff = plan.cutoff;
+      lockedReceiver = plan.receiver;
       const firstRoute = {
         ...plan,
         route: { ...plan.route, legs: plan.route.legs.slice(0, 1) },
@@ -341,41 +537,46 @@ export class DynamicPlayProvider implements PlayProvider {
       if (!to) return;
       const destination = plan.assignments.find((a) => a.player === to)!.target;
       const carrying = owner === to;
+      const release = defense.release(owner, builder.locations[owner]);
       const flight =
-        metres(builder.locations[owner], destination) / assumptions.throwSpeed +
-        assumptions.catchTime;
-      const receiverTime =
-        metres(builder.locations[to], destination) / assumptions.defenderSpeed;
+        metres(release.point, destination) / assumptions.throwSpeed;
+      const receiverTime = defense.travel(
+        to,
+        builder.locations[to],
+        destination,
+      );
       const cutoffWait =
         plan.route.kind === "through-cutoff" && plan.cutoff
-          ? metres(builder.locations[plan.cutoff], plan.route.cutoffPoint!) /
-              assumptions.defenderSpeed -
+          ? defense.travel(
+              plan.cutoff,
+              builder.locations[plan.cutoff],
+              plan.route.cutoffPoint!,
+            ) -
             metres(builder.locations[owner], plan.route.cutoffPoint!) /
               assumptions.throwSpeed
           : 0;
       const prepare = Math.max(
-        assumptions.transfer,
+        release.time,
         carrying ? 0 : receiverTime - flight,
         cutoffWait,
-      );
-      builder.interval(
-        "Field & decide",
-        m(carrying ? "carry" : "prepare", { base: target }),
-        prepare,
-        { kind: "held", owner },
       );
       if (carrying) {
         builder.interval(
           "Field & decide",
           m("carry", { base: target }),
           Math.max(
-            0.12,
-            metres(builder.locations[owner], bases[target]) /
-              assumptions.defenderSpeed,
+            0.001,
+            defense.travel(owner, builder.locations[owner], bases[target]),
           ),
           { kind: "held", owner },
         );
       } else {
+        builder.interval(
+          "Field & decide",
+          m("prepare", { base: target }),
+          prepare,
+          { kind: "held", owner },
+        );
         builder.event(
           "ThrowStarted",
           m("throw", { from: owner, to }),
@@ -383,6 +584,10 @@ export class DynamicPlayProvider implements PlayProvider {
           target,
         );
         // Reaffirm the support plan at release, preserving this flight's lane.
+        activeBall = {
+          ...ball,
+          fieldingPoint: { ...builder.locations[owner] },
+        };
         inFlight = true;
         reassess("ThrowStarted");
         builder.interval("Throw", m("throw", { from: owner, to }), flight, {
@@ -391,8 +596,22 @@ export class DynamicPlayProvider implements PlayProvider {
           style: "throw",
           receiver: to,
         });
+        builder.event(
+          "ThrowGloveContact",
+          m("received", { player: to, base: target }),
+          to,
+          target,
+        );
+        builder.interval(
+          "Receive",
+          m("received", { player: to, base: target }),
+          assumptions.catchTime,
+          { kind: "held", owner: to, secure: false },
+        );
       }
       inFlight = false;
+      lockedCutoff = undefined;
+      lockedReceiver = undefined;
       owner = to;
       builder.event(
         carrying ? "BaseTouched" : "ThrowReceived",
@@ -446,46 +665,51 @@ export class DynamicPlayProvider implements PlayProvider {
             (r) => r.status === "active" && r.goal >= base && r.progress < base,
           );
       if (runner && runner.status === "active") {
-        const force = isForced(runner, runners, base);
-        const remaining = runningTime(runner, base);
-        const crossing = builder.events.find(
-          (e) =>
-            e.type === "RunnerAdvanced" &&
-            e.player === runner.id &&
-            e.base === target,
-        );
-        const protectedOverrun =
-          target === 1 &&
-          runner.id === "BR" &&
-          runner.progress >= 1 &&
-          runner.firstTurn?.kind === "overrun";
-        const tagRequired = !force && !protectedOverrun;
-        const margin = crossing
-          ? crossing.time -
-            builder.time -
-            (tagRequired ? assumptions.tagTime : 0)
-          : remaining - (tagRequired ? assumptions.tagTime : 0);
-        if (Math.abs(margin) < assumptions.closeMargin) closePlays++;
-        if (tagRequired) {
-          const attempting =
-            runner.goal >= base && runner.decision !== "retreat";
-          const wait =
-            attempting && remaining > assumptions.tagTime + 0.02
-              ? Math.max(assumptions.tagTime, remaining - 0.08)
-              : assumptions.tagTime;
-          builder.interval(
-            "Receive",
-            m("tag", { runner: runner.id, base: target }),
-            wait,
-            { kind: "held", owner },
+        if (next.appeal) {
+          if (runner.retouchBase === base && runner.progress > base + 0.00001)
+            builder.retire(runner.id, target, false, "appeal");
+        } else {
+          const force = isForced(runner, runners, base);
+          const remaining = runningTime(runner, base);
+          const crossing = builder.events.find(
+            (e) =>
+              e.type === "RunnerAdvanced" &&
+              e.player === runner.id &&
+              e.base === target,
           );
+          const protectedOverrun =
+            target === 1 &&
+            runner.id === "BR" &&
+            runner.progress >= 1 &&
+            runner.firstTurn?.kind === "overrun";
+          const tagRequired = !force && !protectedOverrun;
+          const margin = crossing
+            ? crossing.time -
+              builder.time -
+              (tagRequired ? assumptions.tagTime : 0)
+            : remaining - (tagRequired ? assumptions.tagTime : 0);
+          if (Math.abs(margin) < assumptions.closeMargin) closePlays++;
+          if (tagRequired) {
+            const attempting =
+              runner.goal >= base && runner.decision !== "retreat";
+            const wait =
+              attempting && remaining > assumptions.tagTime + 0.02
+                ? Math.max(assumptions.tagTime, remaining - 0.08)
+                : assumptions.tagTime;
+            builder.interval(
+              "Receive",
+              m("tag", { runner: runner.id, base: target }),
+              wait,
+              { kind: "held", owner },
+            );
+          }
+          if (
+            runner.progress < base - 0.00001 &&
+            runner.goal >= base &&
+            runner.decision !== "retreat"
+          )
+            builder.retire(runner.id, target, force);
         }
-        if (
-          runner.progress < base - 0.00001 &&
-          runner.goal >= base &&
-          runner.decision !== "retreat"
-        )
-          builder.retire(runner.id, target, force);
       }
       reassess("Receive / tag resolved");
       // A base receiver must read the next opportunity too, not only a player
@@ -493,7 +717,7 @@ export class DynamicPlayProvider implements PlayProvider {
       // the play while a realistic home challenge is still available.
       if (
         settings.throwTarget === "auto" &&
-        isOutfield(ball.fieldingPoint) &&
+        isOutfieldHit(ball) &&
         builder.state.outs < 3 &&
         additionalOutfieldThrow
       ) {
@@ -526,7 +750,7 @@ export class DynamicPlayProvider implements PlayProvider {
     const br = runners.find((r) => r.id === "BR")!;
     if (
       settings.ball.type === "Ground ball" &&
-      !isOutfield(ball.fieldingPoint) &&
+      !isOutfieldHit(ball) &&
       builder.state.outs > settings.state.outs &&
       builder.state.outs < 3 &&
       br.status === "active" &&
@@ -574,17 +798,77 @@ export class DynamicPlayProvider implements PlayProvider {
       activeBall = { ...ball, fieldingPoint: builder.locations[owner] };
       stage = "received";
       reassess("Runners finishing / no further throw");
-      const remaining = Math.max(
+      const held = () =>
+        ball.boundary
+          ? {
+              kind: "travel" as const,
+              style: "hit" as const,
+              dead: true,
+              path: [ball.fieldingPoint, ball.fieldingPoint],
+            }
+          : { kind: "held" as const, owner };
+      for (let pass = 0; pass < 12; pass++) {
+        const remaining = Math.max(
+          0,
+          ...runners
+            .filter((r) => r.status === "active" || r.retiredRunThrough)
+            .map(remainingRunningTime),
+        );
+        if (remaining < 0.00001) break;
+        builder.interval(
+          "Hold the ball",
+          ball.boundary
+            ? m(
+                ball.boundary === "home-run"
+                  ? "homeRunWhy"
+                  : "boundaryDoubleWhy",
+              )
+            : m("settle"),
+          remaining,
+          held(),
+        );
+        if (pass === 11) throw new Error("Runner resolution did not converge");
+      }
+      const settle = Math.max(
         0,
-        ...runners
-          .filter((r) => r.status === "active" || r.retiredRunThrough)
-          .map((r) => remainingRunningTime(r)),
+        ...Object.values(builder.velocities).map(
+          (v) => Math.hypot(v.x, v.y) / assumptions.defenderAcceleration,
+        ),
       );
-      if (remaining > 0.000001)
-        builder.interval("Hold the ball", m("settle"), remaining, {
-          kind: "held",
-          owner,
+      if (settle > 0.00001) {
+        builder.assignments = builder.assignments.map((a) => {
+          const speed = Math.hypot(
+            builder.velocities[a.player].x,
+            builder.velocities[a.player].y,
+          );
+          return {
+            ...a,
+            type:
+              speed > 1e-8
+                ? ("Decelerate" as const)
+                : a.player === owner && !ball.boundary
+                  ? ("PossessBall" as const)
+                  : ("HoldPosition" as const),
+            reason:
+              speed > 1e-8
+                ? ("braking" as const)
+                : a.player === owner && !ball.boundary
+                  ? ("possession" as const)
+                  : ("complete" as const),
+            target:
+              speed > 1e-8
+                ? defense.release(a.player, builder.locations[a.player]).point
+                : builder.locations[a.player],
+            throwOrigin: undefined,
+            receivingPoint: undefined,
+            neededBy: undefined,
+            base: undefined,
+            teammate: undefined,
+            arrivalTime: speed / assumptions.defenderAcceleration,
+          };
         });
+        builder.interval("Hold the ball", m("settle"), settle, held());
+      }
     }
     builder.state.runs = builder.forceThird ? 0 : builder.pendingRuns;
     if (builder.state.outs === 3) builder.state.runners = {};
@@ -599,7 +883,20 @@ export class DynamicPlayProvider implements PlayProvider {
     builder.event("PlayCompleted", result);
     stage = "complete";
     reassess("PlayCompleted");
-    builder.interval("Outcome", result, 1, { kind: "held", owner }, false);
+    builder.interval(
+      "Outcome",
+      result,
+      1,
+      ball.boundary
+        ? {
+            kind: "travel",
+            style: "hit",
+            dead: true,
+            path: [ball.fieldingPoint, ball.fieldingPoint],
+          }
+        : { kind: "held", owner },
+      false,
+    );
     return {
       id: "dynamic",
       title: m("title", { fielder: ball.fielder, ball: settings.ball.type }),
@@ -616,7 +913,11 @@ export class DynamicPlayProvider implements PlayProvider {
               ? "Right field"
               : "Centre field",
         location: settings.ball.destination,
-        outcome: settings.ball.type === "Base hit" ? "hit" : "fielded",
+        outcome: ball.caught
+          ? "caught"
+          : isOutfieldHit(ball)
+            ? "hit"
+            : "fielded",
       },
       startingPositions,
       phases: builder.phases,
@@ -628,12 +929,24 @@ export class DynamicPlayProvider implements PlayProvider {
           centreMetres: assumptions.field.centreMetres,
         }),
         m("convention"),
+        m("physicsNote", { wallHeight: ballPhysics.wallHeight }),
+        ...(trajectory.launch.adjusted ? [m("trajectoryLimit")] : []),
         ...(closePlays ? [m("close")] : []),
-        ...(builder.forceThird ? [m("forceResult")] : []),
+        ...(builder.forceThird
+          ? [
+              m(
+                builder.thirdOutReason === "catch"
+                  ? "catchThirdResult"
+                  : "forceResult",
+              ),
+            ]
+          : []),
       ],
       alternatives: [m("alternative")],
       notation: "",
       dynamic: {
+        modelVersion: trajectory.version,
+        contactTime: builder.events.find((e) => e.type === "BallContact")!.time,
         settings,
         ball,
         events: builder.events,

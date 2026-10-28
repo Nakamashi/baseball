@@ -1,6 +1,7 @@
 import { bases, defaults } from "../simulation/geometry";
 import type { Point } from "../simulation/types";
 import { assumptions } from "./conventions";
+import type { BattedBall } from "./types";
 export { bases, defaults };
 export const distance = (a: Point, b: Point) =>
   Math.hypot(a.x - b.x, a.y - b.y);
@@ -128,7 +129,7 @@ function diagramFenceRadius(angle: number) {
     (fenceDepths[lower + 1] - fenceDepths[lower]) * (index - lower)
   );
 }
-function fieldRadius(angle: number) {
+export function fieldRadius(angle: number) {
   return (
     assumptions.field.cornerMetres +
     (assumptions.field.centreMetres - assumptions.field.cornerMetres) *
@@ -163,6 +164,31 @@ export function isPlayable(p: Point) {
   return (inside || boundary) && metres(bases.home, p) > 1;
 }
 export const isOutfield = (p: Point) => metres(bases.home, p) > 39;
+/** An infielder on the grass still makes an infield play; crossing a drawn
+ * grass edge must not invent an outfield relay or change a contact read. */
+export const isOutfieldHit = (ball: BattedBall) =>
+  ["LF", "CF", "RF"].includes(ball.fielder) ||
+  metres(bases.home, ball.touchPoint ?? ball.fieldingPoint) >
+    assumptions.relayDistance;
+export function isFairAim(p: Point) {
+  if (
+    !Number.isFinite(p.x) ||
+    !Number.isFinite(p.y) ||
+    p.x < 0 ||
+    p.x > 1000 ||
+    p.y < 0 ||
+    p.y > 900
+  )
+    return false;
+  const world = toWorld(p),
+    distance = Math.hypot(world.x, world.y);
+  return (
+    distance > 1 &&
+    distance <= 160 &&
+    world.y < 0 &&
+    Math.abs(world.x) <= -world.y + 0.00001
+  );
+}
 export function runnerPoint(progress: number): Point {
   const i = Math.max(0, Math.min(4, progress));
   if (i >= 4) return bases.home;

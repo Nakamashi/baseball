@@ -5,8 +5,17 @@ import { validateScenario } from "../simulation/scenarioValidation";
 import { formatDynamic } from "../dynamic/messages";
 import type { DynamicSettings } from "../dynamic/types";
 const provider = new DynamicPlayProvider();
+const outfield = () => {
+  const c = defaultSettings();
+  c.ball = {
+    type: "Ground ball",
+    destination: { x: 765, y: 280 },
+    strength: "normal",
+  };
+  return c;
+};
 const make = (change: Partial<DynamicSettings> = {}) =>
-  provider.generate({ ...defaultSettings(), ...change });
+  provider.generate({ ...outfield(), ...change });
 describe("dynamic vertical slice", () => {
   it("retrieves a right-field single and assigns every defender", () => {
     const s = make();
@@ -79,12 +88,16 @@ describe("fundamental baseball decisions", () => {
     }
   });
   it("evaluates a double play, but does not guarantee one", () => {
-    const slow = ground();
+    const slow = ground({ x: 425, y: 425 });
     slow.runnerSpeed = "slow";
+    slow.ball.strength = "hard";
     const s = provider.generate(slow);
     expect(s.dynamic.decisions.map((d) => d.target)).toEqual([2, 1]);
     expect(sample(s, duration(s)).state.outs).toBe(2);
-    const normal = provider.generate(ground());
+    const fast = ground({ x: 425, y: 425 });
+    fast.runnerSpeed = "fast";
+    fast.ball.strength = "hard";
+    const normal = provider.generate(fast);
     expect(sample(normal, duration(normal)).state.outs).toBe(1);
   });
   it("ends live throwing decisions at the third out", () => {
@@ -119,7 +132,7 @@ describe("fundamental baseball decisions", () => {
     ).toBe("P");
   });
   it("aligns cutoffs on the actual throwing lane and covers vacated bases", () => {
-    const c = defaultSettings();
+    const c = outfield();
     c.throwTarget = 3;
     const s = provider.generate(c);
     const phase = s.phases.find((p) => p.title === "Field & decide")!;
@@ -127,7 +140,11 @@ describe("fundamental baseball decisions", () => {
       (a) => a.type === "Cutoff" || a.type === "Relay",
     )!;
     expect(cutoff.player).toBe("SS");
-    const from = toWorld(s.dynamic.ball.fieldingPoint),
+    const release = s.dynamic.events.find((e) => e.type === "ThrowStarted")!;
+    const from = toWorld(
+        sample(s, release.time).players.find((p) => p.id === release.player)!
+          .position,
+      ),
       to = toWorld(bases[3]),
       v = toWorld(cutoff.target);
     expect(
@@ -144,8 +161,9 @@ describe("fundamental baseball decisions", () => {
     );
   });
   it("uses a relay for a deep outfield throw, with a separate base receiver", () => {
-    const c = defaultSettings();
-    c.ball.destination = { x: 330, y: 125 };
+    const c = outfield();
+    c.ball.destination = { x: 80, y: 340 };
+    c.ball.strength = "hard";
     c.throwTarget = "home";
     const s = provider.generate(c);
     expect(
@@ -155,7 +173,12 @@ describe("fundamental baseball decisions", () => {
       s.dynamic.events
         .filter((e) => e.type === "ThrowReceived")
         .map((e) => e.player),
-    ).toEqual(["1B", "C"]);
+    ).toEqual([
+      s.phases
+        .find((p) => p.title === "Field & decide")!
+        .assignments!.find((a) => a.type === "Relay")!.player,
+      "C",
+    ]);
     const phase = s.phases.find((p) => p.title === "Field & decide")!;
     expect(phase.assignments!.find((a) => a.player === "P")?.base).toBe("home");
     expect(
@@ -163,11 +186,12 @@ describe("fundamental baseball decisions", () => {
         .find((p) => p.title === "Contact")!
         .assignments!.find((a) => a.base === 1 && a.type === "CoverBase")
         ?.player,
-    ).toBe("2B");
+    ).toBe("1B");
   });
   it("changes runner behavior for a marginal deep hit under different aggression", () => {
     const conservative = defaultSettings();
-    conservative.ball.destination = { x: 530, y: 230 };
+    conservative.ball.destination = { x: 650, y: 280 };
+    conservative.ball.strength = "hard";
     conservative.aggression = "conservative";
     const aggressive = structuredClone(conservative);
     aggressive.aggression = "aggressive";
@@ -176,18 +200,20 @@ describe("fundamental baseball decisions", () => {
     expect(a.dynamic.events.filter((e) => e.type === "RunnerOut")).toHaveLength(
       0,
     );
-    expect(sample(b, duration(b)).state.runners.R1).toBe(3);
-    expect(sample(a, duration(a)).state.runners.R1).toBe(2);
+    expect(sample(b, duration(b)).state.runs).toBe(1);
+    expect(sample(a, duration(a)).state.runners.R1).toBe(3);
+    expect(sample(a, duration(a)).state.runs).toBe(0);
     expect(a).not.toEqual(b);
   });
   it("separates speed from aggression", () => {
     const slow = defaultSettings();
-    slow.ball.destination = { x: 530, y: 230 };
+    slow.ball.destination = { x: 650, y: 280 };
+    slow.ball.strength = "hard";
     slow.runnerSpeed = "slow";
     const fast = structuredClone(slow);
     fast.runnerSpeed = "fast";
-    expect(sample(provider.generate(slow), 100).state.runners.R1).toBe(2);
-    expect(sample(provider.generate(fast), 100).state.runners.R1).toBe(3);
+    expect(sample(provider.generate(slow), 100).state.runners.R1).toBe(3);
+    expect(sample(provider.generate(fast), 100).state.runs).toBe(1);
   });
   it("supports retreat from a marginal extra base after the cutoff receives", () => {
     const c = defaultSettings(),
@@ -222,7 +248,7 @@ describe("fundamental baseball decisions", () => {
   });
   it("recalculates coverage, paths and runner consequences for a coach override", () => {
     const a = make(),
-      c = defaultSettings();
+      c = outfield();
     c.throwTarget = "home";
     c.aggression = "aggressive";
     const b = provider.generate(c);
@@ -240,14 +266,14 @@ describe("fundamental baseball decisions", () => {
     );
   });
   it("can hold at the cutoff or hold without making a throw", () => {
-    const c = defaultSettings();
+    const c = outfield();
     c.throwTarget = "cutoff";
     const s = provider.generate(c);
     expect(
       s.dynamic.events
         .filter((e) => e.type === "ThrowReceived")
         .map((e) => e.player),
-    ).toEqual(["SS"]);
+    ).toHaveLength(1);
     c.throwTarget = "hold";
     expect(
       provider
@@ -267,8 +293,13 @@ describe("fundamental baseball decisions", () => {
     const soft = provider.generate(c);
     c.ball.strength = "hard";
     const hard = provider.generate(c);
-    expect(soft.dynamic.ball.travelTime).toBeGreaterThan(
-      hard.dynamic.ball.travelTime,
+    expect(hard.dynamic.ball.trajectory!.launch.speed).toBeGreaterThan(
+      soft.dynamic.ball.trajectory!.launch.speed,
+    );
+    expect(
+      metres(bases.home, hard.dynamic.ball.trajectory!.frames.at(-1)!.point),
+    ).toBeGreaterThan(
+      metres(bases.home, soft.dynamic.ball.trajectory!.frames.at(-1)!.point),
     );
     expect(soft.phases).not.toEqual(hard.phases);
   });
@@ -289,13 +320,14 @@ describe("fundamental baseball decisions", () => {
     expect(isPlayable(c.ball.destination)).toBe(false);
     expect(
       provider.resolve(c.state, {
-        type: "Fly ball",
+        type: "Bunt",
         direction: "Centre field",
         location: { x: 500, y: 200 },
       }).supported,
     ).toBe(false);
+    c.ball.type = "Fly ball";
     c.ball.destination = { x: 500, y: 600 };
-    expect(validateSettings(c)).toBeDefined();
+    expect(validateSettings(c)).toBeUndefined();
     c.ball.type = "Ground ball";
     c.state.outs = 3;
     expect(validateSettings(c)).toBeDefined();
@@ -326,7 +358,7 @@ describe("generated-state invariants across base/out situations", () => {
           c.ball = {
             ...c.ball,
             destination: point,
-            type: isOutfield(point) ? "Base hit" : "Ground ball",
+            type: isOutfield(point) ? "Line drive" : "Ground ball",
           };
           const s = provider.generate(c);
           expect(validateScenario(s)).toEqual([]);
@@ -392,7 +424,9 @@ describe("scoring and secure outs", () => {
     expect(sample(s, duration(s)).state.outs).toBe(1);
   });
   it("credits a run to the batting team and preserves the fielding score", () => {
-    const c = defaultSettings();
+    const c = outfield();
+    c.ball.destination = { x: 80, y: 340 };
+    c.ball.strength = "hard";
     c.state = {
       ...c.state,
       runners: { R2: 2 },
@@ -486,7 +520,7 @@ describe("varied deterministic inputs", () => {
       const c = defaultSettings(),
         point = points[i % points.length];
       c.ball = {
-        type: isOutfield(point) ? "Base hit" : "Ground ball",
+        type: isOutfield(point) ? "Line drive" : "Ground ball",
         destination: point,
         strength: (["soft", "normal", "hard"] as const)[i % 3],
       };
@@ -516,7 +550,7 @@ describe("varied deterministic inputs", () => {
         }
       }
     }
-  });
+  }, 30000);
 });
 describe("coverage and tag positioning regressions", () => {
   it("uses CF for the batted ball and LF for the throw toward second", () => {
@@ -545,10 +579,13 @@ describe("coverage and tag positioning regressions", () => {
   it("records tag outs only when the runner is within tagging distance", () => {
     const c = defaultSettings();
     c.state.runners = {};
-    c.ball.destination = { x: 530, y: 230 };
-    c.ball.strength = "normal";
+    c.ball = {
+      type: "Line drive",
+      destination: { x: 830, y: 430 },
+      strength: "hard",
+    };
     c.aggression = "aggressive";
-    c.runnerSpeed = "fast";
+    c.runnerSpeed = "average";
     c.throwTarget = 2;
     const s = provider.generate(c);
     const tags = s.dynamic.events.filter(

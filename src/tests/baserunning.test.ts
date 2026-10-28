@@ -21,7 +21,7 @@ function settings(x: number, y: number): DynamicSettings {
   const c = defaultSettings();
   c.state.runners = {};
   c.aggression = "aggressive";
-  c.ball = { type: "Base hit", destination: { x, y }, strength: "hard" };
+  c.ball = { type: "Ground ball", destination: { x, y }, strength: "hard" };
   return c;
 }
 function validate(s: DynamicScenario) {
@@ -97,25 +97,24 @@ describe("home-ground distances and one physical clock", () => {
     );
     validate(s);
   });
-  it("shows the ball waiting for retrieval when an outfielder arrives later", () => {
-    const c = settings(920, 330);
-    const s = provider.generate(c);
-    const retrieve = s.phases.find((p) => p.title === "Retrieve & align")!;
-    expect(retrieve.duration).toBeGreaterThan(0);
-    const a = sample(s, retrieve.start + retrieve.duration * 0.25),
-      b = sample(s, retrieve.start + retrieve.duration * 0.75);
-    expect(metres(a.ball, b.ball)).toBeLessThan(0.0001);
+  it("keeps a hard ball moving beyond the aim until interception", () => {
+    const c = settings(920, 330),
+      s = provider.generate(c),
+      touch = s.dynamic.events.find((e) => e.type === "BallTouched")!;
+    const a = sample(s, 1 + (touch.time - 1) * 0.4),
+      b = sample(s, 1 + (touch.time - 1) * 0.7);
+    expect(metres(a.ball, b.ball)).toBeGreaterThan(1);
     expect(a.owner).toBeUndefined();
-    expect(
-      s.dynamic.events.find((e) => e.type === "BallFielded")!.time,
-    ).toBeGreaterThan(retrieve.start);
+    expect(b.owner).toBeUndefined();
+    expect(s.dynamic.ball.trajectory!.events.at(-1)!.type).toBe("stop");
+    validate(s);
   });
 });
 describe("extra-base reads", () => {
   it.each([
     { x: 80, y: 330 },
-    { x: 170, y: 200 },
-    { x: 830, y: 200 },
+    { x: 170, y: 430 },
+    { x: 830, y: 430 },
     { x: 920, y: 330 },
   ])("evaluates a real double window at $x,$y", (point) => {
     const c = settings(point.x, point.y),
@@ -141,8 +140,9 @@ describe("extra-base reads", () => {
     validate(s);
   });
   it("does not award a double for an ordinary clean hit at a waiting outfielder", () => {
-    const c = settings(765, 295),
-      s = provider.generate(c);
+    const c = settings(765, 280);
+    c.ball.strength = "normal";
+    const s = provider.generate(c);
     expect(sample(s, duration(s)).state.runners.BR).toBe(1);
     expect(s.dynamic.events.some((e) => e.type === "FirstBaseRounded")).toBe(
       true,
@@ -150,9 +150,9 @@ describe("extra-base reads", () => {
     validate(s);
   });
   it("a timely throw to second can tag out an aggressive extra-base attempt", () => {
-    const c = settings(530, 230);
-    c.ball.strength = "normal";
-    c.runnerSpeed = "fast";
+    const c = settings(830, 430);
+    c.ball.type = "Line drive";
+    c.runnerSpeed = "average";
     const s = provider.generate(c),
       tag = s.dynamic.events.find(
         (e) => e.type === "RunnerOut" && e.player === "BR" && e.base === 2,
@@ -208,7 +208,9 @@ describe("first-base footwork and legal base progress", () => {
     validate(s);
   });
   it("rounds on an outfield single and returns on the same clock instead of stopping at first", () => {
-    const s = provider.generate(settings(765, 295)),
+    const c = settings(765, 280);
+    c.ball.strength = "normal";
+    const s = provider.generate(c),
       event = s.dynamic.events.find((e) => e.type === "FirstBaseRounded")!;
     expect(event).toBeDefined();
     const returned = s.dynamic.events.find(
@@ -243,7 +245,7 @@ describe("contact reads from third", () => {
   it.each([0, 1, 2])(
     "aggressive R3 breaks on a deep second-base grounder with %i outs",
     (outs) => {
-      const c = settings(640, 430);
+      const c = settings(610, 430);
       c.ball.type = "Ground ball";
       c.state.runners = { R3: 3 };
       c.state.outs = outs;
@@ -258,7 +260,7 @@ describe("contact reads from third", () => {
     },
   );
   it("keeps the plate defended and permits the contact runner to be retired with the infield in", () => {
-    const c = settings(640, 430);
+    const c = settings(610, 430);
     c.ball.type = "Ground ball";
     c.state.runners = { R3: 3 };
     c.state.strategy = "prevent";
@@ -325,7 +327,7 @@ it("finishes the sprint after a first-base out without restoring legal base occu
   validate(s);
 });
 it("stops all runner motion at the third out", () => {
-  const c = settings(360, 440);
+  const c = settings(396, 473);
   c.ball.type = "Ground ball";
   c.state.outs = 2;
   const s = provider.generate(c),
@@ -337,7 +339,8 @@ it("stops all runner motion at the third out", () => {
 
 it("chooses the nearer outfielder when multiple defenders can arrive before the ball", () => {
   const c = settings(530, 210);
-  c.ball.strength = "soft";
+  c.ball.type = "Fly ball";
+  c.ball.strength = "normal";
   const m = new MovementEngine(),
     starting = m.starting(c),
     ball = m.field(c, starting);

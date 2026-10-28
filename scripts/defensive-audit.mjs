@@ -30,7 +30,9 @@ try {
     const scenario = new DynamicPlayProvider().generate(settings);
     const time =
       value("--time") === undefined
-        ? scenario.dynamic.events.find((e) => e.type === "BallFielded").time
+        ? scenario.dynamic.events.find(
+            (e) => e.type === "BallFielded" || e.type === "BallBoundary",
+          ).time
         : Number(value("--time"));
     if (!Number.isFinite(time))
       throw new Error("--time must be a finite number of seconds.");

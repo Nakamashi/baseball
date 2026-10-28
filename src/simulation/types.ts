@@ -25,7 +25,15 @@ export interface GameState {
   runners: Partial<Record<Runner, Base>>;
   phase: string;
   runs: number;
-  ballStatus?: "ready" | "rolling" | "held" | "throwing" | "complete";
+  ballStatus?:
+    | "ready"
+    | "rolling"
+    | "airborne"
+    | "gathering"
+    | "dead"
+    | "held"
+    | "throwing"
+    | "complete";
   inning?: number;
   half?: "top" | "bottom";
   homeScore?: number;
@@ -34,11 +42,7 @@ export interface GameState {
   strategy?: "standard" | "prevent" | "conservative";
 }
 export type BallType =
-  | "Ground ball"
-  | "Fly ball"
-  | "Line drive"
-  | "Base hit"
-  | "Bunt";
+  "Ground ball" | "Fly ball" | "Line drive" | "Base hit" | "Bunt";
 export const directions = [
   "Left field",
   "Left-centre",
@@ -74,15 +78,30 @@ export interface Responsibility {
 export interface Movement {
   player: PlayerId;
   path: Point[];
+  samples?: TimedPoint[];
+}
+export interface TimedPoint {
+  t: number;
+  point: Point;
+  height?: number;
 }
 export type BallAction =
-  | { kind: "held"; owner: PlayerId }
+  | {
+      kind: "held";
+      owner: PlayerId;
+      secure?: boolean;
+      height?: number;
+      endHeight?: number;
+      gloveOffset?: Point;
+    }
   | {
       kind: "travel";
       journeyId?: string;
       path: Point[];
       style: "hit" | "throw";
       receiver?: Position;
+      samples?: TimedPoint[];
+      dead?: boolean;
     };
 export interface PlayPhase {
   assignments?: DefensiveAssignment[];
@@ -118,6 +137,7 @@ export interface Snapshot {
   players: PlayerState[];
   ball: Point;
   owner?: PlayerId;
+  ballHeight?: number;
   state: GameState;
 }
 export interface PlayProvider {

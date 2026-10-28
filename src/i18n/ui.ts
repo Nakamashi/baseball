@@ -7,7 +7,7 @@ export const en = {
   regenerate: "Generate again",
   draftChanged: "Settings changed — generate to apply",
   dynamicSetup: "Dynamic game situation",
-  hitLocation: "Hit destination",
+  hitLocation: "Ball aim / landing point",
   pickLocation: "Place hit location",
   picking: "Click the field to place the hit",
   locationHint:
@@ -16,9 +16,24 @@ export const en = {
   ballType: "Batted ball",
   groundBall: "Ground ball",
   baseHit: "Outfield base hit",
+  flyBall: "Fly ball",
+  lineDrive: "Line drive",
+  groundAimHint:
+    "Aim through this area. Strength and the surface determine how far the ground ball continues.",
+  airLandingHint:
+    "Choose the first landing point if untouched. The preview shows any launch-profile constraint.",
+  trajectory: "Projected ball path",
+  projectedLanding: "First landing",
+  projectedStop: "Projected stop or boundary",
+  interception: "Interception",
+  ballHeight: "Ball height",
+  landingConstrained:
+    "This aim is outside the selected launch profile. See the attainable landing point in the path preview.",
+  runningCalibration:
+    "Straight contact-to-first profiles: slow 5.3 s · average 4.7 s · fast 4.2 s. Rounding takes a different route.",
   flyLater: "Fly ball — Phase 2B",
   lineLater: "Line drive — Phase 2B",
-  buntLater: "Bunt — Phase 2B",
+  buntLater: "Bunt — not generated",
   strength: "Hit strength",
   soft: "Soft",
   normal: "Normal",
@@ -154,7 +169,7 @@ export const ja: Record<MessageKey, string> = {
   regenerate: "再生成",
   draftChanged: "設定を変更しました。生成して反映してください",
   dynamicSetup: "試合状況の設定",
-  hitLocation: "打球の到達位置",
+  hitLocation: "打球の狙い・落下地点",
   pickLocation: "打球の位置を選ぶ",
   picking: "グラウンドをクリックして打球を置きます",
   locationHint:
@@ -163,9 +178,24 @@ export const ja: Record<MessageKey, string> = {
   ballType: "打球の種類",
   groundBall: "ゴロ",
   baseHit: "外野へのヒット",
+  flyBall: "フライ",
+  lineDrive: "ライナー",
+  groundAimHint:
+    "この付近を通る方向を狙います。打球の強さと地面によって、その先まで進む距離が決まります。",
+  airLandingHint:
+    "捕られなかった場合の最初の落下地点を選びます。設定の制限は軌道の予測で確認できます。",
+  trajectory: "打球の予測軌道",
+  projectedLanding: "最初の落下地点",
+  projectedStop: "停止または境界の予測地点",
+  interception: "捕球地点",
+  ballHeight: "打球の高さ",
+  landingConstrained:
+    "指定した落下地点は選んだ打球の設定の範囲外です。軌道の予測で到達可能な落下地点を確認してください。",
+  runningCalibration:
+    "打撃から一塁への駆け抜け：遅い5.3秒・標準4.7秒・速い4.2秒の仮設定。塁を回ると経路が変わります。",
   flyLater: "フライ・段階2Bで追加",
   lineLater: "ライナー・段階2Bで追加",
-  buntLater: "バント・段階2Bで追加",
+  buntLater: "バント・未対応",
   strength: "打球の強さ",
   soft: "弱い",
   normal: "普通",

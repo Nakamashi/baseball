@@ -25,8 +25,9 @@ import {
   validateSettings,
 } from "./dynamic/provider";
 import { message as dynamicMessage } from "./dynamic/messages";
-import { isPlayable } from "./dynamic/geometry";
+import { isPlayable, isFairAim } from "./dynamic/geometry";
 import type { DynamicSettings, DynamicScenario } from "./dynamic/types";
+import { predictTrajectory, isAirborneType } from "./dynamic/trajectory";
 const categories = [...new Set(scenarios.map((s) => s.category))];
 export default function App() {
   const [locale, setLocale] = useState<Locale>(initialLocale);
@@ -53,11 +54,25 @@ export default function App() {
     throws: true,
     runners: true,
     annotations: true,
+    trajectory: false,
   });
   const scenario = viewMode === "dynamic" ? generated : scriptedScenario;
   const pending =
     viewMode === "dynamic" &&
     JSON.stringify(settings) !== JSON.stringify(generated.dynamic.settings);
+  const preview = useMemo(() => {
+    if (
+      !(isAirborneType(settings.ball.type)
+        ? isFairAim(settings.ball.destination)
+        : isPlayable(settings.ball.destination))
+    )
+      return undefined;
+    try {
+      return predictTrajectory(settings);
+    } catch {
+      return undefined;
+    }
+  }, [settings.ball]);
   const playback = usePlayback(scenario);
   const displayedCount = viewMode === "dynamic" ? frameCount() : count;
   function frameCount() {
@@ -79,7 +94,13 @@ export default function App() {
       setGenerationError(error);
       return;
     }
-    setGenerated(new DynamicPlayProvider().generate(settings));
+    try {
+      setGenerated(new DynamicPlayProvider().generate(settings));
+    } catch (error) {
+      console.error("Dynamic play generation failed", error);
+      setGenerationError(dynamicMessage("generationUnavailable"));
+      return;
+    }
     setGenerationError("");
     setPicking(false);
     playback.restart();
@@ -88,7 +109,11 @@ export default function App() {
       ?.scrollIntoView({ block: "start", behavior: "smooth" });
   }
   function pick(point: { x: number; y: number }) {
-    if (!isPlayable(point)) {
+    if (
+      !(isAirborneType(settings.ball.type)
+        ? isFairAim(point)
+        : isPlayable(point))
+    ) {
       setGenerationError(dynamicMessage("invalid"));
       return;
     }
@@ -185,6 +210,7 @@ export default function App() {
         <aside className="left-panel">
           {viewMode === "dynamic" ? (
             <DynamicControls
+              preview={preview}
               settings={settings}
               setSettings={updateSettings}
               locale={locale}
@@ -393,6 +419,21 @@ export default function App() {
               }
               onLocation={viewMode === "dynamic" ? pick : undefined}
               picking={picking}
+              trajectory={viewMode === "dynamic" ? preview : undefined}
+              interception={
+                viewMode === "dynamic" &&
+                !pending &&
+                !generated.dynamic.ball.boundary
+                  ? {
+                      point: generated.dynamic.ball.touchPoint!,
+                      time: generated.dynamic.ball.touchTime!,
+                      start:
+                        generated.startingPositions[
+                          generated.dynamic.ball.fielder
+                        ],
+                    }
+                  : undefined
+              }
             />
           </div>
           <p className="field-hint">{t("fieldHint")}</p>
@@ -462,18 +503,20 @@ export default function App() {
           <details className="layers">
             <summary>{t("layers")}</summary>
             <div>
-              {(Object.keys(layers) as (keyof Layers)[]).map((key) => (
-                <label key={key}>
-                  <input
-                    type="checkbox"
-                    checked={layers[key]}
-                    onChange={() =>
-                      setLayers({ ...layers, [key]: !layers[key] })
-                    }
-                  />
-                  {t(key)}
-                </label>
-              ))}
+              {(Object.keys(layers) as (keyof Layers)[])
+                .filter((key) => viewMode === "dynamic" || key !== "trajectory")
+                .map((key) => (
+                  <label key={key}>
+                    <input
+                      type="checkbox"
+                      checked={layers[key]}
+                      onChange={() =>
+                        setLayers({ ...layers, [key]: !layers[key] })
+                      }
+                    />
+                    {t(key)}
+                  </label>
+                ))}
             </div>
             {viewMode === "dynamic" && (
               <div className="tactics-legend">

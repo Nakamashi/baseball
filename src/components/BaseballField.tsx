@@ -2,12 +2,14 @@ import type { Snapshot, PlayerId, Point } from "../simulation/types";
 import { physicalPolyline } from "../dynamic/geometry";
 import { bases } from "../simulation/geometry";
 import { ui, playText, type Locale } from "../i18n";
+import type { BallTrajectory } from "../dynamic/trajectory";
 export interface Layers {
   labels: boolean;
   movement: boolean;
   throws: boolean;
   runners: boolean;
   annotations: boolean;
+  trajectory?: boolean;
 }
 interface Props {
   frame: Snapshot;
@@ -18,6 +20,8 @@ interface Props {
   destination?: Point;
   onLocation?: (p: Point) => void;
   picking?: boolean;
+  trajectory?: BallTrajectory;
+  interception?: { point: Point; time: number; start: Point };
 }
 export function BaseballField({
   frame,
@@ -28,9 +32,13 @@ export function BaseballField({
   destination,
   onLocation,
   picking,
+  trajectory,
+  interception,
 }: Props) {
   const t = ui(locale),
     text = playText(locale);
+  const flightSamples =
+    frame.phase.ball.kind === "travel" ? frame.phase.ball.samples : undefined;
   const path = (points: Point[]) =>
     (frame.phase.assignments ? physicalPolyline(points) : points)
       .map((p) => `${p.x},${p.y}`)
@@ -147,6 +155,75 @@ export function BaseballField({
           </text>
         </g>
       )}
+      {layers.trajectory && trajectory && (
+        <g className="trajectory-overlay" pointerEvents="none">
+          <polyline
+            points={trajectory.frames
+              .filter(
+                (_, i) => i % 8 === 0 || i === trajectory.frames.length - 1,
+              )
+              .map((f) => `${f.point.x},${f.point.y}`)
+              .join(" ")}
+            fill="none"
+            stroke="#fff9d7"
+            strokeWidth="4"
+            strokeDasharray="8 9"
+            opacity="0.5"
+          />
+          {trajectory.events
+            .filter((e) => e.type === "landing" || e.type === "bounce")
+            .map((e, i) => (
+              <circle
+                key={i}
+                cx={e.point.x}
+                cy={e.point.y}
+                r={i === 0 ? 12 : 7}
+                fill="none"
+                stroke="#ffda86"
+                strokeWidth="3"
+              >
+                <title>
+                  {t("projectedLanding")} · {e.t.toFixed(2)}s
+                </title>
+              </circle>
+            ))}
+          <rect
+            x={trajectory.frames.at(-1)!.point.x - 9}
+            y={trajectory.frames.at(-1)!.point.y - 9}
+            width="18"
+            height="18"
+            fill="none"
+            stroke="#fff9d7"
+            strokeWidth="3"
+          >
+            <title>{t("projectedStop")}</title>
+          </rect>
+          {interception && (
+            <>
+              <polyline
+                points={path([interception.start, interception.point])}
+                fill="none"
+                stroke="#94e2f0"
+                strokeWidth="3"
+                strokeDasharray="5 7"
+              />
+              <circle
+                className="interception-point"
+                cx={interception.point.x}
+                cy={interception.point.y}
+                r="17"
+                fill="none"
+                stroke="#94e2f0"
+                strokeWidth="4"
+              >
+                <title>
+                  {t("interception")} · {interception.time.toFixed(2)}s
+                </title>
+              </circle>
+            </>
+          )}
+        </g>
+      )}
       {frame.phase.movements.map((m) => {
         const runner =
           m.player === "BR" || (m.player.startsWith("R") && m.player !== "RF");
@@ -189,7 +266,11 @@ export function BaseballField({
       })}
       {layers.throws && frame.phase.ball.kind === "travel" && (
         <polyline
-          points={path(frame.phase.ball.path)}
+          points={path(
+            flightSamples
+              ?.filter((_, i) => i % 4 === 0 || i === flightSamples.length - 1)
+              .map((p) => p.point) ?? frame.phase.ball.path,
+          )}
           fill="none"
           stroke="#fff9ad"
           strokeWidth="4"
@@ -294,9 +375,48 @@ export function BaseballField({
           <path d="M-28 0H28 M0 -28V28" stroke="#ffce6a" strokeWidth="2" />
         </g>
       )}
+      {(frame.ballHeight ?? 0) > 0.05 && (
+        <g pointerEvents="none">
+          <ellipse
+            cx={frame.ball.x}
+            cy={frame.ball.y}
+            rx="10"
+            ry="5"
+            fill="#102d25"
+            opacity="0.55"
+          />
+          <line
+            x1={frame.ball.x}
+            y1={frame.ball.y}
+            x2={frame.ball.x + 9}
+            y2={frame.ball.y - 22 - Math.min(75, (frame.ballHeight ?? 0) * 5)}
+            stroke="#fff9d7"
+            strokeDasharray="4 5"
+            opacity="0.5"
+          />
+          <rect
+            x="40"
+            y="38"
+            width="355"
+            height="45"
+            rx="8"
+            fill="#183e2d"
+            opacity="0.94"
+          />
+          <text
+            className="ball-height"
+            x="55"
+            y="70"
+            fill="#fff9d7"
+            fontSize="30"
+          >
+            {t("ballHeight")}: {(frame.ballHeight ?? 0).toFixed(1)} m
+          </text>
+        </g>
+      )}
       <g
         pointerEvents="none"
-        transform={`translate(${frame.ball.x + 9} ${frame.ball.y - 22})`}
+        transform={`translate(${frame.ball.x + 9} ${frame.ball.y - 22 - Math.min(75, (frame.ballHeight ?? 0) * 5)})`}
       >
         <circle r="11" fill="#ffef9b" opacity=".4" />
         <circle r="7" fill="#fff9d7" stroke="#442f24" strokeWidth="1.5" />

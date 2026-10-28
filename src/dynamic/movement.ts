@@ -1,77 +1,194 @@
-import { positions, type Point, type Position } from "../simulation/types";
-import { bases, defaults, metres, mix, mixPhysical } from "./geometry";
+import {
+  positions,
+  type Point,
+  type Position,
+  type TimedPoint,
+} from "../simulation/types";
+import {
+  bases,
+  defaults,
+  metres,
+  mix,
+  mixPhysical,
+  beyond,
+  isPlayable,
+  toward,
+} from "./geometry";
 import { assumptions } from "./conventions";
 import type { BattedBall, DynamicSettings } from "./types";
+import { predictTrajectory, ballPhysics, isAirborneType } from "./trajectory";
+import { sampleTimed } from "../simulation/timedPath";
+import { arrivalTime, speedPlan } from "./locomotion";
 export class MovementEngine {
   field(
     settings: DynamicSettings,
     starting: Record<Position, Point>,
   ): BattedBall {
-    const destination = settings.ball.destination,
-      travelTime =
-        metres(bases.home, destination) /
-        (settings.ball.type === "Base hit"
-          ? assumptions.outfieldBallSpeed
-          : assumptions.ballSpeed)[settings.ball.strength];
-    const pool: Position[] =
-      settings.ball.type === "Base hit" ? ["LF", "CF", "RF"] : [...positions];
-    const opportunities: {
-      id: Position;
-      point: Point;
-      time: number;
-      distance: number;
-    }[] = [];
-    for (const id of pool) {
-      if (settings.ball.type === "Ground ball")
-        for (let i = 2; i <= 40; i++) {
-          const fraction = i / 40,
-            point = mixPhysical(bases.home, destination, fraction),
-            time = travelTime * fraction;
-          if (
-            assumptions.reaction +
-              Math.max(0, metres(starting[id], point) - 0.7) /
-                assumptions.defenderSpeed <=
-            time
-          ) {
-            opportunities.push({
-              id,
-              point,
-              time: time + assumptions.fieldDelay,
-              distance: metres(starting[id], point),
-            });
-            break;
-          }
+    const trajectory = predictTrajectory(settings);
+    const landing = trajectory.events.find(
+      (e) => e.type === "landing" || e.type === "wall",
+    );
+    const boundary = trajectory.events.find(
+      (e) => e.type === "home-run" || e.type === "ground-rule-double",
+    );
+    const candidates: NonNullable<BattedBall["candidates"]> = [];
+    for (const player of positions) {
+      let found = false;
+      const opportunity = (frame: TimedPoint) => {
+        const separation = metres(starting[player], frame.point);
+        const bodyPoint = toward(
+          starting[player],
+          frame.point,
+          Math.max(0, separation - assumptions.fieldingReach),
+        );
+        const distance = metres(starting[player], bodyPoint),
+          ending = Math.min(
+            3,
+            Math.sqrt(2 * assumptions.defenderAcceleration * distance),
+          );
+        const safe =
+          metres(bases.home, bodyPoint) <= 39 ||
+          isPlayable(
+            beyond(
+              starting[player],
+              bodyPoint,
+              (ending * ending) / (2 * assumptions.defenderAcceleration),
+            ),
+          );
+        const arrival = speedPlan(
+          distance,
+          0,
+          assumptions.defenderSpeed,
+          assumptions.defenderAcceleration,
+          assumptions.reaction,
+          safe ? ending : 0,
+        ).duration;
+        return {
+          player,
+          time: frame.t,
+          point: frame.point,
+          bodyPoint,
+          endingSpeed: safe ? ending : 0,
+          height: frame.height ?? 0,
+          arrival,
+          caught:
+            isAirborneType(settings.ball.type) &&
+            (!landing || frame.t < landing.t - 1e-8),
+        };
+      };
+      let previous = 0;
+      for (const frame of trajectory.frames) {
+        if (boundary && frame.t >= boundary.t - 1e-8) break;
+        if (
+          frame.t < assumptions.reaction ||
+          (frame.height ?? 0) > ballPhysics.maximumCatchHeight
+        ) {
+          previous = frame.t;
+          continue;
         }
-      opportunities.push({
-        id,
-        point: destination,
-        distance: metres(starting[id], destination),
-        time:
-          Math.max(
-            travelTime,
-            assumptions.reaction +
-              metres(starting[id], destination) / assumptions.defenderSpeed,
-          ) + assumptions.fieldDelay,
-      });
+        const candidate = opportunity(frame);
+        if (candidate.arrival <= frame.t + 1e-8) {
+          let lo = previous,
+            hi = frame.t;
+          for (let i = 0; i < 18; i++) {
+            const mid = (lo + hi) / 2,
+              at = sampleTimed(trajectory.frames, mid),
+              possible = opportunity(at);
+            if (
+              mid >= assumptions.reaction &&
+              (at.height ?? 0) <= ballPhysics.maximumCatchHeight &&
+              possible.arrival <= mid
+            )
+              hi = mid;
+            else lo = mid;
+          }
+          candidates.push(opportunity(sampleTimed(trajectory.frames, hi)));
+          found = true;
+          break;
+        }
+        previous = frame.t;
+      }
+      if (!found && !boundary) {
+        const end = trajectory.frames.at(-1)!;
+        const arrival = arrivalTime(
+          starting[player],
+          end.point,
+          assumptions.defenderSpeed,
+          assumptions.defenderAcceleration,
+          undefined,
+          assumptions.reaction,
+        );
+        candidates.push({
+          player,
+          time: Math.max(end.t, arrival),
+          point: end.point,
+          height: 0,
+          arrival,
+          caught: false,
+        });
+      }
     }
-    opportunities.sort(
+    candidates.sort(
       (a, b) =>
         a.time - b.time ||
-        a.distance - b.distance ||
-        positions.indexOf(a.id) - positions.indexOf(b.id),
+        metres(starting[a.player], a.point) -
+          metres(starting[b.player], b.point) ||
+        positions.indexOf(a.player) - positions.indexOf(b.player),
     );
-    const best = opportunities[0];
+    const first = candidates[0];
+    const point = first?.point ?? boundary!.point;
+    const fielder =
+      first?.player ??
+      positions
+        .filter((p) => ["LF", "CF", "RF"].includes(p))
+        .sort(
+          (a, b) => metres(starting[a], point) - metres(starting[b], point),
+        )[0];
+    const touch = first?.time ?? boundary!.t;
+    const bodyPoint = first?.bodyPoint ?? point;
+    const stoppingDistance = Math.min(
+      0.9,
+      metres(starting[fielder], bodyPoint),
+    );
+    const moving =
+      first &&
+      (first.endingSpeed ?? 0) > 0 &&
+      arrivalTime(
+        starting[fielder],
+        bodyPoint,
+        assumptions.defenderSpeed,
+        assumptions.defenderAcceleration,
+        undefined,
+        assumptions.reaction,
+      ) >
+        first.time + 1e-7;
+    const pursuitTarget = moving
+      ? beyond(starting[fielder], bodyPoint, stoppingDistance)
+      : bodyPoint;
+    const pursuitDelay = moving ? Math.max(0, first.time - first.arrival) : 0;
     return {
       type: settings.ball.type,
       origin: bases.home,
-      destination,
+      destination: settings.ball.destination,
       strength: settings.ball.strength,
-      path: [bases.home, best.point],
-      travelTime,
-      fieldingTime: best.time,
-      fielder: best.id,
-      fieldingPoint: best.point,
+      path: [bases.home, point],
+      travelTime: trajectory.duration,
+      fieldingTime:
+        touch +
+        (first?.caught ? assumptions.catchTime : assumptions.fieldDelay),
+      fielder,
+      fieldingPoint: point,
       status: "rolling",
+      trajectory,
+      touchTime: touch,
+      touchPoint: point,
+      pursuitTarget,
+      pursuitDelay,
+      caught: first?.caught ?? false,
+      boundary: first
+        ? undefined
+        : (boundary!.type as "home-run" | "ground-rule-double"),
+      candidates,
     };
   }
   starting(settings: DynamicSettings): Record<Position, Point> {

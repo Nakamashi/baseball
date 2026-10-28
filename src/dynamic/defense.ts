@@ -6,6 +6,12 @@ import {
   type Responsibility,
 } from "../simulation/types";
 import { runningTime } from "./runningGeometry";
+import {
+  arrivalTime,
+  planMotion,
+  sampleMotion,
+  zeroVelocity,
+} from "./locomotion";
 import { assumptions, conventions } from "./conventions";
 import {
   bases,
@@ -15,6 +21,7 @@ import {
   mixPhysical,
   clamp,
   isOutfield,
+  isOutfieldHit,
   runnerPoint,
   metresPerUnit,
   isPlayable,
@@ -41,7 +48,12 @@ export function isForced(
   runners: OffensiveRunner[],
   base: number,
 ) {
-  if (base !== r.originBase + 1 || r.status !== "active" || r.progress >= base)
+  if (
+    r.forceRemoved ||
+    base !== r.originBase + 1 ||
+    r.status !== "active" ||
+    r.progress >= base
+  )
     return false;
   return Array.from({ length: r.originBase }, (_, i) => i).every((origin) =>
     runners.some((v) => v.originBase === origin && v.status !== "out"),
@@ -92,6 +104,8 @@ const reasonKeys: Record<AssignmentReason, DynamicMessageKey> = {
   guardThird: "guardThirdWhy",
   guardSpace: "holdWhy",
   complete: "completeWhy",
+  braking: "brakingWhy",
+  boundaryTrack: "boundaryTrackWhy",
 };
 export function assignmentText(a: DefensiveAssignment): Responsibility {
   const vars = {
@@ -113,6 +127,8 @@ export function assignmentText(a: DefensiveAssignment): Responsibility {
     HoldPosition: ["holdAction", "holdNext"],
     PrepareForThrow: ["receiveAction", "coverNext"],
     Communicate: ["holdAction", "holdNext"],
+    Decelerate: ["brakingAction", "holdNext"],
+    TrackBall: ["boundaryTrackAction", "backupNext"],
     RecoverPosition: ["recoverHomeAction", "holdNext"],
     ThrowBall: ["releaseAction", "holdNext"],
     PossessBall: ["ownerAction", "fieldNext"],
@@ -160,6 +176,40 @@ export function trailingPoint(runner: OffensiveRunner): Point {
   return clamp(fromWorld({ x: world.x + offset, y: world.y - offset }));
 }
 export class DefensiveDecisionEngine {
+  motion?: (player: Position) => {
+    position: Point;
+    velocity: Point;
+    reaction: number;
+  };
+  travel(player: Position, from: Point, to: Point) {
+    const state = this.motion?.(player),
+      same = state && metres(state.position, from) < 0.0001;
+    return arrivalTime(
+      from,
+      to,
+      assumptions.defenderSpeed,
+      assumptions.defenderAcceleration,
+      same ? state.velocity : zeroVelocity(),
+      same ? state.reaction : 0,
+    );
+  }
+  release(player: Position, from: Point) {
+    const state = this.motion?.(player),
+      velocity =
+        state && metres(state.position, from) < 0.001
+          ? state.velocity
+          : zeroVelocity();
+    const speed = Math.hypot(velocity.x, velocity.y),
+      brake = speed / assumptions.defenderAcceleration;
+    const p = toWorld(from);
+    return {
+      time: Math.max(assumptions.transfer, brake),
+      point: fromWorld({
+        x: p.x + (velocity.x * brake) / 2,
+        y: p.y + (velocity.y * brake) / 2,
+      }),
+    };
+  }
   choose(
     settings: DynamicSettings,
     ball: BattedBall,
@@ -202,12 +252,25 @@ export class DefensiveDecisionEngine {
               { runners: preparation.runners, outs },
             );
             readyLocations = { ...locations };
-            for (const a of approach.assignments)
-              readyLocations[a.player] = toward(
-                locations[a.player],
-                a.target,
-                assumptions.defenderSpeed * preparation.seconds,
+            for (const a of approach.assignments) {
+              const state = this.motion?.(a.player);
+              const plan = planMotion(
+                {
+                  position: toWorld(locations[a.player]),
+                  velocity: state?.velocity ?? zeroVelocity(),
+                },
+                toWorld(a.target),
+                assumptions.defenderSpeed,
+                assumptions.defenderAcceleration,
+                Math.max(
+                  state?.reaction ?? assumptions.reaction,
+                  a.notBefore ?? 0,
+                ),
               );
+              readyLocations[a.player] = fromWorld(
+                sampleMotion(plan, preparation.seconds).position,
+              );
+            }
           }
           const layout = this.assign(
             settings,
@@ -307,6 +370,42 @@ export class DefensiveDecisionEngine {
         });
       }
     }
+    for (const runner of runners) {
+      if (
+        !active(runner) ||
+        runner.retouchBase === undefined ||
+        runner.progress <= runner.retouchBase + 1e-5
+      )
+        continue;
+      const target = runner.retouchBase as Base;
+      const layout = locations
+        ? this.assign(settings, ball, owner, target, locations, stage, context)
+        : undefined;
+      const elapsed = layout
+        ? this.arrival(layout, locations!, owner)
+        : throwing.arrival(ball.fieldingPoint, bases[target]);
+      const runnerArrival = runningTime(runner, runner.retouchBase),
+        margin = runnerArrival - elapsed;
+      candidates.push({
+        target,
+        runner: runner.id,
+        force: false,
+        appeal: true,
+        runnerArrival,
+        ballArrival: elapsed,
+        margin,
+        viable: margin > 0.05,
+        competitive: false,
+        preventsRun:
+          outs === 2 &&
+          runners.some(
+            (r) => active(r) && r.goal === 4 && runningTime(r, 4) > elapsed,
+          ),
+        score: Math.min(2, margin) + (outs === 2 ? 3 : 1),
+        reason: margin > 0.05 ? "tag-opportunity" : "too-late",
+        route: layout?.route.kind ?? "direct",
+      });
+    }
     const wrap = (decision: ThrowDecision): ThrowDecision => ({
       ...decision,
       alternatives: candidates,
@@ -318,6 +417,13 @@ export class DefensiveDecisionEngine {
         reason: m("targetOverride"),
         override: true,
       });
+    if (settings.throwTarget === "cutoff" && !isOutfieldHit(ball))
+      return wrap({
+        target: "hold",
+        force: false,
+        reason: m("cutoffUnavailable"),
+        override: true,
+      });
     if (settings.throwTarget !== "auto" && settings.throwTarget !== "cutoff") {
       const candidate = candidates
         .filter((c) => c.target === settings.throwTarget)
@@ -325,6 +431,7 @@ export class DefensiveDecisionEngine {
       return wrap({
         target: settings.throwTarget,
         runner: candidate?.runner,
+        appeal: candidate?.appeal,
         force: candidate?.force ?? false,
         margin: candidate?.margin,
         reason: m("targetOverride"),
@@ -346,28 +453,31 @@ export class DefensiveDecisionEngine {
           c.target === 1 &&
           c.runner === "BR" &&
           c.margin > -0.25 &&
-          !isOutfield(ball.fieldingPoint),
+          !isOutfieldHit(ball),
       );
     if (best)
       return wrap({
         target: best.target,
         runner: best.runner,
+        appeal: best.appeal,
         force: best.force,
         margin: best.margin,
         reason: m(
-          best.competitive
-            ? "targetHomeClose"
-            : outs === 2
-              ? "targetSure"
-              : best.target === "home"
-                ? "targetHome"
-                : best.force
-                  ? "targetForce"
-                  : "targetTag",
+          best.appeal
+            ? "appealWhy"
+            : best.competitive
+              ? "targetHomeClose"
+              : outs === 2
+                ? "targetSure"
+                : best.target === "home"
+                  ? "targetHome"
+                  : best.force
+                    ? "targetForce"
+                    : "targetTag",
         ),
         override: false,
       });
-    if (isOutfield(ball.fieldingPoint))
+    if (isOutfieldHit(ball))
       return wrap({
         target: 2,
         force: false,
@@ -389,30 +499,36 @@ export class DefensiveDecisionEngine {
   ) {
     let elapsed = 0,
       from = layout.route.from;
-    for (const player of layout.route.legs) {
+    for (const [legIndex, player] of layout.route.legs.entries()) {
       const point = layout.assignments.find((a) => a.player === player)!.target;
       if (player === owner) {
         elapsed += Math.max(
-          assumptions.transfer + 0.12,
-          metres(from, point) / assumptions.defenderSpeed,
+          0.001,
+          this.travel(player, legIndex === 0 ? locations[player] : from, point),
         );
       } else {
-        const flight =
-          metres(from, point) / assumptions.throwSpeed + assumptions.catchTime;
+        const release =
+          legIndex === 0
+            ? this.release(owner, locations[owner])
+            : { time: assumptions.transfer, point: from };
+        const flight = metres(release.point, point) / assumptions.throwSpeed;
         const receiverTime = Math.max(
           0,
-          metres(locations[player], point) / assumptions.defenderSpeed -
-            elapsed,
+          this.travel(player, locations[player], point) - elapsed,
         );
         const cutoffWait =
           layout.route.kind === "through-cutoff" && layout.cutoff
-            ? metres(locations[layout.cutoff], layout.route.cutoffPoint!) /
-                assumptions.defenderSpeed -
+            ? this.travel(
+                layout.cutoff,
+                locations[layout.cutoff],
+                layout.route.cutoffPoint!,
+              ) -
               metres(from, layout.route.cutoffPoint!) / assumptions.throwSpeed
             : 0;
         elapsed +=
-          Math.max(assumptions.transfer, receiverTime - flight, cutoffWait) +
-          flight;
+          Math.max(release.time, receiverTime - flight, cutoffWait) +
+          flight +
+          assumptions.catchTime;
       }
       if (player === layout.cutoff && layout.route.kind === "relay")
         elapsed += 0.15;
@@ -433,8 +549,15 @@ export class DefensiveDecisionEngine {
     const map = new Map<Position, DefensiveAssignment>(),
       issues: CoverageIssue[] = [];
     const runners = context?.runners ?? [];
-    const outfield = isOutfield(ball.fieldingPoint);
-    const source = ball.fieldingPoint;
+    const source =
+      stage === "contact"
+        ? ball.boundary
+          ? toward(ball.fieldingPoint, bases.home, 2)
+          : (ball.pursuitTarget ?? ball.fieldingPoint)
+        : this.release(owner, locations[owner]).point;
+    const outfield =
+      ["LF", "CF", "RF"].includes(owner) ||
+      metres(bases.home, source) > assumptions.relayDistance;
     const put = (
       player: Position,
       type: DefensiveAssignment["type"],
@@ -445,6 +568,18 @@ export class DefensiveDecisionEngine {
       teammate?: Position,
     ) => {
       if (map.has(player)) return;
+      const motion = this.motion?.(player);
+      if (
+        stage !== "complete" &&
+        context?.outs !== 3 &&
+        (type === "HoldPosition" || type === "Communicate") &&
+        motion &&
+        Math.hypot(motion.velocity.x, motion.velocity.y) > 1e-8
+      ) {
+        type = "Decelerate";
+        reason = "braking";
+        point = this.release(player, locations[player]).point;
+      }
       const a: DefensiveAssignment = {
         player,
         type,
@@ -457,16 +592,19 @@ export class DefensiveDecisionEngine {
           "BallFielded, ThrowStarted, ThrowReceived, RunnerAdvanced, RunnerRetreated, RunnerOut, PlayCompleted",
         explanation: "",
       };
-      a.arrivalTime =
-        metres(locations[player], a.target) / assumptions.defenderSpeed;
+      a.arrivalTime = this.travel(player, locations[player], a.target);
       a.explanation = assignmentText(a).why;
       map.set(player, a);
     };
-    if (stage === "complete" || context?.outs === 3) {
+    if (
+      stage === "complete" ||
+      context?.outs === 3 ||
+      (context?.ballDead && stage !== "contact")
+    ) {
       for (const p of positions)
         put(
           p,
-          p === owner ? "PossessBall" : "HoldPosition",
+          p === owner && !context?.ballDead ? "PossessBall" : "HoldPosition",
           locations[p],
           20,
           "complete",
@@ -480,18 +618,29 @@ export class DefensiveDecisionEngine {
     put(
       owner,
       stage === "contact"
-        ? "FieldBall"
+        ? ball.boundary
+          ? "TrackBall"
+          : "FieldBall"
         : context?.ballInFlight
           ? "ThrowBall"
           : "PossessBall",
-      stage === "contact" ? ball.fieldingPoint : locations[owner],
+      stage === "contact"
+        ? ball.boundary
+          ? toward(ball.fieldingPoint, bases.home, 2)
+          : (ball.pursuitTarget ?? ball.fieldingPoint)
+        : this.release(owner, locations[owner]).point,
       100,
       stage === "contact"
-        ? "primary"
+        ? ball.boundary
+          ? "boundaryTrack"
+          : "primary"
         : context?.ballInFlight
           ? "release"
           : "possession",
     );
+    if (stage === "contact")
+      map.get(owner)!.notBefore =
+        assumptions.reaction + (ball.pursuitDelay ?? 0);
     const liveAt = (base: Base) => {
       const n = baseNumber(base);
       return runners.some(
@@ -526,14 +675,43 @@ export class DefensiveDecisionEngine {
         : target === "hold"
           ? "2B"
           : conventions.cutoff[target];
-    let cutoff = needsCutoff
-      ? ([preferredCutoff, "SS", "2B", "1B", "3B"].find(
+    const cutoffCandidates = needsCutoff
+      ? ([preferredCutoff, "SS", "2B", "1B", "3B"].filter(
           (p) =>
             !map.has(p as Position) &&
             !(target === 1 && p === "1B") &&
             !(target === 3 && p === "3B"),
-        ) as Position | undefined)
-      : undefined;
+        ) as Position[])
+      : [];
+    let cutoff: Position | undefined;
+    if (needsCutoff) {
+      const lane = mixPhysical(source, bases[target as Base], 0.55);
+      const available =
+        (stage === "contact" ? ball.fieldingTime : 0) +
+        assumptions.transfer +
+        metres(source, lane) / assumptions.throwSpeed;
+      const candidates = [...new Set(cutoffCandidates)];
+      candidates.sort(
+        (a, b) =>
+          Number(this.travel(b, locations[b], lane) <= available) -
+            Number(this.travel(a, locations[a], lane) <= available) ||
+          cutoffCandidates.indexOf(a) * 0.25 +
+            this.travel(a, locations[a], lane) -
+            cutoffCandidates.indexOf(b) * 0.25 -
+            this.travel(b, locations[b], lane),
+      );
+      cutoff =
+        context?.fixedCutoff && candidates.includes(context.fixedCutoff)
+          ? context.fixedCutoff
+          : cutoffCandidates[0] &&
+              this.travel(
+                cutoffCandidates[0],
+                locations[cutoffCandidates[0]],
+                lane,
+              ) <= available
+            ? cutoffCandidates[0]
+            : candidates[0];
+    }
     const cover = (
       base: Base,
       priority: number,
@@ -581,16 +759,21 @@ export class DefensiveDecisionEngine {
             : eligible;
       pool.sort(
         (a, b) =>
-          metres(locations[a], bases[base]) / assumptions.defenderSpeed +
+          this.travel(a, locations[a], bases[base]) +
           preferences.indexOf(a) * 0.12 -
-          metres(locations[b], bases[base]) / assumptions.defenderSpeed -
+          this.travel(b, locations[b], bases[base]) -
           preferences.indexOf(b) * 0.12,
       );
-      const player = carry
-        ? owner
-        : base === 1 && owner === "1B" && pool.includes("P")
-          ? "P"
-          : pool[0];
+      const player =
+        base === target &&
+        context?.fixedReceiver &&
+        pool.includes(context.fixedReceiver)
+          ? context.fixedReceiver
+          : carry
+            ? owner
+            : base === 1 && owner === "1B" && pool.includes("P")
+              ? "P"
+              : pool[0];
       if (player) {
         if (carry) map.delete(owner);
         put(player, "CoverBase", bases[base], priority, reason, base);
@@ -722,8 +905,7 @@ export class DefensiveDecisionEngine {
         (receivingId ? context?.receptionTimes?.[receivingId] : undefined) ??
         (stage === "contact" ? ball.fieldingTime : 0) +
           this.arrival(estimateLayout, locations, owner);
-      const travel = (p: Position) =>
-        metres(locations[p], point) / assumptions.defenderSpeed;
+      const travel = (p: Position) => this.travel(p, locations[p], point);
       const candidates = preferred.filter((p) => !map.has(p));
       // A conventional preference must never select a late backup over an
       // eligible defender who can actually reach the receiving lane in time.

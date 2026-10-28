@@ -2,6 +2,7 @@ import type { Dispatch, SetStateAction } from "react";
 import type { DynamicSettings } from "../dynamic/types";
 import { recommendStrategy } from "../dynamic/conventions";
 import { ui, type Locale } from "../i18n";
+import type { BallTrajectory } from "../dynamic/trajectory";
 interface Props {
   settings: DynamicSettings;
   setSettings: Dispatch<SetStateAction<DynamicSettings>>;
@@ -11,6 +12,7 @@ interface Props {
   error?: string;
   picking: boolean;
   setPicking: (value: boolean) => void;
+  preview?: BallTrajectory;
 }
 export function DynamicControls({
   settings,
@@ -21,6 +23,7 @@ export function DynamicControls({
   error,
   picking,
   setPicking,
+  preview,
 }: Props) {
   const t = ui(locale),
     s = settings.state;
@@ -206,9 +209,8 @@ export function DynamicControls({
               }
             >
               <option value="Ground ball">{t("groundBall")}</option>
-              <option value="Base hit">{t("baseHit")}</option>
-              <option disabled>{t("flyLater")}</option>
-              <option disabled>{t("lineLater")}</option>
+              <option value="Line drive">{t("lineDrive")}</option>
+              <option value="Fly ball">{t("flyBall")}</option>
               <option disabled>{t("buntLater")}</option>
             </select>
           </label>
@@ -238,6 +240,18 @@ export function DynamicControls({
             {t(picking ? "picking" : "pickLocation")}
           </button>
           <p className="hint">{t("locationHint")}</p>
+          <p className="hint">
+            {t(
+              settings.ball.type === "Ground ball"
+                ? "groundAimHint"
+                : "airLandingHint",
+            )}
+          </p>
+          {preview?.launch.adjusted && (
+            <p role="status" className="hint">
+              {t("landingConstrained")}
+            </p>
+          )}
           <div className="count-row">
             {(["x", "y"] as const).map((key) => (
               <label key={key}>
@@ -331,9 +345,7 @@ export function DynamicControls({
                   )}
                 </option>
               ))}
-              {settings.ball.type === "Base hit" && (
-                <option value="cutoff">{t("cutoffOnly")}</option>
-              )}
+              <option value="cutoff">{t("cutoffOnly")}</option>
               <option value="hold">{t("holdBall")}</option>
             </select>
           </label>

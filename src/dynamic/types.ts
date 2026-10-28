@@ -7,6 +7,7 @@ import type {
   Position,
   Runner,
 } from "../simulation/types";
+import type { BallTrajectory } from "./trajectory";
 export type Strength = "soft" | "normal" | "hard";
 export type Aggression = "conservative" | "normal" | "aggressive";
 export type RunnerSpeed = "slow" | "average" | "fast";
@@ -26,7 +27,9 @@ export type AssignmentType =
   | "PossessBall"
   | "SupportBase"
   | "TrailRunner"
-  | "Communicate";
+  | "Communicate"
+  | "Decelerate"
+  | "TrackBall";
 export interface DynamicSettings {
   state: GameState & {
     inning: number;
@@ -37,7 +40,7 @@ export interface DynamicSettings {
     strategy: Strategy;
   };
   ball: {
-    type: "Ground ball" | "Base hit";
+    type: "Ground ball" | "Fly ball" | "Line drive";
     destination: Point;
     strength: Strength;
   };
@@ -55,13 +58,32 @@ export interface BattedBall {
   fieldingTime: number;
   fielder: Position;
   fieldingPoint: Point;
-  status: "rolling" | "fielded";
+  status: "rolling" | "fielded" | "caught" | "out-of-play";
+  trajectory?: BallTrajectory;
+  touchTime?: number;
+  touchPoint?: Point;
+  pursuitTarget?: Point;
+  pursuitDelay?: number;
+  caught?: boolean;
+  infieldFly?: boolean;
+  boundary?: "home-run" | "ground-rule-double";
+  candidates?: {
+    player: Position;
+    time: number;
+    point: Point;
+    bodyPoint?: Point;
+    endingSpeed?: number;
+    height: number;
+    arrival: number;
+    caught: boolean;
+  }[];
 }
 export interface DefensiveAssignment {
   player: Position;
   type: AssignmentType;
   target: Point;
   priority: number;
+  notBefore?: number;
   base?: Base;
   teammate?: Position;
   replacesOn: string;
@@ -92,8 +114,13 @@ export type AssignmentReason =
   | "trailing"
   | "guardThird"
   | "guardSpace"
-  | "complete";
+  | "complete"
+  | "braking"
+  | "boundaryTrack";
 export interface AssignmentContext {
+  ballDead?: boolean;
+  fixedCutoff?: Position;
+  fixedReceiver?: Position;
   ballInFlight?: boolean;
   receptionTimes?: Partial<Record<Position, number>>;
   runners: OffensiveRunner[];
@@ -123,6 +150,7 @@ export interface DefensiveLayout {
   issues: CoverageIssue[];
 }
 export interface ThrowCandidate {
+  appeal?: boolean;
   target: Base;
   runner: Runner;
   force: boolean;
@@ -159,6 +187,12 @@ export interface OffensiveRunner {
   speed: number;
   decision: "advance" | "hold" | "retreat";
   status: "active" | "out" | "scored";
+  runVelocity?: number;
+  startDelay?: number;
+  airborneRead?: "tag" | "read" | "contact";
+  forceRemoved?: boolean;
+  retouchBase?: number;
+  afterRetouchGoal?: number;
   approach?: "straight" | "round";
   retiredRunThrough?: boolean;
   firstTurn?: {
@@ -187,7 +221,16 @@ export interface SimulationEvent {
     | "BallFielded"
     | "ThrowStarted"
     | "ThrowReceived"
+    | "ThrowGloveContact"
+    | "BallTouched"
+    | "BallCaught"
+    | "InfieldFly"
+    | "RunnerTaggedUp"
+    | "BallPassedInfield"
+    | "BallBoundary"
+    | "BallBounce"
     | "RunnerAdvanced"
+    | "RunnerBaseTouch"
     | "RunnerRetreated"
     | "RunnerOut"
     | "RunScored"
@@ -204,6 +247,7 @@ export interface SimulationEvent {
   explanation: string;
 }
 export interface ThrowDecision {
+  appeal?: boolean;
   target: Base | "hold";
   runner?: Runner;
   force: boolean;
@@ -215,6 +259,8 @@ export interface ThrowDecision {
   owner?: Position;
 }
 export interface SimulationMetadata {
+  modelVersion: string;
+  contactTime: number;
   settings: DynamicSettings;
   ball: BattedBall;
   events: SimulationEvent[];

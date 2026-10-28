@@ -1,5 +1,7 @@
 import { sample, duration } from "./timeline";
 import { positions, type PlayScenario } from "./types";
+import { metres } from "../dynamic/geometry";
+import { assumptions } from "../dynamic/conventions";
 export function validateScenario(s: PlayScenario): string[] {
   const errors: string[] = [];
   const known = Object.keys(s.startingPositions);
@@ -110,7 +112,15 @@ export function validateScenario(s: PlayScenario): string[] {
           (v) => p.ball.kind === "travel" && v.id === p.ball.receiver,
         )?.position;
         const target = p.ball.path.at(-1)!;
-        if (pos && Math.hypot(pos.x - target.x, pos.y - target.y) > 0.01)
+        if (
+          pos &&
+          (p.assignments
+            ? metres(pos, target) >
+              (p.ball.style === "hit"
+                ? assumptions.fieldingReach + 0.001
+                : 0.001)
+            : Math.hypot(pos.x - target.x, pos.y - target.y) > 0.01)
+        )
           fail("ball misses receiver");
       }
       if (p.ball.style === "throw" && i) {

@@ -2,6 +2,56 @@ import type { Locale } from "../i18n/ui";
 // Generated plays carry typed message references. Formatting belongs to the display
 // boundary, so changing languages never changes paths, decisions or timestamps.
 const english = {
+  generationUnavailable:
+    "This situation could not be resolved under the current model. Adjust the ball aim or type and try again; the previous generated play is preserved.",
+  boundaryTrackAction:
+    "Track the ball toward the wall and prepare for a possible carom.",
+  boundaryTrackWhy:
+    "The projected ball is beyond a controllable interception. Follow it without claiming a catch; maintain coverage until the boundary event is resolved.",
+  catchThirdResult:
+    "The completed catch is the third out. Contact advances do not score runs on this caught ball; no further live play continues.",
+  cutoffUnavailable:
+    "This possession does not need an outfield cutoff. Hold the ball under the cutoff-only override rather than inventing a relay.",
+  retouchAction: "Return to the original base and retouch before any advance.",
+  airReadAction:
+    "Take a controlled read of the line drive; be ready to return on a catch.",
+  tagReadyAction:
+    "Return to or stay at the original base, ready to tag up after first defensive touch.",
+  brakingAction: "Brake smoothly and settle into the supporting position.",
+  brakingWhy:
+    "Your assignment has changed. Use the current momentum to stop safely before changing direction; movement during braking is deliberate.",
+  phaseFlight: "Follow the moving ball",
+  phaseGather: "Secure the ball",
+  phaseCatch: "Complete the catch",
+  phaseAward: "Advance on the boundary award",
+  catchOut:
+    "{runner} is out on the completed catch; the other runners must legally retouch before advancing.",
+  infieldFlyWhy:
+    "Infield fly: fewer than two outs, runners on first and second, and an infielder can make the fair fly catch with ordinary effort. BR is out; runners are not forced and advance at their own risk.",
+  airReadWhy:
+    "Read the airborne ball. Prepare to retouch on a catch; do not treat a possible catch as a ground hit. With two outs, run on contact.",
+  tagUpWhy:
+    "A runner may leave after the first defensive touch, but must first retouch the original base. Compare the return throw with the next-base running time; a catch removes the force.",
+  appealOut:
+    "{runner} is retired on a retouch appeal at {base}, before returning. This is not a force out.",
+  appealWhy:
+    "Return the ball to the original base before the runner retouches it. A retouch appeal is different from a force or a tag of an advancing runner.",
+  movingBallWhy:
+    "{fielder} pursues a reachable point on the moving trajectory. The ball continues past the aim point unless intercepted or slowed by the surface.",
+  gatherWhy:
+    "{fielder} has touched the ball and secures control before preparing a throw. Runners and supporting defenders continue on the same clock.",
+  bounceWhy:
+    "The ball contacts the surface, loses speed and continues bouncing or rolling.",
+  passedWhy:
+    "The ball has passed the infield interception area. Reassess outfield pursuit, cutoffs, base coverage and backups.",
+  homeRunWhy:
+    "The untouched ball clears the modeled fence in flight. Award home to the batter and preceding runners; no defensive throw can retire them on this award.",
+  boundaryDoubleWhy:
+    "The ball clears the fence after bouncing. Award two bases from the runners' original positions; this is not an overthrow or error.",
+  trajectoryLimit:
+    "The requested landing distance is outside this launch profile. The displayed landing point shows the attainable trajectory for the selected strength.",
+  physicsNote:
+    "Provisional junior-high timing profiles: contact-to-first 5.3 / 4.7 / 4.2 s. The modeled fence is {wallHeight} m high. Surface, bounce and throw parameters require local calibration. No errors or rundowns are generated.",
   runnerFinishOut:
     "Finish sprinting through first, then clear the play after the out.",
   runnerFinishOutWhy:
@@ -72,7 +122,7 @@ const english = {
   objective:
     "Secure the ball, protect the occupied bases, and choose a throw that can help the defense.",
   ready:
-    "Read the outs and runners. The destination marker shows where this ball is headed.",
+    "Read the outs and runners. The marker shows the ground-ball aim or requested airborne landing point; it does not stop the ball.",
   contact:
     "{fielder} pursues the ball. Teammates establish base coverage, a throwing lane, and backups.",
   fielded:
@@ -153,11 +203,11 @@ const english = {
   model:
     "Timing uses {baseMetres} m basepaths, a schematic {cornerMetres} m corner / {centreMetres} m centre-field fence, and youth running and throwing assumptions. This is a teaching model, not an outcome prediction.",
   convention:
-    "Team convention: 1B cuts throws home; SS cuts throws to third; the ball-side middle infielder cuts to second. Cover live threats, align backups with the throw, and reassess after each event.",
+    "Team convention: prefer 1B cutting home, SS cutting third, and the ball-side middle infielder cutting second. Use a timely available infielder when the preferred cutoff cannot reach the lane, and cover the vacated bases. Reassess coverage and backups after each event.",
   alternative:
     "Change the throwing target, aggression, strength, or hit location and generate again to compare a different tactical response.",
   unsupported:
-    "This dynamic phase supports fair ground balls and outfield base hits. Fly balls, line drives, bunts and fielding errors remain later-phase features.",
+    "Choose Ground ball, Line drive or Fly ball for the dynamic simulator. Bunts, errors and full rundowns are not generated; authored encyclopedia plays remain available.",
   invalid:
     "Choose a fair-ball location inside the field and valid outs, runners, count and game context.",
   infieldHit:
@@ -165,6 +215,55 @@ const english = {
 };
 export type DynamicMessageKey = keyof typeof english;
 const japanese: Record<DynamicMessageKey, string> = {
+  generationUnavailable:
+    "現在のモデルではこの状況を解決できませんでした。打球の狙いか種類を変えて再生成してください。前の生成済みプレーは保持されています。",
+  boundaryTrackAction: "フェンスへ向かう打球を追い、跳ね返りに備えます。",
+  boundaryTrackWhy:
+    "予測された打球には捕球が間に合いません。捕れたとは扱わず追球し、境界の判定までカバーを維持します。",
+  catchThirdResult:
+    "捕球で第3アウトです。この捕られた打球で、打球と同時に走った走者の得点は認められず、プレーは終了します。",
+  cutoffUnavailable:
+    "この位置では外野からの中継は不要です。「カットまで」の指定では、不要な中継を作らずボールを保持します。",
+  retouchAction: "元の塁へ戻って踏み直してから進塁します。",
+  airReadAction:
+    "ライナーを確認しながら慎重に離塁し、捕られたら戻れるようにします。",
+  tagReadyAction:
+    "元の塁へ戻って構え、野手が最初に触れた後のタッチアップに備えます。",
+  brakingAction: "滑らかに減速し、次の支援位置で構えます。",
+  brakingWhy:
+    "役割が変わりました。今の勢いを考えて安全に減速してから方向を変えます。この間の動きは意図した減速です。",
+  phaseFlight: "動く打球を追う",
+  phaseGather: "ボールを確保",
+  phaseCatch: "捕球を完了",
+  phaseAward: "与えられた塁へ進む",
+  catchOut:
+    "捕球が完了し、{runner}はアウトです。他の走者は正しく元の塁を踏み直してから進塁します。",
+  infieldFlyWhy:
+    "インフィールドフライです。2アウト未満、一・二塁に走者がいて、内野手が普通の守備で捕れるフェアのフライです。BRはアウトとなり、走者のフォースはなくなります。進塁は走者の判断と危険負担で行います。",
+  airReadWhy:
+    "空中の打球を確認します。捕られたら踏み直せるよう準備し、ゴロと同じように決めつけて走りません。2アウトでは打球と同時に走ります。",
+  tagUpWhy:
+    "野手が最初に打球に触れた後、元の塁を踏み直してから離塁できます。次の塁への走塁時間と返球を比べます。捕球が成立するとフォースはなくなります。",
+  appealOut:
+    "{runner}は{base}へ戻る前に、踏み直しのアピールでアウトです。フォースアウトではありません。",
+  appealWhy:
+    "走者が踏み直す前に元の塁へ返球します。踏み直しのアピールはフォースや進塁する走者へのタッチとは異なります。",
+  movingBallWhy:
+    "{fielder}は動く打球に追いつける地点へ向かいます。打球は捕られるか地面で減速するまで、狙った地点を越えて進みます。",
+  gatherWhy:
+    "{fielder}は打球に触れ、送球の準備前に確実に保持します。走者と他の野手も同じ時間軸で動き続けます。",
+  bounceWhy:
+    "打球が地面に当たり、速度を落としながらバウンドまたは転がり続けます。",
+  passedWhy:
+    "打球が内野の捕球可能な区域を抜けました。外野の追球、中継、塁のカバーとバックアップを判断し直します。",
+  homeRunWhy:
+    "地面に触れずに打球が設定のフェンスを越えました。打者と前の走者に本塁までの進塁が与えられ、この進塁で送球によるアウトはありません。",
+  boundaryDoubleWhy:
+    "バウンドした打球がフェンスを越えました。元の位置から2個の塁が与えられます。悪送球やエラーではありません。",
+  trajectoryLimit:
+    "指定した落下距離はこの打球設定の範囲外です。表示の落下地点は、選んだ強さで到達できる軌道を示します。",
+  physicsNote:
+    "中学生向けの仮設定：打撃から一塁まで5.3／4.7／4.2秒。モデルのフェンス高は{wallHeight}mです。地面、バウンド、送球の数値は実測で調整が必要です。エラーや挟殺は生成しません。",
   runnerFinishOut:
     "アウトでも一塁を全力で駆け抜け、その後はプレーを妨げない場所へ離れます。",
   runnerFinishOutWhy:
@@ -230,7 +329,8 @@ const japanese: Record<DynamicMessageKey, string> = {
   title: "動的プレー・{fielder}・{ball}",
   objective:
     "打球を確実に処理し、必要な塁を守り、守備に役立つ送球を選びましょう。",
-  ready: "アウト数と走者を確認します。目標マークが打球の向かう位置を示します。",
+  ready:
+    "アウト数と走者を確認します。マークはゴロの狙い、または空中の打球の希望落下地点です。打球を止める位置ではありません。",
   contact:
     "{fielder}が打球を追います。味方は塁のカバー、中継、バックアップの位置に入ります。",
   fielded:
@@ -305,11 +405,11 @@ const japanese: Record<DynamicMessageKey, string> = {
   model:
     "塁間{baseMetres}m、両翼{cornerMetres}m・中堅{centreMetres}mの模式図と、少年野球向けの走力・送球の仮定で時間を計算します。学習用のモデルであり、試合結果の予測ではありません。",
   convention:
-    "このチームの分担：本塁へは1B、三塁へはSS、二塁へは打球側の二遊間がカット役です。必要な塁を守り、送球に合わせてバックアップし、状況の変化ごとに判断し直します。",
+    "基本の分担：本塁へは1B、三塁へはSS、二塁へは打球側の二遊間をカット役に優先します。間に合わない場合は送球線へ入れる内野手に任せ、空いた塁をカバーします。状況の変化ごとにカバーとバックアップを判断し直します。",
   alternative:
     "送球先、走者の積極性、打球の強さ、位置を変えて再生成し、別の守備対応を比べましょう。",
   unsupported:
-    "この段階ではフェアのゴロと外野へのヒットに対応します。フライ、ライナー、バント、守備のミスは今後の段階で追加します。",
+    "動的シミュレーターではゴロ・ライナー・フライを選んでください。バント、エラー、完全な挟殺は生成しません。プレー図鑑の例も利用できます。",
   invalid:
     "グラウンド内のフェアの位置と、正しいアウト数・走者・カウント・試合状況を選んでください。",
   infieldHit:
@@ -357,7 +457,11 @@ export function formatDynamic(
       return locale === "ja"
         ? value === "Ground ball"
           ? "ゴロ"
-          : "外野へのヒット"
+          : value === "Fly ball"
+            ? "フライ"
+            : value === "Line drive"
+              ? "ライナー"
+              : "外野へのヒット"
         : String(value);
     return String(value);
   });
