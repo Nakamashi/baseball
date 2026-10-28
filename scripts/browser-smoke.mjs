@@ -1,0 +1,51 @@
+import { chromium } from 'playwright-core';
+import assert from 'node:assert/strict';
+const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
+const page=await browser.newPage({viewport:{width:1440,height:1100}});
+const errors=[];page.on('pageerror',e=>errors.push(e.message));
+try {
+ await page.goto(process.env.APP_URL||'http://127.0.0.1:5173');
+ await page.getByRole('heading',{name:'Every position. A purpose.'}).waitFor();
+ assert.equal(await page.locator('.scenario-card').count(),24);
+ assert.equal(await page.locator('svg .player').count(),10);
+ await page.locator('svg .player').filter({hasText:/^RF$/}).click();
+ assert.match(await page.locator('.focus-action').innerText(),/Back up/);
+ await page.getByRole('button',{name:'Next phase',exact:true}).click();
+ assert.equal(await page.locator('.phase-panel h2').innerText(),'Contact');
+ await page.getByRole('button',{name:'▶ Play',exact:true}).click();
+ await page.waitForTimeout(250);
+ await page.getByRole('button',{name:'Ⅱ Pause',exact:true}).click();
+ const paused=await page.getByRole('slider',{name:'Play timeline'}).inputValue();
+ await page.waitForTimeout(180);
+ assert.equal(await page.getByRole('slider',{name:'Play timeline'}).inputValue(),paused);
+ await page.getByRole('button',{name:'Restart play',exact:true}).click();
+ assert.equal(await page.getByRole('slider',{name:'Play timeline'}).inputValue(),'0');
+ await page.getByRole('button',{name:'2 outs',exact:true}).click();
+ assert.match(await page.locator('.notice').first().innerText(),/Select a compatible/);
+ assert.ok(await page.getByRole('button',{name:'▶ Play',exact:true}).isDisabled());
+ await page.getByRole('button',{name:'Clear filters',exact:false}).click();
+ await page.getByRole('searchbox',{name:'Search plays'}).fill('Turn two');
+ await page.locator('.scenario-card').click();
+ await page.getByRole('searchbox',{name:'Search plays'}).fill('');
+ assert.equal(await page.locator('svg .player').count(),11);
+ const timeline=page.getByRole('slider',{name:'Play timeline'});
+ await timeline.fill(await timeline.getAttribute('max'));
+ assert.match(await page.locator('.scoreboard').innerText(),/OUTS\s*2/);
+ await timeline.fill('0');
+ assert.match(await page.locator('.scoreboard').innerText(),/OUTS\s*0/);
+ await page.getByRole('button',{name:'Clear filters',exact:false}).click();
+ await page.screenshot({path:'/tmp/baseball-desktop.png',fullPage:true});
+ for(const card of await page.locator('.scenario-card').all()){
+  await card.click();const slider=page.getByRole('slider',{name:'Play timeline'});await slider.fill(await slider.getAttribute('max'));assert.equal(await page.locator('.phase-panel h2').innerText(),'Outcome');
+ }
+ await page.setViewportSize({width:390,height:844});
+ await page.getByRole('button',{name:'Restart play',exact:true}).click();
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+ await page.locator('.field').scrollIntoViewIfNeeded();
+ const box=await page.locator('.field').boundingBox();assert.ok(box.width>=330&&box.width<=390);
+ await page.getByRole('button',{name:'Next phase',exact:true}).click();
+ assert.equal(await page.locator('.phase-panel h2').innerText(),'Contact');
+ await page.screenshot({path:'/tmp/baseball-mobile.png',fullPage:true});
+ assert.deepEqual(errors,[]);
+ console.log('Browser smoke passed: catalogue, all 24 outcomes, player focus, play/pause, restart, seek, compatibility gating, desktop and mobile layout.');
+} finally {await browser.close()}
