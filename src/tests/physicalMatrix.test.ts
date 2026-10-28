@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import { DynamicPlayProvider, defaultSettings } from "../dynamic/provider";
 import { validateScenario } from "../simulation/scenarioValidation";
 import { sample, duration } from "../simulation/timeline";
@@ -8,6 +8,8 @@ import { ballPhysics } from "../dynamic/trajectory";
 import { metres } from "../dynamic/geometry";
 import { formatDynamic } from "../dynamic/messages";
 const provider = new DynamicPlayProvider();
+// Keep worker reporting responsive without reducing the physical matrix.
+afterEach(() => new Promise<void>((resolve) => setTimeout(resolve, 0)));
 describe("physical and baseball invariants across 576 trajectories", () => {
   it.each(
     (["Ground ball", "Line drive", "Fly ball"] as const).flatMap((type) =>

@@ -1,5 +1,5 @@
 import { advanceProgress, runningAdvance } from "../dynamic/runningGeometry";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import { defensiveAuditCases } from "../dynamic/auditCases";
 import { DynamicPlayProvider, defaultSettings } from "../dynamic/provider";
 import {
@@ -29,6 +29,9 @@ import type { DynamicScenario, DynamicSettings } from "../dynamic/types";
 const provider = new DynamicPlayProvider(),
   engine = new DefensiveDecisionEngine();
 const cases = defensiveAuditCases();
+// These CPU-heavy matrices can occupy a worker for over a minute on CI.
+// Yield between tests so Vitest can deliver its queued IPC/report updates.
+afterEach(() => new Promise<void>((resolve) => setTimeout(resolve, 0)));
 const assignment = (s: DynamicScenario, player: Position, phase = "Contact") =>
   s.phases
     .find((p) => p.title === phase)!
