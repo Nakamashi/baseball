@@ -19,7 +19,8 @@ A phase has a start and duration in seconds, movement paths beginning at the pre
 3. Call `assign` with meaningful action, why, and supporting responsibility for each player whose assignment differs from the defaults. Runners need their own instructions. Stationary players still have a monitoring or contingency responsibility.
 4. Add `ready`, `contact`, `held`, `throwTo` and `finish` phases as appropriate. The author helper prefixes each movement with the last authored location and snapshots teaching text/state. `contact` can move any number of players simultaneously. Use arrays of intermediate points for routes or runners who must touch a base before continuing.
 5. Assign changes to outs, occupancy, runs and statuses in the receive/catch phase. Mark retired/scored runners and remove them from occupancy. Never put two runners on one base. Clear occupancy at the third out. A failed relay should show the batter safe, not a second out.
-6. Run `validateScenario`, `npm test`, and `npm run build`. Add outcome-specific assertions for unusual rule cases. Scrub through each transition in the browser and inspect all nine defenders. Check that every throw arrives at the displayed receiver.
+6. Add Japanese translations for every new teaching sentence in `src/i18n/ja-playbook.ts` (or a translated reusable template in `src/i18n/index.ts`). Follow [translation maintenance](TRANSLATIONS.md).
+7. Run `validateScenario`, `npm test`, and `npm run build`. Add outcome-specific assertions for unusual rule cases. Scrub through each transition in the browser and inspect all nine defenders. Check that every throw arrives at the displayed receiver.
 
 For example, a route from first to third must include `bases[2]` as an intermediate waypoint. Do not draw a direct first-to-third line across the infield. A tag-up route must start only in a phase after the catch, with the runner still at the original base at catch time.
 
@@ -27,7 +28,7 @@ The helper methods are conveniences, not another simulation engine. Ground balls
 
 ## Provider boundary
 
-`PlayProvider.resolve(gameState, ballEvent)` returns either a supported list or an explicit unsupported reason. `ScriptedPlayProvider` compares outs, exact runner occupancy, ball type and direction. Count is intentionally ignored. Situation controls never modify a running script; they constrain the catalogue. An incompatible selection blocks playback until the user selects a compatible scenario.
+`PlayProvider.resolve(gameState, ballEvent)` returns either a supported list or an explicit unsupported reason. `ScriptedPlayProvider` compares outs, exact runner occupancy, ball type and direction. Count is intentionally ignored. The UI guides category → supported starting situation → authored play. Choices are derived from the library, and changing filters selects a compatible play when required. Arbitrary unsupported base/out controls are not offered in Version 1. The strict provider API remains available for future integrations.
 
 A future dynamic provider should produce and validate the same schema, including explanations, outcomes and explicit possession. It can implement baseball rules and generated paths behind this boundary without modifying `sample`, `BaseballField` or `usePlayback`. UI integration needs to replace the provider instance and offer generated results; it should not put baseball rules inside event handlers.
 
