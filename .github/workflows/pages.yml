@@ -23,7 +23,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npm test
+      - run: npm test -- --reporter=default --reporter=github-actions
       - run: npm run build
       - name: Preserve custom domain
         run: if [ -f CNAME ]; then cp CNAME dist/CNAME; fi
