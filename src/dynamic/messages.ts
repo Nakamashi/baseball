@@ -2,6 +2,30 @@ import type { Locale } from "../i18n/ui";
 // Generated plays carry typed message references. Formatting belongs to the display
 // boundary, so changing languages never changes paths, decisions or timestamps.
 const english = {
+  runnerFinishOut:
+    "Finish sprinting through first, then clear the play after the out.",
+  runnerFinishOutWhy:
+    "The out is already recorded. Completing the sprint does not earn a base or restore your status; keep clear of the live defense.",
+  runnerContactReadWhy:
+    "Read the ground ball beyond the pitcher. The estimated retrieval and throw allow a scoring attempt; the defense can still change the play.",
+  runnerFreezeWhy:
+    "With fewer than two outs, read the ground ball before risking home. Freeze on a ball at P, C or 3B; a force or two-out contact changes that responsibility.",
+  runnerContactWhy:
+    "Aggressive contact play: break for home on this ground ball past the pitcher or to a middle/first baseman. This is a risk; a ready defense can retire you. Freeze on a ball at P, C or 3B unless forced or there are two outs.",
+  runnerHoldWhy:
+    "The next base does not have a sufficient timing window, or a preceding runner needs it. Take the available bases and read the defense rather than assume an extra base.",
+  runnerOverrun:
+    "Sprint through first, slow down beyond the bag, and look for the ball.",
+  runnerOverrunWhy:
+    "On an infield play, run through first without attempting second, then return promptly. This model does not generate overthrows or errors.",
+  runnerRound:
+    "Round first, read the ball and coach, and prepare to continue or return.",
+  runnerRoundWhy:
+    "On an outfield hit, use a curved approach and a controlled turn. Rounding first is different from the protected straight run-through; return if no extra base is available.",
+  runnerReturnFirst:
+    "Return to first after reading the defense; no extra base is taken.",
+  retrieve:
+    "The ball has reached the fielding area. {fielder} retrieves and gathers it while runners read the available time.",
   targetHomeClose:
     "The ball can reach home before the runner, but tag timing is close. Challenge the scoring attempt; the result is uncertain.",
   recoverHomeAction:
@@ -109,7 +133,7 @@ const english = {
   runnerHold:
     "Stay at {base} and read the ball. Do not pass a preceding runner.",
   runnerRetreat:
-    "Return along the basepath to {base}; the cutoff has made the extra-base attempt unsafe.",
+    "Return along the basepath to {base}; the developing defense has made the extra-base attempt unsafe.",
   runnerOut: "You are out. Stay clear of the continuing play.",
   runnerScored:
     "You have reached home. The run still depends on the third-out rules.",
@@ -127,7 +151,7 @@ const english = {
   close:
     "Close play: the estimated arrivals are within about half a second. Actual execution could change the result.",
   model:
-    "Timing uses a 27.43 m basepath, youth running and throwing assumptions, and deterministic estimates. This is a teaching model, not an outcome prediction.",
+    "Timing uses {baseMetres} m basepaths, a schematic {cornerMetres} m corner / {centreMetres} m centre-field fence, and youth running and throwing assumptions. This is a teaching model, not an outcome prediction.",
   convention:
     "Team convention: 1B cuts throws home; SS cuts throws to third; the ball-side middle infielder cuts to second. Cover live threats, align backups with the throw, and reassess after each event.",
   alternative:
@@ -141,6 +165,28 @@ const english = {
 };
 export type DynamicMessageKey = keyof typeof english;
 const japanese: Record<DynamicMessageKey, string> = {
+  runnerFinishOut:
+    "アウトでも一塁を全力で駆け抜け、その後はプレーを妨げない場所へ離れます。",
+  runnerFinishOutWhy:
+    "すでにアウトが記録されています。走り切っても塁を得たりアウトが取り消されたりはしません。続く守備を妨げないようにします。",
+  runnerContactReadWhy:
+    "投手を抜けるゴロを確認します。捕球と送球の見込み時間から本塁を狙えますが、守備の対応で状況は変わります。",
+  runnerFreezeWhy:
+    "2アウト未満ではゴロを確認してから本塁を狙います。P・C・3Bへの打球ではまず止まります。フォースや2アウトでは役割が変わります。",
+  runnerContactWhy:
+    "積極的なコンタクトプレーです。投手を抜けるゴロや二遊間・一塁手へのゴロで本塁へ走ります。危険もあり、準備のできた守備にはアウトにされます。P・C・3Bへの打球では、フォースや2アウトの場合を除き、まず止まって確認します。",
+  runnerHoldWhy:
+    "次の塁へ進む時間の余裕が足りないか、前の走者がその塁を必要としています。進める塁まで走り、さらに進めるとは決めつけず守備を確認します。",
+  runnerOverrun:
+    "一塁を全力で駆け抜け、ベースの先で減速してボールを確認します。",
+  runnerOverrunWhy:
+    "内野のプレーでは二塁を狙わず一塁を駆け抜け、速やかに戻ります。このモデルでは悪送球やエラーは発生しません。",
+  runnerRound: "一塁を回り、ボールとコーチを見て、進塁か帰塁を判断します。",
+  runnerRoundWhy:
+    "外野へのヒットでは曲線で一塁に入り、勢いを調整して回ります。駆け抜け時の保護とは異なり、進めないときは一塁へ戻ります。",
+  runnerReturnFirst: "守備を確認して一塁へ戻ります。追加の進塁はしません。",
+  retrieve:
+    "ボールが捕球地点に達しました。{fielder}が追いついて確保する間、走者は進塁できる時間を判断します。",
   targetHomeClose:
     "ボールは走者より先に本塁へ届く見込みですが、タッチのタイミングは際どい状況です。生還を阻止するため、本塁を狙います。結果は確実ではありません。",
   recoverHomeAction: "捕手の位置へ戻り、本塁を確認して味方に指示します。",
@@ -238,7 +284,7 @@ const japanese: Record<DynamicMessageKey, string> = {
   runnerHold:
     "{base}にとどまり、打球を確認します。前の走者を追い越してはいけません。",
   runnerRetreat:
-    "中継で追加進塁が危険になったため、走路を戻って{base}へ帰ります。",
+    "守備の状況が変わり追加進塁が危険になったため、走路を戻って{base}へ帰ります。",
   runnerOut: "あなたはアウトです。続いているプレーを妨げないようにしましょう。",
   runnerScored:
     "本塁に到達しました。得点が認められるかは第3アウトの規則にもよります。",
@@ -257,7 +303,7 @@ const japanese: Record<DynamicMessageKey, string> = {
   close:
     "際どいプレーです。到達時間の差は約0.5秒以内で、実際の結果は技術や動作で変わります。",
   model:
-    "塁間27.43mと少年野球向けの走力・送球の仮定で時間を計算します。学習用のモデルであり、試合結果の予測ではありません。",
+    "塁間{baseMetres}m、両翼{cornerMetres}m・中堅{centreMetres}mの模式図と、少年野球向けの走力・送球の仮定で時間を計算します。学習用のモデルであり、試合結果の予測ではありません。",
   convention:
     "このチームの分担：本塁へは1B、三塁へはSS、二塁へは打球側の二遊間がカット役です。必要な塁を守り、送球に合わせてバックアップし、状況の変化ごとに判断し直します。",
   alternative:

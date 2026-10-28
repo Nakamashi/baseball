@@ -1,5 +1,6 @@
 import { sample, duration } from "../simulation/timeline";
 import { positions } from "../simulation/types";
+import { assumptions } from "./conventions";
 import { metres } from "./geometry";
 import { assignmentText } from "./defense";
 import { formatDynamic } from "./messages";
@@ -21,12 +22,25 @@ export function inspectDefense(scenario: DynamicScenario, requestedTime = 0) {
     phase: snapshot.phase.title,
     state: snapshot.state,
     settings: scenario.dynamic.settings,
+    fieldDimensions: {
+      baseMetres: assumptions.baseMetres,
+      ...assumptions.field,
+    },
+    runners: frame.runners.map((r) => ({
+      ...r,
+      position: snapshot.players.find((p) => p.id === r.id)?.position,
+      instruction: r.plan ? translate(r.plan.reason) : undefined,
+    })),
     ball: {
       ...scenario.dynamic.ball,
       position: snapshot.ball,
       owner: snapshot.owner,
       status: snapshot.state.ballStatus,
       selectedPrimaryFielder: scenario.dynamic.ball.fielder,
+      destinationMetresFromHome: metres(
+        scenario.dynamic.ball.origin,
+        scenario.dynamic.ball.destination,
+      ),
     },
     preferredThrow: decision
       ? { ...decision, reason: translate(decision.reason) }

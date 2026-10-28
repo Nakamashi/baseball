@@ -12,3 +12,5 @@
 - Use the existing checkout. Cloud tasks are isolated; do not create worktrees unless explicitly requested.
 
 - Defensive convention changes must update `docs/DEFENSIVE_AUDIT.md` and the all-nine tactical tests. Preserve the distinction between deliberate holding and a missing job; use `npm run audit:defense` to inspect routes, alternatives, priorities and late/unfulfilled coverage. Do not claim a modeled backup is ready when its receiving deadline says otherwise.
+
+- Dynamic field distances use the home ground: 27.43 m basepaths, 90 m corners, 120 m center. Keep `toWorld`/`fromWorld`, physical interpolation, throw timing and runner route lengths consistent. Read `docs/BASERUNNING.md` before changing those assumptions; do not force extra bases or plate outcomes to preserve old screen-coordinate examples. Preserve run-through versus rounding legality and Japanese runner instructions.

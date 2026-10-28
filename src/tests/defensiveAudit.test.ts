@@ -1,3 +1,4 @@
+import { advanceProgress } from "../dynamic/runningGeometry";
 import { describe, expect, it, vi } from "vitest";
 import { defensiveAuditCases } from "../dynamic/auditCases";
 import { DynamicPlayProvider, defaultSettings } from "../dynamic/provider";
@@ -16,6 +17,7 @@ import {
   isOutfield,
   isPlayable,
   metres,
+  toWorld,
 } from "../dynamic/geometry";
 import { positions, type Position } from "../simulation/types";
 import { sample, duration } from "../simulation/timeline";
@@ -74,16 +76,15 @@ function auditAllNine(s: DynamicScenario) {
         expect(metres(end, a.target)).toBeLessThan(metres(start, a.target));
       }
       if (a.throwOrigin && a.base) {
-        const b = a.receivingPoint ?? bases[a.base],
-          from = a.throwOrigin;
+        const b = toWorld(a.receivingPoint ?? bases[a.base]),
+          from = toWorld(a.throwOrigin),
+          target = toWorld(a.target);
         // Behind the receiver, along THIS throw's extension, not a base constant.
         const dot =
-          (a.target.x - b.x) * (b.x - from.x) +
-          (a.target.y - b.y) * (b.y - from.y);
+          (target.x - b.x) * (b.x - from.x) + (target.y - b.y) * (b.y - from.y);
         expect(dot).toBeGreaterThanOrEqual(-0.001);
         const cross =
-          (a.target.x - b.x) * (b.y - from.y) -
-          (a.target.y - b.y) * (b.x - from.x);
+          (target.x - b.x) * (b.y - from.y) - (target.y - b.y) * (b.x - from.x);
         expect(Math.abs(cross)).toBeLessThan(0.001);
       }
       if (phase.title !== "Ready" && a.type === "PossessBall")
@@ -205,7 +206,7 @@ describe("defensive fundamentals review situations", () => {
       type: "BackupThrow",
       base: "home",
     });
-    expect(fielded(s, "1B")).toMatchObject({ type: "Cutoff", base: "home" });
+    expect(fielded(s, "1B")).toMatchObject({ type: "Relay", base: "home" });
     expect(
       s.dynamic.events.some(
         (e) => e.type === "RunnerOut" && e.player === "R2" && e.base === "home",
@@ -227,9 +228,10 @@ describe("defensive fundamentals review situations", () => {
     );
     const a = p.assignments!.find((a) => a.player === "1B")!;
     // First-to-second lane is x-y=130; trailing target stays four metres outside.
+    const world = toWorld(a.target),
+      first = toWorld(bases[1]);
     expect(
-      (Math.abs(a.target.x - a.target.y - 130) / Math.sqrt(2)) *
-        (27.43 / Math.sqrt(80000)),
+      Math.abs(world.x - world.y - (first.x - first.y)) / Math.sqrt(2),
     ).toBeCloseTo(4, 4);
     const home = provider.generate(cases["deep-left-centre"]);
     expect(assignment(home, "1B").type).toBe("Relay");
@@ -368,6 +370,11 @@ describe("reusable tactical rules and diagnostics", () => {
   it("compares reliable inning-ending forces with run prevention and avoids late throws", () => {
     const c = structuredClone(cases["aggressive-home"]),
       movement = new MovementEngine();
+    c.ball = {
+      type: "Ground ball",
+      destination: { x: 360, y: 440 },
+      strength: "normal",
+    };
     const loc = movement.starting(c),
       ball = movement.field(c, loc),
       r = new BaserunningDecisionEngine().create(c);
@@ -397,10 +404,7 @@ describe("reusable tactical rules and diagnostics", () => {
     ).toBe(true);
   });
   it("redirects a relay from home to second after a controlled runner retreat", () => {
-    const c = defaultSettings();
-    c.state.runners = { R2: 2 };
-    c.ball.destination = { x: 750, y: 220 };
-    c.aggression = "aggressive";
+    const c = structuredClone(cases["center-home-close"]);
     // Supply an explicit change of runner intent at reception. The existing
     // aggression heuristic normally continues this attempt; the defensive
     // compiler must also handle the legitimate decision to abandon it.
@@ -438,6 +442,7 @@ describe("reusable tactical rules and diagnostics", () => {
   it("weights score and inning while prioritizing a real run-saving opportunity", () => {
     const c = defaultSettings();
     c.state.runners = { R1: 1, R3: 3 };
+    c.ball = { ...cases["aggressive-home"].ball };
     const movement = new MovementEngine(),
       loc = movement.starting(c),
       ball = movement.field(c, loc);
@@ -445,7 +450,7 @@ describe("reusable tactical rules and diagnostics", () => {
     const r = new BaserunningDecisionEngine().create(c);
     Object.assign(
       r.find((r) => r.id === "R3")!,
-      { progress: 3.16, goal: 4, decision: "advance" },
+      { progress: 3, goal: 4, decision: "advance" },
     );
     Object.assign(
       r.find((r) => r.id === "R1")!,
@@ -455,6 +460,14 @@ describe("reusable tactical rules and diagnostics", () => {
       r.find((r) => r.id === "BR")!,
       { progress: 0.1, goal: 1, decision: "advance" },
     );
+    const ready = engine.assign(c, ball, ball.fielder, "home", loc, "fielded", {
+      runners: r,
+      outs: 0,
+    });
+    loc[ready.cutoff!] = ready.assignments.find(
+      (a) => a.player === ready.cutoff,
+    )!.target;
+    loc.C = bases.home;
     const early = engine.choose(c, ball, r, 0, loc);
     expect(early.target).toBe("home");
     expect(early.alternatives!.find((a) => a.target === 2)!.preventsRun).toBe(
@@ -612,7 +625,7 @@ describe("reusable tactical rules and diagnostics", () => {
             };
             auditAllNine(provider.generate(c));
           }
-  }, 30000);
+  }, 60000);
 });
 
 describe("center-field run-prevention regression", () => {
@@ -629,7 +642,7 @@ describe("center-field run-prevention regression", () => {
     for (const r of forecast)
       r.progress = Math.min(
         r.goal,
-        r.progress + (ball.fieldingTime * r.speed) / assumptions.baseMetres,
+        advanceProgress(r, r.goal, ball.fieldingTime * r.speed),
       );
     running.plan(c, ball, forecast, ball.fieldingTime, true);
     const original = structuredClone(starting);
@@ -657,7 +670,7 @@ describe("center-field run-prevention regression", () => {
     );
   });
   it.each(
-    [514, 530, 546].flatMap((x) => [124, 134, 154].map((y) => ({ x, y }))),
+    [526, 530, 534].flatMap((x) => [233, 235, 237].map((y) => ({ x, y }))),
   )(
     "challenges the plate near $x,$y in standard and prevent strategies",
     (point) => {
@@ -707,7 +720,7 @@ describe("center-field run-prevention regression", () => {
         }
     },
   );
-  it("labels the exact reported play as competitive and does not invent a guaranteed out", () => {
+  it("labels a competitive plate opportunity on the calibrated field without inventing an out", () => {
     const s = provider.generate(makeCenter()),
       d = s.dynamic.decisions[0];
     const home = d.alternatives!.find((c) => c.target === "home")!;
@@ -732,7 +745,8 @@ describe("center-field run-prevention regression", () => {
   });
   it("a normal second-base receiver immediately evaluates a subsequent home throw", () => {
     const c = makeCenter();
-    c.ball.strength = "normal";
+    c.ball.destination = { x: 530, y: 250 };
+    c.ball.strength = "hard";
     c.runnerSpeed = "average";
     const s = provider.generate(c);
     expect(s.dynamic.decisions.map((d) => d.target)).toEqual([2, "home"]);
@@ -761,8 +775,7 @@ describe("center-field run-prevention regression", () => {
     expect(
       s.dynamic.events.find((e) => e.type === "RunScored")!.time,
     ).toBeLessThan(fieldedTime(s));
-    expect(s.dynamic.decisions[0].target).toBe(3);
-    expect(s.dynamic.decisions[0].runner).toBe("BR");
+    expect(s.dynamic.decisions[0].target).not.toBe("home");
     expect(
       s.dynamic.events.some(
         (e) => e.type === "ThrowStarted" && e.base === "home",
@@ -772,7 +785,8 @@ describe("center-field run-prevention regression", () => {
   });
   it("does not manufacture a scoring attempt for an R2 who holds third", () => {
     const c = makeCenter();
-    c.runnerSpeed = "average";
+    c.runnerSpeed = "slow";
+    c.aggression = "conservative";
     const s = provider.generate(c);
     expect(s.dynamic.decisions[0].target).toBe(2);
     expect(

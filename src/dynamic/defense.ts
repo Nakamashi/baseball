@@ -5,19 +5,22 @@ import {
   type Position,
   type Responsibility,
 } from "../simulation/types";
+import { runningTime } from "./runningGeometry";
 import { assumptions, conventions } from "./conventions";
 import {
   bases,
   defaults,
   beyond,
   metres,
-  mix,
+  mixPhysical,
   clamp,
   isOutfield,
   runnerPoint,
   metresPerUnit,
   isPlayable,
   toward,
+  toWorld,
+  fromWorld,
 } from "./geometry";
 import { message as m, type DynamicMessageKey } from "./messages";
 import type {
@@ -152,8 +155,9 @@ export function backupPoint(
 /** Outside the first-to-second running lane, behind (never on top of) BR. */
 export function trailingPoint(runner: OffensiveRunner): Point {
   const p = runnerPoint(Math.max(1, Math.min(1.9, runner.progress - 0.2)));
-  const offset = conventions.trailSeparation / metresPerUnit / Math.sqrt(2);
-  return clamp({ x: p.x + offset, y: p.y - offset });
+  const world = toWorld(p);
+  const offset = conventions.trailSeparation / Math.sqrt(2);
+  return clamp(fromWorld({ x: world.x + offset, y: world.y - offset }));
 }
 export class DefensiveDecisionEngine {
   choose(
@@ -217,8 +221,7 @@ export class DefensiveDecisionEngine {
           route = layout.route.kind;
           elapsed = this.arrival(layout, readyLocations, owner);
         }
-        const runnerArrival =
-          ((next - runner.progress) * assumptions.baseMetres) / runner.speed;
+        const runnerArrival = runningTime(runner, next);
         const margin =
           runnerArrival - elapsed - (force ? 0 : assumptions.tagTime);
         const viable =
@@ -263,11 +266,7 @@ export class DefensiveDecisionEngine {
         const scoring = runners.filter(
           (r) => active(r) && r.goal === 4 && r.decision !== "retreat",
         );
-        const firstRun = Math.min(
-          ...scoring.map(
-            (r) => ((4 - r.progress) * assumptions.baseMetres) / r.speed,
-          ),
-        );
+        const firstRun = Math.min(...scoring.map((r) => runningTime(r, 4)));
         // A non-force third out only stops a run if the tag happens before it
         // scores. An early catch at second is not itself an out: the receiver
         // must wait for the advancing runner to enter tagging reach.
@@ -498,9 +497,13 @@ export class DefensiveDecisionEngine {
       return runners.some(
         (r) =>
           active(r) &&
-          (r.decision === "retreat"
-            ? r.goal === n
-            : r.progress <= n + 0.08 && r.goal >= n),
+          ((base === 1 &&
+            r.firstTurn?.kind === "round" &&
+            r.firstTurn.stage !== "complete" &&
+            r.goal === 1) ||
+            (r.decision === "retreat"
+              ? r.goal === n
+              : r.progress <= n + 0.08 && r.goal >= n)),
       );
     };
     const homeThreat = runners.some(
@@ -605,7 +608,7 @@ export class DefensiveDecisionEngine {
     if (homeThreat) cover("home", 94, "homeThreat");
     if (target !== "hold") receiver = cover(target, 95, "receiver");
     if (cutoff) {
-      const point = mix(source, bases[target as Base], 0.55);
+      const point = mixPhysical(source, bases[target as Base], 0.55);
       const relay =
         metres(source, bases[target as Base]) > assumptions.relayDistance;
       put(

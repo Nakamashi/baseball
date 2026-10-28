@@ -2,7 +2,15 @@ import type { Base, Position } from "../simulation/types";
 import type { Strategy } from "./types";
 export const assumptions = {
   baseMetres: 27.43,
+  field: { cornerMetres: 90, centreMetres: 120, infieldMetres: 39 },
   defenderSpeed: 6,
+  firstBase: {
+    overrunMetres: 3,
+    roundMetres: 4,
+    turnSpeed: 4,
+    returnSpeed: 3,
+    readTime: 0.35,
+  },
   throwSpeed: 20,
   fieldDelay: 0.35,
   transfer: 0.3,

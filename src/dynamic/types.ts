@@ -159,6 +159,25 @@ export interface OffensiveRunner {
   speed: number;
   decision: "advance" | "hold" | "retreat";
   status: "active" | "out" | "scored";
+  approach?: "straight" | "round";
+  retiredRunThrough?: boolean;
+  firstTurn?: {
+    kind: "overrun" | "round";
+    stage: "outbound" | "read" | "return" | "complete";
+    travelled: number;
+    extent: number;
+    readRemaining: number;
+  };
+  plan?: {
+    reason: string;
+    candidates: {
+      base: Base;
+      runnerTime: number;
+      defensiveTime: number;
+      margin: number;
+      accepted: boolean;
+    }[];
+  };
 }
 export interface SimulationEvent {
   id: string;
@@ -174,6 +193,10 @@ export interface SimulationEvent {
     | "RunScored"
     | "RunDisallowed"
     | "BaseTouched"
+    | "RunThroughAfterOut"
+    | "FirstBaseOverrun"
+    | "FirstBaseRounded"
+    | "RunnerReturned"
     | "PlayCompleted";
   player?: PlayerId;
   base?: Base;

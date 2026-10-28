@@ -100,13 +100,13 @@ try {
   await page.locator(".dynamic-runners input").nth(1).check();
   await page.locator(".dynamic-runners input").nth(2).uncheck();
   await page.getByRole("spinbutton", { name: "Hit destination X" }).fill("530");
-  await page.getByRole("spinbutton", { name: "Hit destination Y" }).fill("134");
+  await page.getByRole("spinbutton", { name: "Hit destination Y" }).fill("235");
   await page
     .getByRole("combobox", { name: "Hit strength", exact: true })
     .selectOption("hard");
   await page
     .getByRole("combobox", { name: "Runner speed", exact: true })
-    .selectOption("fast");
+    .selectOption("average");
   await page
     .getByRole("combobox", { name: "Defensive strategy", exact: true })
     .selectOption("prevent");
@@ -144,9 +144,10 @@ try {
   await page
     .getByRole("combobox", { name: "Language / 言語" })
     .selectOption("en");
+  await page.getByRole("spinbutton", { name: "Hit destination Y" }).fill("250");
   await page
     .getByRole("combobox", { name: "Hit strength", exact: true })
-    .selectOption("normal");
+    .selectOption("hard");
   await page
     .getByRole("combobox", { name: "Runner speed", exact: true })
     .selectOption("average");
@@ -163,6 +164,51 @@ try {
   await page
     .getByRole("combobox", { name: "Language / 言語" })
     .selectOption("ja");
+  // Clean outfield singles have a live round/read/return instead of a stop on first.
+  await page
+    .getByRole("combobox", { name: "Language / 言語" })
+    .selectOption("en");
+  await page.locator(".dynamic-runners input").nth(1).uncheck();
+  await page.getByRole("spinbutton", { name: "Hit destination X" }).fill("765");
+  await page.getByRole("spinbutton", { name: "Hit destination Y" }).fill("295");
+  await page.locator(".generate-button").click();
+  await slider.fill(await slider.getAttribute("max"));
+  assert.match(
+    await page.locator(".dynamic-events").innerText(),
+    /Round first/,
+  );
+  assert.match(
+    await page.locator(".dynamic-events").innerText(),
+    /Return to first/,
+  );
+  // A deep left-field hit can now produce a real double on the calibrated ground.
+  await page.getByRole("spinbutton", { name: "Hit destination X" }).fill("170");
+  await page.getByRole("spinbutton", { name: "Hit destination Y" }).fill("200");
+  await page
+    .getByRole("combobox", { name: "Hit strength", exact: true })
+    .selectOption("normal");
+  await page.locator(".generate-button").click();
+  await slider.fill(await slider.getAttribute("max"));
+  assert.match(
+    await page.locator(".dynamic-events").innerText(),
+    /Advance along the basepath toward second/,
+  );
+  // Eligible aggressive contact play from third, including the infield-in risk.
+  await page
+    .getByRole("combobox", { name: "Batted ball", exact: true })
+    .selectOption("Ground ball");
+  await page.getByRole("spinbutton", { name: "Hit destination X" }).fill("640");
+  await page.getByRole("spinbutton", { name: "Hit destination Y" }).fill("430");
+  await page.locator(".dynamic-runners input").nth(2).check();
+  await page.locator(".generate-button").click();
+  await slider.fill("1");
+  await page.locator("[data-player=R3]").click();
+  assert.match(await page.locator(".focus-action").innerText(), /home/);
+  await page
+    .getByRole("combobox", { name: "Language / 言語" })
+    .selectOption("ja");
+  assert.match(await page.locator(".focus-action").innerText(), /本塁/);
+  assert.doesNotMatch(await page.locator("body").innerText(), /@v2:/);
   for (const [width, height] of [
     [1366, 768],
     [820, 1180],
@@ -198,7 +244,7 @@ try {
   assert.equal(await page.locator(".hit-destination").count(), 0);
   assert.deepEqual(errors, []);
   console.log(
-    "Dynamic browser checks passed: continuous field picking, draft protection, generation, double play, throw override, center-field home relay, base-receiver follow-up, bilingual explanations, shared timeline, mobile fit, and return to encyclopedia.",
+    "Dynamic browser checks passed: continuous field picking, draft protection, generation, double play, throw override, center-field home relay, base-receiver follow-up, rounded singles, extra-base advances, contact play from third, bilingual explanations, shared timeline, mobile fit, and return to encyclopedia.",
   );
 } finally {
   await browser.close();

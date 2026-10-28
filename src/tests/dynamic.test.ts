@@ -45,7 +45,13 @@ describe("dynamic vertical slice", () => {
       expect(formatDynamic(text, "ja")).toMatch(/[ぁ-んァ-ヶ一-龯]/);
   });
 });
-import { isPlayable, isOutfield, bases, metres } from "../dynamic/geometry";
+import {
+  isPlayable,
+  isOutfield,
+  bases,
+  metres,
+  toWorld,
+} from "../dynamic/geometry";
 import { assumptions, recommendStrategy } from "../dynamic/conventions";
 import { BaserunningDecisionEngine } from "../dynamic/baserunning";
 import { isForced } from "../dynamic/defense";
@@ -121,9 +127,9 @@ describe("fundamental baseball decisions", () => {
       (a) => a.type === "Cutoff" || a.type === "Relay",
     )!;
     expect(cutoff.player).toBe("SS");
-    const from = s.dynamic.ball.fieldingPoint,
-      to = bases[3],
-      v = cutoff.target;
+    const from = toWorld(s.dynamic.ball.fieldingPoint),
+      to = toWorld(bases[3]),
+      v = toWorld(cutoff.target);
     expect(
       Math.abs(
         (v.x - from.x) * (to.y - from.y) - (v.y - from.y) * (to.x - from.x),
@@ -153,13 +159,15 @@ describe("fundamental baseball decisions", () => {
     const phase = s.phases.find((p) => p.title === "Field & decide")!;
     expect(phase.assignments!.find((a) => a.player === "P")?.base).toBe("home");
     expect(
-      phase.assignments!.find((a) => a.base === 1 && a.type === "CoverBase")
+      s.phases
+        .find((p) => p.title === "Contact")!
+        .assignments!.find((a) => a.base === 1 && a.type === "CoverBase")
         ?.player,
     ).toBe("2B");
   });
   it("changes runner behavior for a marginal deep hit under different aggression", () => {
     const conservative = defaultSettings();
-    conservative.ball.destination = { x: 340, y: 120 };
+    conservative.ball.destination = { x: 530, y: 230 };
     conservative.aggression = "conservative";
     const aggressive = structuredClone(conservative);
     aggressive.aggression = "aggressive";
@@ -168,17 +176,13 @@ describe("fundamental baseball decisions", () => {
     expect(a.dynamic.events.filter((e) => e.type === "RunnerOut")).toHaveLength(
       0,
     );
-    expect(
-      b.dynamic.events.some(
-        (e) => e.type === "RunnerOut" && e.player === "R1" && e.base === 3,
-      ),
-    ).toBe(true);
+    expect(sample(b, duration(b)).state.runners.R1).toBe(3);
     expect(sample(a, duration(a)).state.runners.R1).toBe(2);
     expect(a).not.toEqual(b);
   });
   it("separates speed from aggression", () => {
     const slow = defaultSettings();
-    slow.ball.destination = { x: 320, y: 130 };
+    slow.ball.destination = { x: 530, y: 230 };
     slow.runnerSpeed = "slow";
     const fast = structuredClone(slow);
     fast.runnerSpeed = "fast";
@@ -226,7 +230,7 @@ describe("fundamental baseball decisions", () => {
       b.dynamic.events
         .filter((e) => e.type === "ThrowReceived")
         .map((e) => e.player),
-    ).toEqual(["C"]);
+    ).toEqual(["1B", "C"]);
     expect(sample(b, duration(b)).state.runners.BR).toBe(2);
     expect(sample(a, duration(a)).state.runners.BR).toBe(1);
     expect(
@@ -243,7 +247,7 @@ describe("fundamental baseball decisions", () => {
       s.dynamic.events
         .filter((e) => e.type === "ThrowReceived")
         .map((e) => e.player),
-    ).toEqual(["2B"]);
+    ).toEqual(["SS"]);
     c.throwTarget = "hold";
     expect(
       provider
@@ -540,11 +544,12 @@ describe("coverage and tag positioning regressions", () => {
   });
   it("records tag outs only when the runner is within tagging distance", () => {
     const c = defaultSettings();
-    c.ball.destination = { x: 810, y: 220 };
-    c.ball.strength = "hard";
+    c.state.runners = {};
+    c.ball.destination = { x: 530, y: 230 };
+    c.ball.strength = "normal";
     c.aggression = "aggressive";
     c.runnerSpeed = "fast";
-    c.throwTarget = 3;
+    c.throwTarget = 2;
     const s = provider.generate(c);
     const tags = s.dynamic.events.filter(
       (e) => e.type === "RunnerOut" && !e.force,

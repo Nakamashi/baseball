@@ -1,4 +1,5 @@
 import type { Snapshot, PlayerId, Point } from "../simulation/types";
+import { physicalPolyline } from "../dynamic/geometry";
 import { bases } from "../simulation/geometry";
 import { ui, playText, type Locale } from "../i18n";
 export interface Layers {
@@ -31,7 +32,9 @@ export function BaseballField({
   const t = ui(locale),
     text = playText(locale);
   const path = (points: Point[]) =>
-    points.map((p) => `${p.x},${p.y}`).join(" ");
+    (frame.phase.assignments ? physicalPolyline(points) : points)
+      .map((p) => `${p.x},${p.y}`)
+      .join(" ");
   return (
     <svg
       className="field"

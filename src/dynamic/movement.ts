@@ -1,5 +1,5 @@
 import { positions, type Point, type Position } from "../simulation/types";
-import { bases, defaults, metres, mix } from "./geometry";
+import { bases, defaults, metres, mix, mixPhysical } from "./geometry";
 import { assumptions } from "./conventions";
 import type { BattedBall, DynamicSettings } from "./types";
 export class MovementEngine {
@@ -15,12 +15,17 @@ export class MovementEngine {
           : assumptions.ballSpeed)[settings.ball.strength];
     const pool: Position[] =
       settings.ball.type === "Base hit" ? ["LF", "CF", "RF"] : [...positions];
-    const opportunities: { id: Position; point: Point; time: number }[] = [];
+    const opportunities: {
+      id: Position;
+      point: Point;
+      time: number;
+      distance: number;
+    }[] = [];
     for (const id of pool) {
       if (settings.ball.type === "Ground ball")
         for (let i = 2; i <= 40; i++) {
           const fraction = i / 40,
-            point = mix(bases.home, destination, fraction),
+            point = mixPhysical(bases.home, destination, fraction),
             time = travelTime * fraction;
           if (
             assumptions.reaction +
@@ -32,6 +37,7 @@ export class MovementEngine {
               id,
               point,
               time: time + assumptions.fieldDelay,
+              distance: metres(starting[id], point),
             });
             break;
           }
@@ -39,6 +45,7 @@ export class MovementEngine {
       opportunities.push({
         id,
         point: destination,
+        distance: metres(starting[id], destination),
         time:
           Math.max(
             travelTime,
@@ -49,7 +56,9 @@ export class MovementEngine {
     }
     opportunities.sort(
       (a, b) =>
-        a.time - b.time || positions.indexOf(a.id) - positions.indexOf(b.id),
+        a.time - b.time ||
+        a.distance - b.distance ||
+        positions.indexOf(a.id) - positions.indexOf(b.id),
     );
     const best = opportunities[0];
     return {
@@ -92,7 +101,7 @@ export class MovementEngine {
     }
     if (settings.state.strategy === "conservative") {
       for (const id of ["LF", "CF", "RF"] as const)
-        result[id] = mix(bases.home, result[id], 1.08);
+        result[id] = mixPhysical(bases.home, result[id], 1.08);
     }
     return result;
   }

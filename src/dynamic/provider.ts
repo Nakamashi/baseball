@@ -1,3 +1,8 @@
+import {
+  advanceProgress,
+  runningTime,
+  remainingRunningTime,
+} from "./runningGeometry";
 import type {
   BallEvent,
   Base,
@@ -145,10 +150,7 @@ export class DynamicPlayProvider implements PlayProvider {
     // This gets backups moving at contact rather than after the throw is released.
     const forecast = structuredClone(runners);
     for (const r of forecast) {
-      const change = (ball.fieldingTime * r.speed) / assumptions.baseMetres;
-      r.progress +=
-        Math.sign(r.goal - r.progress) *
-        Math.min(Math.abs(r.goal - r.progress), change);
+      r.progress = advanceProgress(r, r.goal, ball.fieldingTime * r.speed);
       if (r.progress >= 4) r.status = "scored";
     }
     running.plan(settings, ball, forecast, ball.fieldingTime, true);
@@ -247,13 +249,21 @@ export class DynamicPlayProvider implements PlayProvider {
       false,
     );
     builder.event("BallContact", m("contact", { fielder: owner }));
+    const ballArrival =
+      (ball.travelTime * metres(bases.home, ball.fieldingPoint)) /
+      metres(bases.home, ball.destination);
+    builder.interval("Contact", m("contact", { fielder: owner }), ballArrival, {
+      kind: "travel",
+      path: [bases.home, ball.fieldingPoint],
+      style: "hit",
+    });
     builder.interval(
-      "Contact",
-      m("contact", { fielder: owner }),
-      ball.fieldingTime,
+      "Retrieve & align",
+      m("retrieve", { fielder: owner }),
+      Math.max(0.001, ball.fieldingTime - ballArrival),
       {
         kind: "travel",
-        path: [bases.home, ball.fieldingPoint],
+        path: [ball.fieldingPoint, ball.fieldingPoint],
         style: "hit",
         receiver: owner,
       },
@@ -437,19 +447,26 @@ export class DynamicPlayProvider implements PlayProvider {
           );
       if (runner && runner.status === "active") {
         const force = isForced(runner, runners, base);
-        const remaining =
-          ((base - runner.progress) * assumptions.baseMetres) / runner.speed;
+        const remaining = runningTime(runner, base);
         const crossing = builder.events.find(
           (e) =>
             e.type === "RunnerAdvanced" &&
             e.player === runner.id &&
             e.base === target,
         );
+        const protectedOverrun =
+          target === 1 &&
+          runner.id === "BR" &&
+          runner.progress >= 1 &&
+          runner.firstTurn?.kind === "overrun";
+        const tagRequired = !force && !protectedOverrun;
         const margin = crossing
-          ? crossing.time - builder.time - (force ? 0 : assumptions.tagTime)
-          : remaining - (force ? 0 : assumptions.tagTime);
+          ? crossing.time -
+            builder.time -
+            (tagRequired ? assumptions.tagTime : 0)
+          : remaining - (tagRequired ? assumptions.tagTime : 0);
         if (Math.abs(margin) < assumptions.closeMargin) closePlays++;
-        if (!force) {
+        if (tagRequired) {
           const attempting =
             runner.goal >= base && runner.decision !== "retreat";
           const wait =
@@ -537,7 +554,7 @@ export class DynamicPlayProvider implements PlayProvider {
         },
       );
       const margin =
-        ((1 - br.progress) * assumptions.baseMetres) / br.speed -
+        runningTime(br, 1) -
         defense.arrival(secondPlan, builder.locations, owner);
       if (margin > -0.35) {
         decision = record({
@@ -560,14 +577,10 @@ export class DynamicPlayProvider implements PlayProvider {
       const remaining = Math.max(
         0,
         ...runners
-          .filter((r) => r.status === "active")
-          .map(
-            (r) =>
-              (Math.abs(r.goal - r.progress) * assumptions.baseMetres) /
-              r.speed,
-          ),
+          .filter((r) => r.status === "active" || r.retiredRunThrough)
+          .map((r) => remainingRunningTime(r)),
       );
-      if (remaining > 0.001)
+      if (remaining > 0.000001)
         builder.interval("Hold the ball", m("settle"), remaining, {
           kind: "held",
           owner,
@@ -609,7 +622,11 @@ export class DynamicPlayProvider implements PlayProvider {
       phases: builder.phases,
       result,
       notes: [
-        m("model"),
+        m("model", {
+          baseMetres: assumptions.baseMetres,
+          cornerMetres: assumptions.field.cornerMetres,
+          centreMetres: assumptions.field.centreMetres,
+        }),
         m("convention"),
         ...(closePlays ? [m("close")] : []),
         ...(builder.forceThird ? [m("forceResult")] : []),

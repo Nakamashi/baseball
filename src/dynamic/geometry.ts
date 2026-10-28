@@ -1,23 +1,78 @@
-import { bases, defaults, interpolate } from "../simulation/geometry";
+import { bases, defaults } from "../simulation/geometry";
 import type { Point } from "../simulation/types";
-export { bases, defaults, interpolate };
+import { assumptions } from "./conventions";
+export { bases, defaults };
 export const distance = (a: Point, b: Point) =>
   Math.hypot(a.x - b.x, a.y - b.y);
 export const metresPerUnit = 27.43 / distance(bases.home, bases[1]);
-export const metres = (a: Point, b: Point) => distance(a, b) * metresPerUnit;
+// The compact display is schematic. Preserve the regulation diamond, then
+// map its compressed outfield onto the configured home-ground dimensions.
+export function toWorld(p: Point): Point {
+  const dx = (p.x - bases.home.x) * metresPerUnit;
+  const dy = (p.y - bases.home.y) * metresPerUnit;
+  const r = Math.hypot(dx, dy);
+  if (r <= assumptions.field.infieldMetres) return { x: dx, y: dy };
+  const angle = Math.atan2(dx, -dy);
+  const edge = diagramFenceRadius(angle);
+  const worldEdge = fieldRadius(angle);
+  const radius =
+    assumptions.field.infieldMetres +
+    ((r - assumptions.field.infieldMetres) *
+      (worldEdge - assumptions.field.infieldMetres)) /
+      (edge - assumptions.field.infieldMetres);
+  return { x: (dx * radius) / r, y: (dy * radius) / r };
+}
+export function fromWorld(p: Point): Point {
+  const r = Math.hypot(p.x, p.y);
+  let radius = r;
+  if (r > assumptions.field.infieldMetres) {
+    const angle = Math.atan2(p.x, -p.y);
+    radius =
+      assumptions.field.infieldMetres +
+      ((r - assumptions.field.infieldMetres) *
+        (diagramFenceRadius(angle) - assumptions.field.infieldMetres)) /
+        (fieldRadius(angle) - assumptions.field.infieldMetres);
+  }
+  const scale = r > 0 ? radius / r / metresPerUnit : 0;
+  return { x: bases.home.x + p.x * scale, y: bases.home.y + p.y * scale };
+}
+export const metres = (a: Point, b: Point) => distance(toWorld(a), toWorld(b));
 export const mix = (a: Point, b: Point, t: number): Point => ({
   x: a.x + (b.x - a.x) * t,
   y: a.y + (b.y - a.y) * t,
 });
+export const mixPhysical = (a: Point, b: Point, t: number): Point =>
+  fromWorld(mix(toWorld(a), toWorld(b), t));
 export const toward = (a: Point, b: Point, m: number) =>
-  mix(a, b, Math.min(1, m / Math.max(0.0001, metres(a, b))));
+  mixPhysical(a, b, Math.min(1, m / Math.max(0.0001, metres(a, b))));
+export function interpolate(path: Point[], progress: number): Point {
+  const world = path.map(toWorld);
+  const lengths = world.slice(1).map((p, i) => distance(world[i], p));
+  let remaining =
+    Math.max(0, Math.min(1, progress)) * lengths.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < lengths.length; i++) {
+    if (lengths[i] > 0 && remaining <= lengths[i])
+      return fromWorld(mix(world[i], world[i + 1], remaining / lengths[i]));
+    remaining -= lengths[i];
+  }
+  return { ...path[path.length - 1] };
+}
+export function physicalPolyline(path: Point[]): Point[] {
+  return path.flatMap((p, i) =>
+    i === 0
+      ? [p]
+      : Array.from({ length: 12 }, (_, n) =>
+          mixPhysical(path[i - 1], p, (n + 1) / 12),
+        ),
+  );
+}
 export const clamp = (p: Point): Point => ({
   x: Math.max(35, Math.min(965, p.x)),
   y: Math.max(50, Math.min(855, p.y)),
 });
 export function beyond(from: Point, target: Point, m: number) {
   return clamp(
-    mix(from, target, 1 + m / Math.max(0.001, metres(from, target))),
+    mixPhysical(from, target, 1 + m / Math.max(0.001, metres(from, target))),
   );
 }
 const quadratic = (a: Point, c: Point, b: Point, t: number) =>
@@ -42,6 +97,44 @@ const fence = [
     ),
   ),
 ];
+const angularSteps = 256;
+const fenceDepths = Array.from({ length: angularSteps + 1 }, (_, i) => {
+  const angle = -Math.PI / 4 + ((i / angularSteps) * Math.PI) / 2;
+  const ray = { x: Math.sin(angle), y: -Math.cos(angle) };
+  let nearest = Infinity;
+  for (let j = 0; j < fence.length; j++) {
+    const a = fence[j],
+      b = fence[(j + 1) % fence.length];
+    const sx = b.x - a.x,
+      sy = b.y - a.y;
+    const den = ray.x * sy - ray.y * sx;
+    if (Math.abs(den) < 1e-9) continue;
+    const ax = a.x - bases.home.x,
+      ay = a.y - bases.home.y;
+    const t = (ax * sy - ay * sx) / den;
+    const u = (ax * ray.y - ay * ray.x) / den;
+    if (t > 1e-5 && u >= -1e-8 && u <= 1 + 1e-8) nearest = Math.min(nearest, t);
+  }
+  return nearest * metresPerUnit;
+});
+const fairAngle = (angle: number) =>
+  Math.max(-Math.PI / 4, Math.min(Math.PI / 4, angle));
+function diagramFenceRadius(angle: number) {
+  const index =
+    ((fairAngle(angle) + Math.PI / 4) / (Math.PI / 2)) * angularSteps;
+  const lower = Math.min(angularSteps - 1, Math.floor(index));
+  return (
+    fenceDepths[lower] +
+    (fenceDepths[lower + 1] - fenceDepths[lower]) * (index - lower)
+  );
+}
+function fieldRadius(angle: number) {
+  return (
+    assumptions.field.cornerMetres +
+    (assumptions.field.centreMetres - assumptions.field.cornerMetres) *
+      Math.cos(2 * fairAngle(angle))
+  );
+}
 export function isPlayable(p: Point) {
   if (!Number.isFinite(p.x) || !Number.isFinite(p.y)) return false;
   let inside = false;

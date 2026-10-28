@@ -2,6 +2,8 @@ import type { Base } from "../simulation/types";
 import type { BattedBall, DynamicSettings, OffensiveRunner } from "./types";
 import { assumptions } from "./conventions";
 import { isOutfield, metres, bases } from "./geometry";
+import { runningTime } from "./runningGeometry";
+import { message as m } from "./messages";
 import { isForced, ThrowingEngine } from "./defense";
 export class BaserunningDecisionEngine {
   create(settings: DynamicSettings): OffensiveRunner[] {
@@ -46,7 +48,23 @@ export class BaserunningDecisionEngine {
       let goal = r.originBase;
       if (r.id === "BR" || isForced(r, runners, r.originBase + 1) || hit)
         goal = Math.min(4, r.originBase + 1);
-      if (!hit && settings.state.outs === 2 && r.originBase === 3) goal = 4;
+      if (r.id === "BR") r.approach = hit ? "round" : "straight";
+      const contactRead =
+        !hit &&
+        r.originBase === 3 &&
+        settings.state.outs < 2 &&
+        !["P", "C", "3B"].includes(ball.fielder);
+      const contactGo =
+        contactRead &&
+        (settings.aggression === "aggressive" ||
+          runningTime(r, 4) +
+            (settings.aggression === "conservative" ? 1.6 : 0.4) <
+            Math.max(0, ball.fieldingTime - elapsed) +
+              throwing.returnTime(ball, 4, "home") +
+              assumptions.tagTime);
+      if (!hit && (settings.state.outs === 2 || contactGo))
+        goal = Math.min(4, r.originBase + 1);
+      const candidates: NonNullable<OffensiveRunner["plan"]>["candidates"] = [];
       if (
         !hit &&
         r.originBase === 2 &&
@@ -56,40 +74,63 @@ export class BaserunningDecisionEngine {
       )
         goal = 3;
       if (hit && upgrade) {
-        const max =
-          r.originBase === 0
-            ? ball.fieldingTime > 5.5
-              ? 3
-              : 2
-            : r.originBase === 1
-              ? ball.fieldingTime > 5.5
-                ? 4
-                : 3
-              : 4;
+        const max = 4;
         const safety = { conservative: 1.6, normal: 0.4, aggressive: -0.65 }[
           settings.aggression
         ];
         for (let base = goal + 1; base <= max; base++) {
-          const runnerTime =
-            (Math.max(0, base - r.progress) * assumptions.baseMetres) / r.speed;
+          const runnerTime = runningTime(r, Math.max(r.progress, base));
           const defensiveTime =
             Math.max(0, ball.fieldingTime - elapsed) +
             throwing.returnTime(ball, base, hint) +
-            (settings.state.outs === 2 ? 0.35 : 0);
-          if (runnerTime + safety < defensiveTime) goal = base;
+            (isForced(r, runners, base) ? 0 : assumptions.tagTime);
+          const accepted = runnerTime + safety < defensiveTime;
+          candidates.push({
+            base: base === 4 ? "home" : (base as Base),
+            runnerTime,
+            defensiveTime,
+            margin: defensiveTime - runnerTime,
+            accepted,
+          });
+          if (accepted) goal = base;
           else break;
         }
       }
       goal = Math.min(goal, leadGoal === 4 ? 4 : leadGoal - 1);
-      goal = Math.max(
-        r.progress > r.originBase + 0.1
-          ? Math.ceil(r.progress - 0.000001)
-          : r.originBase,
-        goal,
-      );
+      goal = Math.max(Math.floor(r.progress + 0.000001), goal);
+      if (r.firstTurn?.kind === "overrun" && r.firstTurn.stage !== "complete")
+        goal = 1;
+      if (goal > 1 && r.firstTurn?.kind === "round") r.firstTurn = undefined;
+      const blockedOrHeld =
+        goal <
+        (candidates.at(-1)?.base === "home"
+          ? 4
+          : Number(candidates.at(-1)?.base ?? goal));
+      const freeze =
+        !hit &&
+        r.originBase === 3 &&
+        settings.state.outs < 2 &&
+        !contactGo &&
+        !isForced(r, runners, 4);
+      r.plan = {
+        candidates,
+        reason: m(
+          contactGo
+            ? settings.aggression === "aggressive"
+              ? "runnerContactWhy"
+              : "runnerContactReadWhy"
+            : freeze
+              ? "runnerFreezeWhy"
+              : blockedOrHeld
+                ? "runnerHoldWhy"
+                : "runnerWhy",
+        ),
+      };
       r.goal = goal;
       r.decision =
         r.progress < goal ? "advance" : r.progress > goal ? "retreat" : "hold";
+      if (r.firstTurn && r.goal === 1 && r.firstTurn.stage !== "complete")
+        r.decision = r.firstTurn.stage === "return" ? "retreat" : "advance";
       leadGoal = goal;
     }
   }
@@ -117,8 +158,7 @@ export class BaserunningDecisionEngine {
       if (
         last > r.originBase &&
         fraction < 0.45 &&
-        ((base - r.progress) * assumptions.baseMetres) / r.speed >
-          throwTime + 0.6 &&
+        runningTime(r, base) > throwTime + 0.6 &&
         !runners.some(
           (v) => v !== r && v.status === "active" && v.goal === last,
         )

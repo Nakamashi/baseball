@@ -1,4 +1,5 @@
 import { interpolate } from "./geometry";
+import { interpolate as interpolatePhysical } from "../dynamic/geometry";
 import type { PlayScenario, PlayerId, Point, Snapshot } from "./types";
 export function duration(s: PlayScenario) {
   return Number(
@@ -8,6 +9,9 @@ export function duration(s: PlayScenario) {
 // Sampling always starts from authored initial state. Seeking never depends on playback history.
 export function sample(s: PlayScenario, time: number): Snapshot {
   const t = Math.max(0, Math.min(duration(s), time));
+  const interpolatePath = s.phases[0].assignments
+    ? interpolatePhysical
+    : interpolate;
   const phase = s.phases.reduce(
     (active, p) => (p.start <= t ? p : active),
     s.phases[0],
@@ -16,7 +20,8 @@ export function sample(s: PlayScenario, time: number): Snapshot {
   for (const p of s.phases) {
     if (p.start > t) break;
     const u = Math.min(1, (t - p.start) / p.duration);
-    for (const m of p.movements) locations[m.player] = interpolate(m.path, u);
+    for (const m of p.movements)
+      locations[m.player] = interpolatePath(m.path, u);
   }
   const progress = Math.min(1, (t - phase.start) / phase.duration);
   const owner =
@@ -28,7 +33,7 @@ export function sample(s: PlayScenario, time: number): Snapshot {
   const ball = owner
     ? locations[owner]
     : phase.ball.kind === "travel"
-      ? interpolate(phase.ball.path, progress)
+      ? interpolatePath(phase.ball.path, progress)
       : locations[phase.ball.owner];
   return {
     time: t,

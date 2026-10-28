@@ -9,14 +9,15 @@ import {
   type Responsibility,
   type Runner,
 } from "../simulation/types";
+import { bases, toward, interpolate, metres } from "./geometry";
 import {
-  bases,
-  toward,
-  runnerPoint,
-  runnerPath,
-  interpolate,
-  metres,
-} from "./geometry";
+  advanceProgress,
+  runnerRoute,
+  runningTime,
+  turnTime,
+  turnSpeed,
+  firstTurnPoint,
+} from "./runningGeometry";
 import { assumptions } from "./conventions";
 import { assignmentText, isForced } from "./defense";
 import { message as m } from "./messages";
@@ -84,18 +85,39 @@ export class TimelineBuilder {
       const force = isForced(r, this.runners, r.originBase + 1);
       result[r.id] = {
         action: m(
-          r.status === "out"
-            ? "runnerOut"
-            : r.status === "scored"
-              ? "runnerScored"
-              : r.decision === "retreat"
-                ? "runnerRetreat"
-                : r.progress === r.goal
-                  ? "runnerHold"
-                  : "runnerAdvance",
+          r.retiredRunThrough
+            ? "runnerFinishOut"
+            : r.status === "active" &&
+                r.firstTurn &&
+                r.firstTurn.stage !== "complete" &&
+                r.goal === 1
+              ? r.firstTurn.stage === "return"
+                ? "runnerReturnFirst"
+                : r.firstTurn.kind === "overrun"
+                  ? "runnerOverrun"
+                  : "runnerRound"
+              : r.status === "out"
+                ? "runnerOut"
+                : r.status === "scored"
+                  ? "runnerScored"
+                  : r.decision === "retreat"
+                    ? "runnerRetreat"
+                    : r.progress === r.goal
+                      ? "runnerHold"
+                      : "runnerAdvance",
           { base: r.goal === 4 ? "home" : r.goal },
         ),
-        why: m(force ? "runnerForce" : "runnerWhy"),
+        why: r.retiredRunThrough
+          ? m("runnerFinishOutWhy")
+          : force
+            ? m("runnerForce")
+            : r.firstTurn && r.firstTurn.stage !== "complete" && r.goal === 1
+              ? m(
+                  r.firstTurn.kind === "overrun"
+                    ? "runnerOverrunWhy"
+                    : "runnerRoundWhy",
+                )
+              : (r.plan?.reason ?? m("runnerWhy")),
         support: m("runnerNext"),
       };
     }
@@ -118,16 +140,17 @@ export class TimelineBuilder {
       let dt = remaining;
       if (run && this.state.outs < 3)
         for (const r of this.runners) {
-          if (r.status !== "active" || Math.abs(r.progress - r.goal) < 0.000001)
+          if (r.status !== "active" && !r.retiredRunThrough) continue;
+          if (r.firstTurn && r.firstTurn.stage !== "complete" && r.goal === 1) {
+            dt = Math.min(dt, turnTime(r));
             continue;
+          }
+          if (Math.abs(r.progress - r.goal) < 0.000001) continue;
           const next =
             r.goal > r.progress
               ? Math.min(r.goal, Math.floor(r.progress + 0.000001) + 1)
               : Math.max(r.goal, Math.ceil(r.progress - 0.000001) - 1);
-          dt = Math.min(
-            dt,
-            (Math.abs(next - r.progress) * assumptions.baseMetres) / r.speed,
-          );
+          dt = Math.min(dt, runningTime(r, next));
         }
       dt = Math.max(0.000001, Math.min(remaining, round(dt)));
       for (const a of this.assignments) a.explanation = assignmentText(a).why;
@@ -140,26 +163,65 @@ export class TimelineBuilder {
         if (metres(from, to) > 0.00001)
           movements.push({ player: assignment.player, path: [from, to] });
       }
-      const nextProgress = new Map<OffensiveRunner, number>();
+      const nextRunners = new Map<OffensiveRunner, OffensiveRunner>();
       if (run && this.state.outs < 3)
         for (const r of this.runners) {
-          if (r.status !== "active") continue;
-          const direction = Math.sign(r.goal - r.progress);
-          const progress =
-            r.progress +
-            direction *
-              Math.min(
-                Math.abs(r.goal - r.progress),
-                (r.speed * dt) / assumptions.baseMetres,
+          if (r.status !== "active" && !r.retiredRunThrough) continue;
+          const next: OffensiveRunner = {
+            ...r,
+            firstTurn: r.firstTurn ? { ...r.firstTurn } : undefined,
+          };
+          const turn = next.firstTurn;
+          if (turn && turn.stage !== "complete" && r.goal === 1) {
+            const before = firstTurnPoint(r);
+            if (turn.stage === "outbound") {
+              turn.travelled = Math.min(
+                turn.extent,
+                turn.travelled + turnSpeed(r) * dt,
               );
-          nextProgress.set(r, progress);
-          if (direction) {
-            movements.push({
-              player: r.id,
-              path: runnerPath(r.progress, progress),
-            });
-            delete this.state.runners[r.id];
+              if (turn.travelled >= turn.extent - 1e-5) {
+                if (r.retiredRunThrough) {
+                  turn.stage = "complete";
+                  next.retiredRunThrough = false;
+                } else turn.stage = "read";
+              }
+            } else if (turn.stage === "read") {
+              turn.readRemaining = Math.max(0, turn.readRemaining - dt);
+              if (turn.readRemaining < 1e-5) {
+                turn.stage = "return";
+                next.decision = "retreat";
+              }
+            } else {
+              turn.travelled = Math.max(
+                0,
+                turn.travelled - assumptions.firstBase.returnSpeed * dt,
+              );
+              if (turn.travelled < 1e-5) {
+                turn.travelled = 0;
+                turn.stage = "complete";
+                next.decision = "hold";
+              }
+            }
+            next.progress =
+              turn.kind === "round"
+                ? 1 + turn.travelled / assumptions.baseMetres
+                : 1;
+            const end = firstTurnPoint(next);
+            if (metres(before, end) > 1e-6)
+              movements.push({ player: r.id, path: [before, end] });
+            if (turn.kind === "round" && turn.stage !== "complete")
+              delete this.state.runners[r.id];
+          } else {
+            next.progress = advanceProgress(r, r.goal, r.speed * dt);
+            if (Math.abs(next.progress - r.progress) > 1e-8) {
+              movements.push({
+                player: r.id,
+                path: runnerRoute(r, r.progress, next.progress),
+              });
+              delete this.state.runners[r.id];
+            }
           }
+          nextRunners.set(r, next);
         }
       const portion: BallAction =
         ball.kind === "held"
@@ -211,14 +273,42 @@ export class TimelineBuilder {
       if (run) this.liveTime += dt;
       remaining = Math.max(0, remaining - dt);
       elapsed += dt;
-      let crossedBase = false;
-      for (const [r, progress] of nextProgress) {
+      let crossedBase = false,
+        readChanged = false;
+      for (const [r, next] of nextRunners) {
         const before = r.progress;
-        r.progress = round(progress);
+        const previousTurn = r.firstTurn?.stage;
+        r.firstTurn = next.firstTurn;
+        if (previousTurn && previousTurn !== r.firstTurn?.stage)
+          readChanged = true;
+        r.decision = next.decision;
+        r.retiredRunThrough = next.retiredRunThrough;
+        r.progress = round(next.progress);
         if (Math.abs(r.progress - Math.round(r.progress)) < 0.00001)
           r.progress = Math.round(r.progress);
+        if (r.firstTurn?.stage === "complete" && previousTurn !== "complete") {
+          if (r.status === "out") {
+            this.event("RunThroughAfterOut", m("runnerFinishOut"), r.id, 1);
+            crossedBase = true;
+            continue;
+          }
+          this.state.runners[r.id] = 1;
+          this.event("RunnerReturned", m("runnerReturnFirst"), r.id, 1);
+          crossedBase = true;
+          continue;
+        }
         if (r.progress !== before && Number.isInteger(r.progress)) {
           crossedBase = true;
+          if (r.retiredRunThrough && r.progress === 1) {
+            r.firstTurn = {
+              kind: "overrun",
+              stage: "outbound",
+              travelled: 0,
+              extent: assumptions.firstBase.overrunMetres,
+              readRemaining: 0,
+            };
+            continue;
+          }
           const base: Base =
             r.progress === 4 ? "home" : (r.progress as 1 | 2 | 3);
           if (r.decision === "retreat") {
@@ -244,10 +334,35 @@ export class TimelineBuilder {
           } else if (r.progress === r.goal) {
             r.decision = "hold";
             this.state.runners[r.id] = base;
+            if (r.id === "BR" && base === 1 && !r.firstTurn) {
+              const kind = r.approach === "round" ? "round" : "overrun";
+              r.firstTurn = {
+                kind,
+                stage: "outbound",
+                travelled: 0,
+                extent:
+                  kind === "round"
+                    ? assumptions.firstBase.roundMetres
+                    : assumptions.firstBase.overrunMetres,
+                readRemaining: assumptions.firstBase.readTime,
+              };
+              r.decision = "advance";
+              this.event(
+                kind === "round" ? "FirstBaseRounded" : "FirstBaseOverrun",
+                m(kind === "round" ? "runnerRound" : "runnerOverrun"),
+                r.id,
+                1,
+              );
+            }
           }
         }
       }
-      if (crossedBase) this.reassess?.("RunnerAdvanced or RunnerRetreated");
+      if (crossedBase || readChanged)
+        this.reassess?.(
+          crossedBase
+            ? "RunnerAdvanced or RunnerRetreated"
+            : "First-base read/return",
+        );
     }
   }
   retire(runner: Runner, base: Base, force: boolean) {
@@ -256,6 +371,15 @@ export class TimelineBuilder {
     r.status = "out";
     delete this.state.runners[r.id];
     this.state.outs++;
+    if (
+      runner === "BR" &&
+      base === 1 &&
+      r.progress < 1 &&
+      this.state.outs < 3
+    ) {
+      r.retiredRunThrough = true;
+      r.goal = 1;
+    }
     this.event(
       "RunnerOut",
       m(force ? "forceOut" : "tagOut", { runner, base }),

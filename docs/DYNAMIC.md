@@ -12,9 +12,11 @@ The generator compiles a deterministic play in response to meaningful events, th
 
 ## Movement and timing
 
-`geometry.ts` uses the existing 1000 × 900 field. A 282.84-unit basepath corresponds to 27.43 metres. Timing calculations convert SVG distances to metres before dividing by metres/second; rendering geometry does not determine physical speed.
+See [BASERUNNING.md](BASERUNNING.md) for the home-ground calibration, runner decisions, natural first-base movement, contact reads, diagnostics and limitations.
 
-`movement.ts` samples possible ground-ball interceptions along the batted path, compares ball arrival against defender arrival including reaction time, and selects the earliest feasible fielding opportunity. If no early interception is feasible, it compares retrieval at the destination. Outfield-hit retrieval compares outfielders' arrival times with ball travel time. Equal retrieval opportunities have deterministic position-order tie-breaking. These are simplified estimates, not a complete model of hops, acceleration or fly-ball height.
+The SVG stays compact and schematic. Dynamic physical coordinates preserve 27.43 m basepaths and map the outfield to the user's 90 m corners / 120 m center fence. Throws, movement, cutoffs, backups, ball travel and playback interpolation share that physical space; authored encyclopedia plays retain their original geometry. Intermediate fence depths use a smooth assumed interpolation.
+
+`movement.ts` compares feasible interception/retrieval times. Equal ball-arrival opportunities prefer the shorter pursuit. A ball reaches its prescribed area on its travel clock, then remains unowned while retrieval/gathering finishes. This is not an error event.
 
 Current youth assumptions in `conventions.ts`:
 
@@ -49,13 +51,13 @@ Throw comparisons consider each base an advancing runner is actually attempting,
 
 ## Baserunning
 
-`baserunning.ts` treats speed and aggression separately. Forced runners and the batter have minimum legal advances. A hit permits additional bases only when estimated retrieval/return time and the selected safety margin justify them. Conservative, normal and aggressive margins are 1.6, 0.4 and -0.65 seconds respectively. A negative margin permits a marginal attempt; it does not make the runner safe.
+Runner goals use legal force chains, retrieval/return/tag estimates, physical route length, separate speed/aggression assumptions, and preceding runners. Every next-base candidate is retained in developer diagnostics; a margin accepted by aggressive mode can still lead to an out. The old retrieval-time cap on extra bases is removed. Fielding and reception can update reads and retreats without forcing a runner onward solely because they turned past a base.
 
-Runners are planned from the lead runner backward so a trailing runner cannot be assigned the same held base or pass another runner. Routes include every intervening base. At fielding and cutoff reception, decisions may be updated; a runner can retreat along the current basepath if a marginal extra base becomes unsafe and the return base is available. Forced runners cannot avoid a force by retreating to an illegally occupied base.
+Safe infield BR runs through first; outfield BR takes a curved approach and either continues or performs a timed round/read/return. Those movements do not award second or invent an error. First-base force and straight run-through protection are distinct. An already-retired BR can finish the first-base sprint while outs remain without legal occupancy. At the third out all live motion stops.
 
-Coach overrides recalculate the expected defensive return route, so a throw to the wrong base can let a trailing runner advance. Hold is not treated as permission for unlimited automatic runs: the same bounded advancement estimates apply.
+Eligible aggressive contact plays send R3 on an infield grounder with fewer than two outs; P/C/3B freeze/read, forced advances and two-out conventions remain explicit. The full adopted conventions and unsupported throw-behind/rundown/body mechanics are in [BASERUNNING.md](BASERUNNING.md).
 
-Stationary base occupancy is distinct from in-transit positions. Runners leave occupancy when moving and establish it when stopping. IDs remain BR/R1/R2/R3. Runs are provisional until the play resolves. A force third out or BR retired before first cancels runs; for a non-force third out, only runs crossing strictly before the out count. The batting team's score is updated at resolution.
+Runs remain provisional until the third-out rules resolve them. IDs remain BR/R1/R2/R3; occupied bases remain distinct from physical in-transit and rounded positions. The batting team's score updates at resolution.
 
 ## Events and shared animation
 
