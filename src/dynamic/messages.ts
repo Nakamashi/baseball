@@ -2,6 +2,8 @@ import type { Locale } from "../i18n/ui";
 // Generated plays carry typed message references. Formatting belongs to the display
 // boundary, so changing languages never changes paths, decisions or timestamps.
 const english = {
+  targetHomeClose:
+    "The ball can reach home before the runner, but tag timing is close. Challenge the scoring attempt; the result is uncertain.",
   recoverHomeAction:
     "Return toward the catching position, watch home, and direct the defense.",
   wallBackupAction:
@@ -139,6 +141,8 @@ const english = {
 };
 export type DynamicMessageKey = keyof typeof english;
 const japanese: Record<DynamicMessageKey, string> = {
+  targetHomeClose:
+    "ボールは走者より先に本塁へ届く見込みですが、タッチのタイミングは際どい状況です。生還を阻止するため、本塁を狙います。結果は確実ではありません。",
   recoverHomeAction: "捕手の位置へ戻り、本塁を確認して味方に指示します。",
   wallBackupAction:
     "フェンス付近のグラウンド内から{player}を支え、捕球する空間を空けます。",

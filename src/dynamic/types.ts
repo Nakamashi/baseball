@@ -130,8 +130,11 @@ export interface ThrowCandidate {
   ballArrival: number;
   margin: number;
   viable: boolean;
+  competitive: boolean;
+  preventsRun: boolean;
   score: number;
   reason:
+    | "competitive-home"
     | "timely-home"
     | "third-out"
     | "lead-force"

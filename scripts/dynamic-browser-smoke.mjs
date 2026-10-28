@@ -91,6 +91,78 @@ try {
     await page.locator(".focus-action").innerText(),
     /[ぁ-んァ-ヶ一-龯]/,
   );
+  // Reported center-field scoring threat: automatic mode must complete the
+  // home relay and keep the new close-play explanation translated.
+  await page
+    .getByRole("combobox", { name: "Language / 言語" })
+    .selectOption("en");
+  await page.locator(".dynamic-runners input").nth(0).uncheck();
+  await page.locator(".dynamic-runners input").nth(1).check();
+  await page.locator(".dynamic-runners input").nth(2).uncheck();
+  await page.getByRole("spinbutton", { name: "Hit destination X" }).fill("530");
+  await page.getByRole("spinbutton", { name: "Hit destination Y" }).fill("134");
+  await page
+    .getByRole("combobox", { name: "Hit strength", exact: true })
+    .selectOption("hard");
+  await page
+    .getByRole("combobox", { name: "Runner speed", exact: true })
+    .selectOption("fast");
+  await page
+    .getByRole("combobox", { name: "Defensive strategy", exact: true })
+    .selectOption("prevent");
+  await page
+    .getByRole("combobox", { name: "Throwing decision", exact: true })
+    .selectOption("auto");
+  await page.locator(".generate-button").click();
+  await slider.fill(await slider.getAttribute("max"));
+  assert.match(
+    await page.locator(".dynamic-events").innerText(),
+    /CF throws to 1B/,
+  );
+  assert.match(
+    await page.locator(".dynamic-events").innerText(),
+    /1B throws to C/,
+  );
+  assert.match(
+    await page.locator(".objective p").first().textContent(),
+    /tag timing is close/,
+  );
+  const homeTime = await slider.inputValue();
+  await page
+    .getByRole("combobox", { name: "Language / 言語" })
+    .selectOption("ja");
+  assert.equal(await slider.inputValue(), homeTime);
+  assert.match(
+    await page.locator(".objective p").first().textContent(),
+    /際どい/,
+  );
+  assert.doesNotMatch(await page.locator("body").innerText(), /@v2:/);
+  await slider.fill("1");
+  await page.locator("[data-player=P]").click();
+  assert.match(await page.locator(".focus-action").innerText(), /本塁/);
+  // A return to an ordinary second-base receiver must not end a live home read.
+  await page
+    .getByRole("combobox", { name: "Language / 言語" })
+    .selectOption("en");
+  await page
+    .getByRole("combobox", { name: "Hit strength", exact: true })
+    .selectOption("normal");
+  await page
+    .getByRole("combobox", { name: "Runner speed", exact: true })
+    .selectOption("average");
+  await page.locator(".generate-button").click();
+  await slider.fill(await slider.getAttribute("max"));
+  assert.match(
+    await page.locator(".dynamic-events").innerText(),
+    /CF throws to SS/,
+  );
+  assert.match(
+    await page.locator(".dynamic-events").innerText(),
+    /SS throws to C/,
+  );
+  await page
+    .getByRole("combobox", { name: "Language / 言語" })
+    .selectOption("ja");
   for (const [width, height] of [
     [1366, 768],
     [820, 1180],
@@ -126,7 +198,7 @@ try {
   assert.equal(await page.locator(".hit-destination").count(), 0);
   assert.deepEqual(errors, []);
   console.log(
-    "Dynamic browser checks passed: continuous field picking, draft protection, generation, double play, throw override, bilingual explanations, shared timeline, mobile fit, and return to encyclopedia.",
+    "Dynamic browser checks passed: continuous field picking, draft protection, generation, double play, throw override, center-field home relay, base-receiver follow-up, bilingual explanations, shared timeline, mobile fit, and return to encyclopedia.",
   );
 } finally {
   await browser.close();

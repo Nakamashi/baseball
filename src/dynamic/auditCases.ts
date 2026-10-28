@@ -30,6 +30,7 @@ export function defensiveAuditCases(): Record<string, DynamicSettings> {
     "home-to-second": make(790, 290, { R2: 2 }),
     "aggressive-home": make(790, 290, { R2: 2 }),
     "infield-in": make(640, 430, { R3: 3 }, true),
+    "center-home-close": make(530, 134, { R2: 2 }),
   };
   cases["double-play"].runnerSpeed = "slow";
   cases["extra-base-trail"].aggression = "aggressive";
@@ -40,5 +41,9 @@ export function defensiveAuditCases(): Record<string, DynamicSettings> {
   cases["second-single-right"].aggression = "aggressive";
   cases["infield-in"].state.strategy = "prevent";
   cases["infield-in"].state.inning = 7;
+  cases["center-home-close"].aggression = "aggressive";
+  cases["center-home-close"].runnerSpeed = "fast";
+  cases["center-home-close"].ball.strength = "hard";
+  cases["center-home-close"].state.strategy = "prevent";
   return cases;
 }

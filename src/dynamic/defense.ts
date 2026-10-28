@@ -164,6 +164,7 @@ export class DefensiveDecisionEngine {
     locations?: Record<string, Point>,
     owner: Position = ball.fielder,
     stage: "fielded" | "received" = "fielded",
+    preparation?: { seconds: number; runners: OffensiveRunner[] },
   ): ThrowDecision {
     const throwing = new ThrowingEngine();
     const candidates: ThrowCandidate[] = [];
@@ -182,17 +183,39 @@ export class DefensiveDecisionEngine {
         let elapsed = throwing.arrival(ball.fieldingPoint, bases[target]);
         let route: ThrowRoute["kind"] = "direct";
         if (locations) {
+          let readyLocations = locations;
+          if (preparation) {
+            // A contact forecast must advance supporting defenders as well as
+            // runners. Evaluate each possible target with its own early duties,
+            // rather than penalizing home because 1B is still standing at first.
+            const approach = this.assign(
+              settings,
+              ball,
+              owner,
+              target,
+              locations,
+              "contact",
+              { runners: preparation.runners, outs },
+            );
+            readyLocations = { ...locations };
+            for (const a of approach.assignments)
+              readyLocations[a.player] = toward(
+                locations[a.player],
+                a.target,
+                assumptions.defenderSpeed * preparation.seconds,
+              );
+          }
           const layout = this.assign(
             settings,
             ball,
             owner,
             target,
-            locations,
+            readyLocations,
             stage,
             context,
           );
           route = layout.route.kind;
-          elapsed = this.arrival(layout, locations, owner);
+          elapsed = this.arrival(layout, readyLocations, owner);
         }
         const runnerArrival =
           ((next - runner.progress) * assumptions.baseMetres) / runner.speed;
@@ -200,13 +223,26 @@ export class DefensiveDecisionEngine {
           runnerArrival - elapsed - (force ? 0 : assumptions.tagTime);
         const viable =
           margin > (settings.state.strategy === "conservative" ? 0.8 : 0.05);
+        // Receiving the ball before the runner reaches home is a competitive
+        // tag opportunity even when the fixed tag-preparation allowance is
+        // slightly longer. Keep it distinct from a clearly favorable estimate.
+        const competitive =
+          target === "home" &&
+          !viable &&
+          settings.state.strategy !== "conservative" &&
+          elapsed < runnerArrival &&
+          margin >= -assumptions.closeMargin;
         const difference =
           settings.state.fieldingTeam === "home"
             ? settings.state.homeScore - settings.state.awayScore
             : settings.state.awayScore - settings.state.homeScore;
         const critical =
           settings.state.inning >= 6 && difference >= 0 && difference <= 1;
-        const certainty = Math.min(1, Math.max(0, margin) / 0.6);
+        const certainty = Math.min(
+          1,
+          Math.max(0, target === "home" ? runnerArrival - elapsed : margin) /
+            0.6,
+        );
         // Timing remains a gate. Run prevention matters in every strategy, and
         // the sure third force out also cancels runs already across the plate.
         const score =
@@ -224,6 +260,26 @@ export class DefensiveDecisionEngine {
                     ? 1.5
                     : 0)) * certainty
             : 0);
+        const scoring = runners.filter(
+          (r) => active(r) && r.goal === 4 && r.decision !== "retreat",
+        );
+        const firstRun = Math.min(
+          ...scoring.map(
+            (r) => ((4 - r.progress) * assumptions.baseMetres) / r.speed,
+          ),
+        );
+        // A non-force third out only stops a run if the tag happens before it
+        // scores. An early catch at second is not itself an out: the receiver
+        // must wait for the advancing runner to enter tagging reach.
+        const outTime = force
+          ? elapsed
+          : Math.max(elapsed + assumptions.tagTime, runnerArrival - 0.08);
+        const runsAtStake =
+          scoring.length > 0 || runners.some((r) => r.status === "scored");
+        const preventsRun =
+          (scoring.length > 0 && runner.goal === 4) ||
+          (outs === 2 &&
+            (force ? runsAtStake : scoring.length > 0 && outTime < firstRun));
         candidates.push({
           target,
           runner: runner.id,
@@ -232,19 +288,23 @@ export class DefensiveDecisionEngine {
           ballArrival: elapsed,
           margin,
           viable,
+          competitive,
+          preventsRun,
           score,
           route,
-          reason: !viable
-            ? margin < 0
-              ? "too-late"
-              : "insufficient-margin"
-            : outs === 2
-              ? "third-out"
-              : target === "home"
-                ? "timely-home"
-                : force
-                  ? "lead-force"
-                  : "tag-opportunity",
+          reason: competitive
+            ? "competitive-home"
+            : !viable
+              ? margin < 0
+                ? "too-late"
+                : "insufficient-margin"
+              : outs === 2
+                ? "third-out"
+                : target === "home"
+                  ? "timely-home"
+                  : force
+                    ? "lead-force"
+                    : "tag-opportunity",
         });
       }
     }
@@ -272,11 +332,16 @@ export class DefensiveDecisionEngine {
         override: true,
       });
     }
-    const viable = candidates
-      .filter((c) => c.viable)
-      .sort((a, b) => b.score - a.score || b.margin - a.margin);
+    const opportunities = candidates
+      .filter((c) => c.viable || c.competitive)
+      .sort(
+        (a, b) =>
+          Number(b.preventsRun) - Number(a.preventsRun) ||
+          b.score - a.score ||
+          b.margin - a.margin,
+      );
     const best =
-      viable[0] ??
+      opportunities[0] ??
       candidates.find(
         (c) =>
           c.target === 1 &&
@@ -291,13 +356,15 @@ export class DefensiveDecisionEngine {
         force: best.force,
         margin: best.margin,
         reason: m(
-          outs === 2
-            ? "targetSure"
-            : best.target === "home"
-              ? "targetHome"
-              : best.force
-                ? "targetForce"
-                : "targetTag",
+          best.competitive
+            ? "targetHomeClose"
+            : outs === 2
+              ? "targetSure"
+              : best.target === "home"
+                ? "targetHome"
+                : best.force
+                  ? "targetForce"
+                  : "targetTag",
         ),
         override: false,
       });

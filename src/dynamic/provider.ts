@@ -151,12 +151,16 @@ export class DynamicPlayProvider implements PlayProvider {
         Math.min(Math.abs(r.goal - r.progress), change);
       if (r.progress >= 4) r.status = "scored";
     }
+    running.plan(settings, ball, forecast, ball.fieldingTime, true);
     let activeTarget = defense.choose(
       settings,
       ball,
       forecast,
       builder.state.outs,
-      { ...starting, [owner]: ball.fieldingPoint },
+      starting,
+      owner,
+      "fielded",
+      { seconds: ball.fieldingTime, runners },
     ).target;
     let activeBall = ball;
     let deadlines: Partial<Record<Position, number>> = {};
@@ -294,6 +298,7 @@ export class DynamicPlayProvider implements PlayProvider {
       );
     }
     record(decision);
+    let additionalOutfieldThrow = true;
     const performThrow = (next: ThrowDecision, directOnly = false): void => {
       const target = next.target;
       activeTarget = target;
@@ -466,6 +471,35 @@ export class DynamicPlayProvider implements PlayProvider {
           builder.retire(runner.id, target, force);
       }
       reassess("Receive / tag resolved");
+      // A base receiver must read the next opportunity too, not only a player
+      // labeled Cutoff/Relay. In particular, returning to second must not end
+      // the play while a realistic home challenge is still available.
+      if (
+        settings.throwTarget === "auto" &&
+        isOutfield(ball.fieldingPoint) &&
+        builder.state.outs < 3 &&
+        additionalOutfieldThrow
+      ) {
+        const follow = defense.choose(
+          settings,
+          activeBall,
+          runners,
+          builder.state.outs,
+          builder.locations,
+          owner,
+          "received",
+        );
+        if (
+          follow.runner &&
+          follow.target !== "hold" &&
+          follow.target !== target
+        ) {
+          additionalOutfieldThrow = false;
+          record(follow);
+          performThrow(follow, true);
+          return;
+        }
+      }
       builder.interval("Receive", m("received", { player: owner }), 0.18, {
         kind: "held",
         owner,

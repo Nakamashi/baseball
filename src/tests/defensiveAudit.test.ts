@@ -104,7 +104,7 @@ function auditAllNine(s: DynamicScenario) {
   sample(s, 0);
   expect(sample(s, duration(s) * 0.43)).toEqual(middle);
 }
-describe("twelve defensive fundamentals review situations", () => {
+describe("defensive fundamentals review situations", () => {
   it.each(Object.keys(cases))("audits all nine throughout %s", (name) =>
     auditAllNine(provider.generate(cases[name])),
   );
@@ -435,7 +435,7 @@ describe("reusable tactical rules and diagnostics", () => {
       reaction.mockRestore();
     }
   });
-  it("uses score and inning when comparing a marginal home play against a lead force", () => {
+  it("weights score and inning while prioritizing a real run-saving opportunity", () => {
     const c = defaultSettings();
     c.state.runners = { R1: 1, R3: 3 };
     const movement = new MovementEngine(),
@@ -445,7 +445,7 @@ describe("reusable tactical rules and diagnostics", () => {
     const r = new BaserunningDecisionEngine().create(c);
     Object.assign(
       r.find((r) => r.id === "R3")!,
-      { progress: 3.13, goal: 4, decision: "advance" },
+      { progress: 3.16, goal: 4, decision: "advance" },
     );
     Object.assign(
       r.find((r) => r.id === "R1")!,
@@ -455,11 +455,25 @@ describe("reusable tactical rules and diagnostics", () => {
       r.find((r) => r.id === "BR")!,
       { progress: 0.1, goal: 1, decision: "advance" },
     );
-    expect(engine.choose(c, ball, r, 0, loc).target).toBe(2);
+    const early = engine.choose(c, ball, r, 0, loc);
+    expect(early.target).toBe("home");
+    expect(early.alternatives!.find((a) => a.target === 2)!.preventsRun).toBe(
+      false,
+    );
     c.state.inning = 7;
-    expect(engine.choose(c, ball, r, 0, loc).target).toBe("home");
+    const late = engine.choose(c, ball, r, 0, loc);
+    expect(late.target).toBe("home");
+    expect(
+      late.alternatives!.find((a) => a.target === "home")!.score,
+    ).toBeGreaterThan(
+      early.alternatives!.find((a) => a.target === "home")!.score,
+    );
     c.state.homeScore = 10;
-    expect(engine.choose(c, ball, r, 0, loc).target).toBe(2);
+    const ahead = engine.choose(c, ball, r, 0, loc);
+    expect(ahead.target).toBe("home");
+    expect(ahead.alternatives!.find((a) => a.target === "home")!.score).toBe(
+      early.alternatives!.find((a) => a.target === "home")!.score,
+    );
   });
   it("starts runners held at first, uses double-play depth, and respects outs and context", () => {
     const c = defaultSettings(),
@@ -599,4 +613,240 @@ describe("reusable tactical rules and diagnostics", () => {
             auditAllNine(provider.generate(c));
           }
   }, 30000);
+});
+
+describe("center-field run-prevention regression", () => {
+  const makeCenter = () => structuredClone(cases["center-home-close"]);
+  it("anticipates a home play with speed-limited supporting movement rather than a stationary 1B", () => {
+    const c = makeCenter(),
+      movement = new MovementEngine(),
+      running = new BaserunningDecisionEngine();
+    const starting = movement.starting(c),
+      ball = movement.field(c, starting),
+      runners = running.create(c);
+    running.plan(c, ball, runners, 0, true);
+    const forecast = structuredClone(runners);
+    for (const r of forecast)
+      r.progress = Math.min(
+        r.goal,
+        r.progress + (ball.fieldingTime * r.speed) / assumptions.baseMetres,
+      );
+    running.plan(c, ball, forecast, ball.fieldingTime, true);
+    const original = structuredClone(starting);
+    expect(engine.choose(c, ball, forecast, 0, starting).target).toBe(2);
+    expect(
+      engine.choose(c, ball, forecast, 0, starting, ball.fielder, "fielded", {
+        seconds: ball.fieldingTime,
+        runners,
+      }).target,
+    ).toBe("home");
+    expect(starting).toEqual(original);
+    const s = provider.generate(c);
+    expect(assignment(s, "1B")).toMatchObject({ type: "Relay", base: "home" });
+    const atFielding = sample(s, fieldedTime(s)).players.find(
+      (p) => p.id === "1B",
+    )!;
+    const remaining = Math.max(
+      0,
+      metres(starting["1B"], assignment(s, "1B").target) -
+        assumptions.defenderSpeed * ball.fieldingTime,
+    );
+    expect(metres(atFielding.position, assignment(s, "1B").target)).toBeCloseTo(
+      remaining,
+      4,
+    );
+  });
+  it.each(
+    [514, 530, 546].flatMap((x) => [124, 134, 154].map((y) => ({ x, y }))),
+  )(
+    "challenges the plate near $x,$y in standard and prevent strategies",
+    (point) => {
+      for (const strategy of ["standard", "prevent"] as const)
+        for (const outs of [0, 1, 2]) {
+          const c = makeCenter();
+          c.ball.destination = point;
+          c.state.strategy = strategy;
+          c.state.outs = outs;
+          const s = provider.generate(c);
+          expect(s.dynamic.ball.fielder).toBe("CF");
+          expect(s.dynamic.decisions[0].target).toBe("home");
+          expect(
+            s.dynamic.events.some(
+              (e) =>
+                e.type === "ThrowReceived" &&
+                e.player === "C" &&
+                e.base === "home",
+            ),
+          ).toBe(true);
+          expect(
+            s.dynamic.events.some(
+              (e) => e.type === "ThrowReceived" && e.player === "1B",
+            ),
+          ).toBe(true);
+          expect(assignment(s, "P")).toMatchObject({
+            type: "BackupThrow",
+            base: "home",
+          });
+          expect(assignment(s, "C")).toMatchObject({
+            type: "CoverBase",
+            base: "home",
+          });
+          expect(assignment(s, "2B")).toMatchObject({
+            type: "CoverBase",
+            base: 1,
+          });
+          expect(assignment(s, "SS")).toMatchObject({
+            type: "CoverBase",
+            base: 2,
+          });
+          expect(assignment(s, "3B")).toMatchObject({
+            type: "CoverBase",
+            base: 3,
+          });
+          auditAllNine(s);
+        }
+    },
+  );
+  it("labels the exact reported play as competitive and does not invent a guaranteed out", () => {
+    const s = provider.generate(makeCenter()),
+      d = s.dynamic.decisions[0];
+    const home = d.alternatives!.find((c) => c.target === "home")!;
+    expect(home).toMatchObject({
+      viable: false,
+      competitive: true,
+      reason: "competitive-home",
+    });
+    expect(home.ballArrival).toBeLessThan(home.runnerArrival);
+    expect(home.margin).toBeLessThan(0); // Tag allowance, not ball arrival, makes it close.
+    expect(formatDynamic(d.reason, "en")).toMatch(/tag timing is close/);
+    expect(formatDynamic(d.reason, "ja")).toMatch(/際どい/);
+    const receipt = s.dynamic.events.find(
+      (e) => e.type === "ThrowReceived" && e.player === "C",
+    )!;
+    const score = s.dynamic.events.find(
+      (e) => e.type === "RunScored" && e.player === "R2",
+    )!;
+    expect(receipt.time).toBeLessThan(score.time);
+    expect(score.time - receipt.time).toBeLessThan(assumptions.tagTime);
+    expect(s.dynamic.closePlays).toBeGreaterThan(0);
+  });
+  it("a normal second-base receiver immediately evaluates a subsequent home throw", () => {
+    const c = makeCenter();
+    c.ball.strength = "normal";
+    c.runnerSpeed = "average";
+    const s = provider.generate(c);
+    expect(s.dynamic.decisions.map((d) => d.target)).toEqual([2, "home"]);
+    const receipts = s.dynamic.events.filter((e) => e.type === "ThrowReceived");
+    expect(receipts.map((e) => e.player)).toEqual(["SS", "C"]);
+    expect(s.dynamic.decisions[1].time).toBe(receipts[0].time);
+    expect(s.dynamic.decisions[1].owner).toBe("SS");
+    const throwHome = s.dynamic.events.find(
+      (e) => e.type === "ThrowStarted" && e.player === "SS",
+    )!;
+    expect(throwHome.time - receipts[0].time).toBeCloseTo(
+      assumptions.transfer,
+      5,
+    );
+    const backup = sample(
+      s,
+      s.dynamic.decisions[1].time!,
+    ).phase.assignments!.find((a) => a.player === "P")!;
+    expect(backup).toMatchObject({ type: "BackupThrow", base: "home" });
+    auditAllNine(s);
+  });
+  it("does not chase a run that has already scored when BR can be challenged elsewhere", () => {
+    const c = makeCenter();
+    c.ball.strength = "soft";
+    const s = provider.generate(c);
+    expect(
+      s.dynamic.events.find((e) => e.type === "RunScored")!.time,
+    ).toBeLessThan(fieldedTime(s));
+    expect(s.dynamic.decisions[0].target).toBe(3);
+    expect(s.dynamic.decisions[0].runner).toBe("BR");
+    expect(
+      s.dynamic.events.some(
+        (e) => e.type === "ThrowStarted" && e.base === "home",
+      ),
+    ).toBe(false);
+    auditAllNine(s);
+  });
+  it("does not manufacture a scoring attempt for an R2 who holds third", () => {
+    const c = makeCenter();
+    c.runnerSpeed = "average";
+    const s = provider.generate(c);
+    expect(s.dynamic.decisions[0].target).toBe(2);
+    expect(
+      s.dynamic.decisions[0].alternatives!.some((c) => c.target === "home"),
+    ).toBe(false);
+    expect(sample(s, duration(s)).state.runners.R2).toBe(3);
+    auditAllNine(s);
+  });
+  it("keeps cutoff-and-hold and conservative overrides intact", () => {
+    const c = makeCenter();
+    c.throwTarget = "cutoff";
+    const s = provider.generate(c);
+    expect(
+      s.dynamic.events.filter((e) => e.type === "ThrowStarted"),
+    ).toHaveLength(1);
+    expect(
+      s.dynamic.events.some(
+        (e) => e.type === "ThrowReceived" && e.player === "C",
+      ),
+    ).toBe(false);
+    c.throwTarget = "auto";
+    c.state.strategy = "conservative";
+    expect(provider.generate(c).dynamic.decisions[0].target).toBe(2);
+  });
+});
+
+it("does not confuse a late tag third out with a run-cancelling force third out", () => {
+  const s = provider.generate(cases["center-home-close"]);
+  const frame = s.dynamic.diagnostics.find(
+    (f) => f.trigger === "Relay received / target reconsidered",
+  )!;
+  const locations = Object.fromEntries(
+    sample(s, frame.time).players.map((p) => [p.id, p.position]),
+  );
+  const d = engine.choose(
+    s.dynamic.settings,
+    { ...s.dynamic.ball, fieldingPoint: locations[frame.owner] },
+    frame.runners,
+    2,
+    locations,
+    frame.owner,
+    "received",
+  );
+  const home = d.alternatives!.find((c) => c.target === "home")!;
+  const second = d.alternatives!.find(
+    (c) => c.target === 2 && c.runner === "BR",
+  )!;
+  expect(home.preventsRun).toBe(true);
+  expect(second).toMatchObject({
+    force: false,
+    viable: true,
+    preventsRun: false,
+  });
+  expect(d.target).toBe("home");
+});
+
+it("credits a force third out with cancelling a run already across the plate", () => {
+  const c = structuredClone(cases["ground-short"]);
+  c.state.outs = 2;
+  c.state.runners = { R2: 2 };
+  const movement = new MovementEngine(),
+    locations = movement.starting(c),
+    ball = movement.field(c, locations);
+  locations[ball.fielder] = ball.fieldingPoint;
+  const runners = new BaserunningDecisionEngine().create(c);
+  Object.assign(
+    runners.find((r) => r.id === "R2")!,
+    { progress: 4, goal: 4, status: "scored" },
+  );
+  const decision = engine.choose(c, ball, runners, 2, locations);
+  expect(decision.target).toBe(1);
+  expect(decision.alternatives!.find((a) => a.target === 1)).toMatchObject({
+    force: true,
+    viable: true,
+    preventsRun: true,
+  });
 });
