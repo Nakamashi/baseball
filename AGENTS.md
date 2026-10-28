@@ -10,3 +10,5 @@
 - For simulator UI changes, also run `npm run test:dynamic:browser`.
 - For UI changes, run `npm run test:browser` with the dev server running and installed Chromium. Keep the field and transport controls visible together at common laptop and phone sizes, and preserve synchronized reading-panel navigation and step-by-step auto-pausing.
 - Use the existing checkout. Cloud tasks are isolated; do not create worktrees unless explicitly requested.
+
+- Defensive convention changes must update `docs/DEFENSIVE_AUDIT.md` and the all-nine tactical tests. Preserve the distinction between deliberate holding and a missing job; use `npm run audit:defense` to inspect routes, alternatives, priorities and late/unfulfilled coverage. Do not claim a modeled backup is ready when its receiving deadline says otherwise.

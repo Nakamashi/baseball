@@ -67,9 +67,28 @@ export class MovementEngine {
   }
   starting(settings: DynamicSettings): Record<Position, Point> {
     const result = structuredClone(defaults);
-    if (settings.state.strategy === "prevent" && settings.state.runners.R3) {
+    const s = settings.state;
+    const difference =
+      s.fieldingTeam === "home"
+        ? s.homeScore - s.awayScore
+        : s.awayScore - s.homeScore;
+    const infieldIn = s.strategy === "prevent" && !!s.runners.R3 && s.outs < 2;
+    const halfway =
+      s.strategy === "standard" &&
+      !!s.runners.R3 &&
+      s.outs < 2 &&
+      s.inning >= 4 &&
+      difference >= 0 &&
+      difference <= 1;
+    if (infieldIn || halfway) {
       for (const id of ["1B", "2B", "3B", "SS"] as const)
-        result[id] = mix(result[id], bases.home, 0.17);
+        result[id] = mix(result[id], bases.home, infieldIn ? 0.24 : 0.11);
+    } else {
+      if (s.runners.R1 && !s.runners.R2) result["1B"] = { x: 696, y: 558 };
+      if (s.runners.R1 && s.outs < 2) {
+        result["2B"] = { x: 575, y: 425 };
+        result.SS = { x: 425, y: 425 };
+      }
     }
     if (settings.state.strategy === "conservative") {
       for (const id of ["LF", "CF", "RF"] as const)

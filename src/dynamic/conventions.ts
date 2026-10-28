@@ -17,10 +17,15 @@ export const assumptions = {
   closeMargin: 0.45,
 };
 export const conventions = {
+  // Optional team convention: home protection always overrides this support job.
+  catcherBackupFirst: true,
+  backupDepth: 8,
+  secondaryBackupDepth: 13,
+  trailSeparation: 4,
   cutoff: { 1: "2B", 2: "2B", 3: "SS", home: "1B" } as Record<Base, Position>,
   coverage: {
     1: ["1B", "2B", "P", "SS", "3B", "C"],
-    2: ["2B", "SS", "P", "3B", "1B", "C"],
+    2: ["2B", "SS", "RF", "CF", "P", "3B", "1B", "C"],
     3: ["3B", "SS", "P", "2B", "1B", "C"],
     home: ["C", "P", "1B", "3B", "2B", "SS"],
   } as Record<Base, Position[]>,

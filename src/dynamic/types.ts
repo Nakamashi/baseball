@@ -21,6 +21,11 @@ export type AssignmentType =
   | "BackupThrow"
   | "HoldPosition"
   | "PrepareForThrow"
+  | "RecoverPosition"
+  | "ThrowBall"
+  | "PossessBall"
+  | "SupportBase"
+  | "TrailRunner"
   | "Communicate";
 export interface DynamicSettings {
   state: GameState & {
@@ -61,6 +66,79 @@ export interface DefensiveAssignment {
   teammate?: Position;
   replacesOn: string;
   explanation: string;
+  reason: AssignmentReason;
+  runner?: Runner;
+  /** Estimated seconds from this assignment snapshot; not a guarantee of readiness. */
+  arrivalTime?: number;
+  neededBy?: number;
+  throwOrigin?: Point;
+  receivingPoint?: Point;
+}
+export type AssignmentReason =
+  | "primary"
+  | "release"
+  | "possession"
+  | "receiver"
+  | "liveBase"
+  | "homeThreat"
+  | "cutoffLane"
+  | "relayLane"
+  | "fieldBackup"
+  | "wallSupport"
+  | "throwBackup"
+  | "catcherSupport"
+  | "homeGuard"
+  | "secondSupport"
+  | "trailing"
+  | "guardThird"
+  | "guardSpace"
+  | "complete";
+export interface AssignmentContext {
+  ballInFlight?: boolean;
+  receptionTimes?: Partial<Record<Position, number>>;
+  runners: OffensiveRunner[];
+  outs: number;
+}
+export interface CoverageIssue {
+  kind: "unfulfilled" | "late-backup" | "conflict" | "space-limited";
+  base?: Base;
+  player?: Position;
+  detail: string;
+}
+export interface ThrowRoute {
+  kind:
+    "direct" | "through-cutoff" | "relay" | "cutoff-hold" | "carry" | "hold";
+  target: Base | "hold";
+  from: Point;
+  receiver?: Position;
+  cutoff?: Position;
+  cutoffPoint?: Point;
+  legs: Position[];
+}
+export interface DefensiveLayout {
+  assignments: DefensiveAssignment[];
+  receiver?: Position;
+  cutoff?: Position;
+  route: ThrowRoute;
+  issues: CoverageIssue[];
+}
+export interface ThrowCandidate {
+  target: Base;
+  runner: Runner;
+  force: boolean;
+  runnerArrival: number;
+  ballArrival: number;
+  margin: number;
+  viable: boolean;
+  score: number;
+  reason:
+    | "timely-home"
+    | "third-out"
+    | "lead-force"
+    | "tag-opportunity"
+    | "too-late"
+    | "insufficient-margin";
+  route: ThrowRoute["kind"];
 }
 export interface DefensivePlayer {
   id: Position;
@@ -106,6 +184,9 @@ export interface ThrowDecision {
   margin?: number;
   reason: string;
   override: boolean;
+  alternatives?: ThrowCandidate[];
+  time?: number;
+  owner?: Position;
 }
 export interface SimulationMetadata {
   settings: DynamicSettings;
@@ -114,6 +195,18 @@ export interface SimulationMetadata {
   decisions: ThrowDecision[];
   closePlays: number;
   convention: string;
+  diagnostics: DefensiveAuditFrame[];
+}
+export interface DefensiveAuditFrame {
+  time: number;
+  trigger: string;
+  state: GameState;
+  runners: OffensiveRunner[];
+  owner: Position;
+  target: Base | "hold";
+  route: ThrowRoute;
+  assignments: DefensiveAssignment[];
+  issues: CoverageIssue[];
 }
 export interface DynamicScenario extends PlayScenario {
   dynamic: SimulationMetadata;

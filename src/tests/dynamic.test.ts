@@ -168,7 +168,11 @@ describe("fundamental baseball decisions", () => {
     expect(a.dynamic.events.filter((e) => e.type === "RunnerOut")).toHaveLength(
       0,
     );
-    expect(sample(b, duration(b)).state.runners.R1).toBe(3);
+    expect(
+      b.dynamic.events.some(
+        (e) => e.type === "RunnerOut" && e.player === "R1" && e.base === 3,
+      ),
+    ).toBe(true);
     expect(sample(a, duration(a)).state.runners.R1).toBe(2);
     expect(a).not.toEqual(b);
   });
@@ -204,7 +208,13 @@ describe("fundamental baseball decisions", () => {
     expect(isForced(r2, r, 3)).toBe(true);
     r.find((r) => r.id === "R1")!.status = "out";
     expect(isForced(r2, r, 3)).toBe(false);
-    expect(isForced(r.find((r) => r.id === "BR")!, r, 2)).toBe(false);
+    expect(
+      isForced(
+        r.find((r) => r.id === "BR")!,
+        r,
+        2,
+      ),
+    ).toBe(false);
   });
   it("recalculates coverage, paths and runner consequences for a coach override", () => {
     const a = make(),
@@ -216,7 +226,7 @@ describe("fundamental baseball decisions", () => {
       b.dynamic.events
         .filter((e) => e.type === "ThrowReceived")
         .map((e) => e.player),
-    ).toEqual(["1B", "C"]);
+    ).toEqual(["C"]);
     expect(sample(b, duration(b)).state.runners.BR).toBe(2);
     expect(sample(a, duration(a)).state.runners.BR).toBe(1);
     expect(
@@ -505,14 +515,14 @@ describe("varied deterministic inputs", () => {
   });
 });
 describe("coverage and tag positioning regressions", () => {
-  it("uses CF to back up RF without sending LF across the whole outfield", () => {
+  it("uses CF for the batted ball and LF for the throw toward second", () => {
     const s = make(),
       contact = s.phases.find((p) => p.title === "Contact")!;
     expect(contact.assignments!.find((a) => a.player === "CF")?.type).toBe(
       "BackupFielder",
     );
     expect(contact.assignments!.find((a) => a.player === "LF")?.type).toBe(
-      "HoldPosition",
+      "BackupThrow",
     );
   });
   it("never replaces 1B fielding with base coverage before the ball is secured", () => {

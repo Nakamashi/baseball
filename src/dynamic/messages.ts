@@ -2,6 +2,37 @@ import type { Locale } from "../i18n/ui";
 // Generated plays carry typed message references. Formatting belongs to the display
 // boundary, so changing languages never changes paths, decisions or timestamps.
 const english = {
+  recoverHomeAction:
+    "Return toward the catching position, watch home, and direct the defense.",
+  wallBackupAction:
+    "Support {player} from inside the field near the fence; leave room to receive the ball.",
+  wallBackupWhy:
+    "The fence leaves no useful space behind the fielding point. Support from a safe nearby position instead of crowding the fielder or crossing the fence.",
+  backupReceiverAction:
+    "Back up {player} beyond the receiving point for the throw toward {base}.",
+  homeGuardWhy:
+    "Keep home protected and direct the defense. There is no higher-priority backup job requiring you to leave the plate.",
+  releaseAction: "Complete the throw and watch the receiver and runners.",
+  releaseWhy:
+    "The ball is in flight. Stay available for the next supporting assignment; possession now depends on the receiver.",
+  liveBaseWhy:
+    "A live runner can reach or return to this base. Maintain coverage until that threat passes.",
+  homeThreatWhy:
+    "A runner can threaten home. Protect the plate and direct the defense rather than leave for a distant backup.",
+  catcherBackupWhy:
+    "Home has no immediate scoring threat. In this team's optional convention, move up the first-base foul side to support the routine throw; return if the scoring threat changes.",
+  secondSupportWhy:
+    "The adjacent outfielder supports the batted ball. You support a possible throw into second and adjust when the target or coverage changes.",
+  trailWhy:
+    "BR has passed first and no return to first needs coverage. Trail outside the running lane toward second; a receiving, cutoff, or live-base duty takes priority.",
+  guardThirdWhy:
+    "No immediate runner or throw requires third. Hold your ground, guard the third-base side, and communicate a developing threat.",
+  completeWhy:
+    "The play is complete or the third out has ended live action. Stop and prepare for the next situation.",
+  supportBaseAction: "Move toward support behind a possible throw into {base}.",
+  trailAction: "Trail {runner} toward second from outside the running lane.",
+  trailNext:
+    "Watch the runner and ball. Be ready to support a throw behind the runner; do not obstruct the basepath.",
   tag: "The receiver has the ball and prepares the tag as {runner} reaches {base}. Touching the base alone is not an out.",
   forceOut:
     "Force out: {runner} is retired at {base} with possession on the base.",
@@ -85,7 +116,7 @@ const english = {
   targetSure: "Take a feasible out. With two outs, one secure out is enough.",
   targetForce:
     "Use the available lead force out, then evaluate another throw if time remains.",
-  targetHome: "A timely play at home can prevent the critical run.",
+  targetHome: "A realistically timed play at home can prevent a run.",
   targetReturn:
     "Return the ball to the infield and protect against an extra base; do not force a hopeless throw.",
   targetHold: "Keep the ball secure rather than make an unnecessary throw.",
@@ -96,7 +127,7 @@ const english = {
   model:
     "Timing uses a 27.43 m basepath, youth running and throwing assumptions, and deterministic estimates. This is a teaching model, not an outcome prediction.",
   convention:
-    "Default convention: 1B cuts throws home, SS cuts throws to third, and 2B cuts returns to second. Other infielders cover vacated bases; the pitcher backs up when free.",
+    "Team convention: 1B cuts throws home; SS cuts throws to third; the ball-side middle infielder cuts to second. Cover live threats, align backups with the throw, and reassess after each event.",
   alternative:
     "Change the throwing target, aggression, strength, or hit location and generate again to compare a different tactical response.",
   unsupported:
@@ -108,6 +139,36 @@ const english = {
 };
 export type DynamicMessageKey = keyof typeof english;
 const japanese: Record<DynamicMessageKey, string> = {
+  recoverHomeAction: "捕手の位置へ戻り、本塁を確認して味方に指示します。",
+  wallBackupAction:
+    "フェンス付近のグラウンド内から{player}を支え、捕球する空間を空けます。",
+  wallBackupWhy:
+    "捕球地点の後ろにはフェンスがあり、十分な空間がありません。捕球役に近づきすぎたりフェンスを越えたりせず、安全な近くの位置で支えます。",
+  backupReceiverAction:
+    "{base}へ向かう送球で、{player}の捕球地点の後方をバックアップします。",
+  homeGuardWhy:
+    "本塁を守り、味方に指示します。今は本塁を離れて優先すべきバックアップはありません。",
+  releaseAction: "送球動作を終え、受け手と走者を確認します。",
+  releaseWhy: "ボールは送球中です。捕球は受け手に任せ、次の役割に備えます。",
+  liveBaseWhy:
+    "走者がこの塁へ進む、または戻る可能性があります。その必要がなくなるまでカバーを続けます。",
+  homeThreatWhy:
+    "本塁を狙える走者がいます。遠くのバックアップへ離れず、本塁を守って味方に指示します。",
+  catcherBackupWhy:
+    "すぐに生還できる走者はいません。このチームの選択する分担では、一塁側のファウル地域を進んで送球を支えます。生還の危険が生じたら本塁へ戻ります。",
+  secondSupportWhy:
+    "隣の外野手が打球を支えます。あなたは二塁への送球を支え、送球先やカバーの変化に合わせて動きます。",
+  trailWhy:
+    "BRは一塁を通過し、一塁への帰塁を守る必要もありません。走路の外を二塁方向へ追います。捕球・中継・必要な塁のカバーを優先します。",
+  guardThirdWhy:
+    "今は三塁への走者や送球に対応する必要がありません。その場で三塁側を守り、新しい危険を声で伝えます。",
+  completeWhy:
+    "プレーが終わったか、第3アウトで動きが止まりました。次の状況に備えます。",
+  supportBaseAction:
+    "{base}への送球に備え、受け手の後方を支える位置へ動きます。",
+  trailAction: "走路の外を通り、{runner}を二塁方向へ追って支えます。",
+  trailNext:
+    "走者とボールを見ます。走者の後ろへの送球を支える準備をし、走路を妨げません。",
   tag: "受け手はボールを保持し、{runner}が{base}へ来るのに合わせてタッチを準備します。ベースに触れるだけではアウトになりません。",
   forceOut:
     "フォースアウト：{base}でボールを保持してベースに触れ、{runner}をアウトにしました。",
@@ -183,7 +244,7 @@ const japanese: Record<DynamicMessageKey, string> = {
     "確実に取れるアウトを狙います。2アウトならあと一つで攻守交代です。",
   targetForce:
     "先行走者のフォースアウトを狙い、時間が残れば次の送球を判断します。",
-  targetHome: "間に合う本塁のプレーで、重要な失点を防ぎます。",
+  targetHome: "間に合う見込みの本塁のプレーで、失点を防ぎます。",
   targetReturn:
     "内野へ返球し、余分な進塁を防ぎます。間に合わない送球は無理に狙いません。",
   targetHold: "不要な送球をせず、ボールを確実に保持します。",
@@ -194,7 +255,7 @@ const japanese: Record<DynamicMessageKey, string> = {
   model:
     "塁間27.43mと少年野球向けの走力・送球の仮定で時間を計算します。学習用のモデルであり、試合結果の予測ではありません。",
   convention:
-    "中継の基本分担：本塁へは1B、三塁へはSS、二塁へは2Bがカット役です。ほかの内野手が空いた塁を守り、投手は可能ならバックアップに入ります。",
+    "このチームの分担：本塁へは1B、三塁へはSS、二塁へは打球側の二遊間がカット役です。必要な塁を守り、送球に合わせてバックアップし、状況の変化ごとに判断し直します。",
   alternative:
     "送球先、走者の積極性、打球の強さ、位置を変えて再生成し、別の守備対応を比べましょう。",
   unsupported:

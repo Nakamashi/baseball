@@ -6,15 +6,19 @@ import type {
   Point,
   Position,
 } from "../simulation/types";
-import { positions } from "../simulation/types";
 import { MovementEngine } from "./movement";
 import { BaserunningDecisionEngine } from "./baserunning";
-import { DefensiveDecisionEngine, ThrowingEngine, isForced } from "./defense";
+import { DefensiveDecisionEngine, isForced } from "./defense";
 import { TimelineBuilder } from "./timelineBuilder";
 import { assumptions, recommendStrategy } from "./conventions";
 import { bases, isPlayable, isOutfield, metres, runnerPoint } from "./geometry";
 import { message as m } from "./messages";
-import type { DynamicScenario, DynamicSettings, ThrowDecision } from "./types";
+import type {
+  DynamicScenario,
+  DynamicSettings,
+  ThrowDecision,
+  DefensiveAuditFrame,
+} from "./types";
 export function defaultSettings(): DynamicSettings {
   return {
     state: {
@@ -116,8 +120,7 @@ export class DynamicPlayProvider implements PlayProvider {
     });
     const movement = new MovementEngine(),
       running = new BaserunningDecisionEngine(),
-      defense = new DefensiveDecisionEngine(),
-      throwing = new ThrowingEngine();
+      defense = new DefensiveDecisionEngine();
     const starting = movement.starting(settings),
       ball = movement.field(settings, starting),
       runners = running.create(settings);
@@ -132,23 +135,106 @@ export class DynamicPlayProvider implements PlayProvider {
       startingPositions,
       runners,
     );
-    const decisions: ThrowDecision[] = [];
+    const decisions: ThrowDecision[] = [],
+      diagnostics: DefensiveAuditFrame[] = [];
     let closePlays = 0,
-      owner = ball.fielder;
-    const provisional =
-      settings.throwTarget === "auto" || settings.throwTarget === "cutoff"
-        ? settings.state.strategy === "prevent" && settings.state.runners.R3
-          ? "home"
-          : 2
-        : settings.throwTarget;
-    let layout = defense.assign(
+      owner = ball.fielder,
+      inFlight = false;
+    running.plan(settings, ball, runners, 0, true);
+    // Anticipate from the same decision rules, using projected runner positions.
+    // This gets backups moving at contact rather than after the throw is released.
+    const forecast = structuredClone(runners);
+    for (const r of forecast) {
+      const change = (ball.fieldingTime * r.speed) / assumptions.baseMetres;
+      r.progress +=
+        Math.sign(r.goal - r.progress) *
+        Math.min(Math.abs(r.goal - r.progress), change);
+      if (r.progress >= 4) r.status = "scored";
+    }
+    let activeTarget = defense.choose(
       settings,
       ball,
+      forecast,
+      builder.state.outs,
+      { ...starting, [owner]: ball.fieldingPoint },
+    ).target;
+    let activeBall = ball;
+    let deadlines: Partial<Record<Position, number>> = {};
+    let stage: "contact" | "fielded" | "received" | "complete" = "contact";
+    let layout = defense.assign(
+      settings,
+      activeBall,
       owner,
-      provisional,
+      activeTarget,
       builder.locations,
+      stage,
+      {
+        runners,
+        outs: builder.state.outs,
+        ballInFlight: inFlight,
+        receptionTimes: Object.fromEntries(
+          Object.entries(deadlines).map(([p, t]) => [
+            p,
+            Math.max(0, t! - builder.time),
+          ]),
+        ),
+      },
     );
-    builder.assignments = layout.assignments;
+    const reassess = (trigger: string) => {
+      layout = defense.assign(
+        settings,
+        activeBall,
+        owner,
+        activeTarget,
+        builder.locations,
+        stage,
+        {
+          runners,
+          outs: builder.state.outs,
+          ballInFlight: inFlight,
+          receptionTimes: Object.fromEntries(
+            Object.entries(deadlines).map(([p, t]) => [
+              p,
+              Math.max(0, t! - builder.time),
+            ]),
+          ),
+        },
+      );
+      builder.assignments = layout.assignments;
+      diagnostics.push(
+        structuredClone({
+          time: builder.time,
+          trigger,
+          state: {
+            ...builder.state,
+            phase: trigger,
+            ballStatus: inFlight
+              ? "throwing"
+              : stage === "contact"
+                ? builder.time < 1
+                  ? "ready"
+                  : "rolling"
+                : stage === "complete"
+                  ? "complete"
+                  : "held",
+          },
+          runners,
+          owner,
+          target: activeTarget,
+          route: layout.route,
+          assignments: layout.assignments,
+          issues: layout.issues,
+        }),
+      );
+    };
+    const record = (decision: ThrowDecision) => {
+      decision.time = builder.time;
+      decision.owner = owner;
+      decisions.push(decision);
+      return decision;
+    };
+    builder.reassess = reassess;
+    reassess("Initial contact plan");
     builder.interval(
       "Ready",
       m("ready"),
@@ -156,7 +242,6 @@ export class DynamicPlayProvider implements PlayProvider {
       { kind: "held", owner: "P" },
       false,
     );
-    running.plan(settings, ball, runners, 0, true);
     builder.event("BallContact", m("contact", { fielder: owner }));
     builder.interval(
       "Contact",
@@ -171,6 +256,7 @@ export class DynamicPlayProvider implements PlayProvider {
     );
     builder.event("BallFielded", m("fielded", { fielder: owner }), owner);
     ball.status = "fielded";
+    stage = "fielded";
     running.plan(settings, ball, runners, builder.liveTime, true);
     let decision = defense.choose(
       settings,
@@ -179,173 +265,213 @@ export class DynamicPlayProvider implements PlayProvider {
       builder.state.outs,
       builder.locations,
     );
-    decisions.push(decision);
-    const performThrow = (next: ThrowDecision, second = false) => {
-      const target = next.target;
-      if (target === "hold") return;
-      const currentBall = { ...ball, fieldingPoint: builder.locations[owner] };
-      layout = defense.assign(
-        settings,
-        currentBall,
-        owner,
-        target,
-        builder.locations,
-        "fielded",
+    // A throw toward a lead runner can open an extra base for a trailing runner.
+    // Preserve committed goals here; retreat is a separate cutoff decision.
+    if (decision.target !== "hold") {
+      const committed = new Map(runners.map((r) => [r.id, r.goal]));
+      running.plan(
+        { ...settings, throwTarget: decision.target },
+        ball,
+        runners,
+        builder.liveTime,
+        true,
       );
-      builder.assignments = layout.assignments;
-      const receiver = layout.receiver!;
-      let cutoff = second ? undefined : layout.cutoff;
-      const legs: Position[] = cutoff ? [cutoff, receiver] : [receiver];
-      if (settings.throwTarget === "cutoff" && !second && cutoff) legs.pop();
-      for (const to of legs) {
-        if (builder.state.outs >= 3) break;
-        const destination = builder.assignments.find(
-          (a) => a.player === to,
-        )!.target;
-        const distance = metres(builder.locations[owner], destination);
-        const flight =
-          distance / assumptions.throwSpeed + assumptions.catchTime;
-        const receiverTime =
-          metres(builder.locations[to], destination) /
-          assumptions.defenderSpeed;
-        const prepare = Math.max(assumptions.transfer, receiverTime - flight);
-        const carrying = owner === to;
+      for (const r of runners) {
+        r.goal = Math.max(committed.get(r.id)!, r.goal);
+        r.decision =
+          r.progress < r.goal
+            ? "advance"
+            : r.progress > r.goal
+              ? "retreat"
+              : "hold";
+      }
+      decision = defense.choose(
+        settings,
+        ball,
+        runners,
+        builder.state.outs,
+        builder.locations,
+      );
+    }
+    record(decision);
+    const performThrow = (next: ThrowDecision, directOnly = false): void => {
+      const target = next.target;
+      activeTarget = target;
+      deadlines = {};
+      activeBall = { ...ball, fieldingPoint: builder.locations[owner] };
+      stage = directOnly ? "received" : "fielded";
+      reassess("Ball secured / throwing target selected");
+      if (target === "hold") {
+        builder.interval("Field & decide", next.reason, 0.4, {
+          kind: "held",
+          owner,
+        });
+        return;
+      }
+      const plan = layout;
+      const firstRoute = {
+        ...plan,
+        route: { ...plan.route, legs: plan.route.legs.slice(0, 1) },
+      };
+      if (plan.route.legs[0])
+        deadlines[plan.route.legs[0]] =
+          builder.time + defense.arrival(firstRoute, builder.locations, owner);
+      if (plan.receiver && plan.route.kind !== "cutoff-hold")
+        deadlines[plan.receiver] =
+          builder.time + defense.arrival(plan, builder.locations, owner);
+      reassess("Throw timing established");
+      // A through-cutoff throw travels directly to the base. A relay or a
+      // deliberate cutoff-and-hold really changes possession at the cutoff.
+      const to = plan.route.legs[0];
+      if (!to) return;
+      const destination = plan.assignments.find((a) => a.player === to)!.target;
+      const carrying = owner === to;
+      const flight =
+        metres(builder.locations[owner], destination) / assumptions.throwSpeed +
+        assumptions.catchTime;
+      const receiverTime =
+        metres(builder.locations[to], destination) / assumptions.defenderSpeed;
+      const cutoffWait =
+        plan.route.kind === "through-cutoff" && plan.cutoff
+          ? metres(builder.locations[plan.cutoff], plan.route.cutoffPoint!) /
+              assumptions.defenderSpeed -
+            metres(builder.locations[owner], plan.route.cutoffPoint!) /
+              assumptions.throwSpeed
+          : 0;
+      const prepare = Math.max(
+        assumptions.transfer,
+        carrying ? 0 : receiverTime - flight,
+        cutoffWait,
+      );
+      builder.interval(
+        "Field & decide",
+        m(carrying ? "carry" : "prepare", { base: target }),
+        prepare,
+        { kind: "held", owner },
+      );
+      if (carrying) {
         builder.interval(
           "Field & decide",
-          m(carrying ? "carry" : "prepare", { base: target }),
-          prepare,
+          m("carry", { base: target }),
+          Math.max(
+            0.12,
+            metres(builder.locations[owner], bases[target]) /
+              assumptions.defenderSpeed,
+          ),
           { kind: "held", owner },
         );
-        if (!carrying)
-          builder.event(
-            "ThrowStarted",
-            m("throw", { from: owner, to }),
-            owner,
-            target,
-          );
-        if (owner === to) {
-          builder.assignments.find((a) => a.player === owner)!.target =
-            bases[target];
-          builder.interval(
-            "Field & decide",
-            m("carry", { base: target }),
-            Math.max(
-              0.12,
-              metres(builder.locations[owner], bases[target]) /
-                assumptions.defenderSpeed,
-            ),
-            { kind: "held", owner },
-          );
-        } else
-          builder.interval("Throw", m("throw", { from: owner, to }), flight, {
-            kind: "travel",
-            path: [builder.locations[owner], destination],
-            style: "throw",
-            receiver: to,
-          });
-        const previousOwner = builder.assignments.find(
-          (a) => a.player === owner,
-        );
-        if (previousOwner && owner !== to) {
-          previousOwner.type = "HoldPosition";
-          previousOwner.priority = 20;
-          previousOwner.target = builder.locations[owner];
-        }
-        owner = to;
+      } else {
         builder.event(
-          carrying ? "BaseTouched" : "ThrowReceived",
-          m(carrying ? "carry" : "received", { player: owner, base: target }),
+          "ThrowStarted",
+          m("throw", { from: owner, to }),
           owner,
           target,
         );
-        if (to === cutoff && to !== receiver) {
-          running.reconsider(
-            settings,
-            runners,
-            target,
-            builder.locations[owner],
-          );
-          // The cutoff's immediate assignment becomes the next throw, while all base
-          // coverage and backups remain attached to their unique players.
-          const a = builder.assignments.find((a) => a.player === owner)!;
-          a.target = builder.locations[owner];
+        // Reaffirm the support plan at release, preserving this flight's lane.
+        inFlight = true;
+        reassess("ThrowStarted");
+        builder.interval("Throw", m("throw", { from: owner, to }), flight, {
+          kind: "travel",
+          path: [builder.locations[owner], destination],
+          style: "throw",
+          receiver: to,
+        });
+      }
+      inFlight = false;
+      owner = to;
+      builder.event(
+        carrying ? "BaseTouched" : "ThrowReceived",
+        m(carrying ? "carry" : "received", { player: owner, base: target }),
+        owner,
+        target,
+      );
+      activeBall = { ...ball, fieldingPoint: builder.locations[owner] };
+      stage = "received";
+      if (to === plan.cutoff && plan.route.kind !== "through-cutoff") {
+        running.reconsider(settings, runners, target, builder.locations[owner]);
+        if (plan.route.kind === "cutoff-hold") {
+          activeTarget = "hold";
+          reassess("Cutoff holds the ball");
           builder.interval("Receive", m("received", { player: owner }), 0.15, {
             kind: "held",
             owner,
           });
-          continue;
+          return;
         }
-        const base = target === "home" ? 4 : target;
-        const runner = next.runner
-          ? runners.find((r) => r.id === next.runner)
-          : runners.find(
-              (r) =>
-                r.status === "active" && r.goal >= base && r.progress < base,
-            );
-        if (runner && runner.status === "active") {
-          const force = isForced(runner, runners, base);
-          const remaining =
-            ((base - runner.progress) * assumptions.baseMetres) / runner.speed;
-          const crossing = builder.events.find(
-            (e) =>
-              e.type === "RunnerAdvanced" &&
-              e.player === runner.id &&
-              e.base === target,
-          );
-          const margin = crossing
-            ? crossing.time - builder.time - (force ? 0 : assumptions.tagTime)
-            : remaining - (force ? 0 : assumptions.tagTime);
-          if (Math.abs(margin) < assumptions.closeMargin) closePlays++;
-          if (!force) {
-            // A tag out requires the runner to enter the receiver's reach. An
-            // early throw is not itself a tag. Stop just short of the base only
-            // when the receiver had enough time to prepare the tag.
-            const attempting =
-              runner.goal >= base && runner.decision !== "retreat";
-            const wait =
-              attempting && remaining > assumptions.tagTime + 0.02
-                ? Math.max(assumptions.tagTime, remaining - 0.08)
-                : assumptions.tagTime;
-            builder.interval(
-              "Receive",
-              m("tag", { runner: runner.id, base: target }),
-              wait,
-              { kind: "held", owner },
-            );
-          }
-          if (
-            runner.progress < base - 0.00001 &&
-            runner.goal >= base &&
-            runner.decision !== "retreat"
-          )
-            builder.retire(runner.id, target, force);
-        }
-        const a = builder.assignments.find((a) => a.player === owner)!;
-        a.type = "PrepareForThrow";
-        a.target = builder.locations[owner];
-        builder.interval("Receive", m("received", { player: owner }), 0.18, {
+        // One long relay, followed by a direct final leg. The relay can redirect
+        // or hold when the original out has disappeared; no arbitrary extra relay.
+        const redirect =
+          settings.throwTarget === "auto"
+            ? defense.choose(
+                settings,
+                activeBall,
+                runners,
+                builder.state.outs,
+                builder.locations,
+                owner,
+                "received",
+              )
+            : next;
+        if (redirect.target !== next.target || redirect.runner !== next.runner)
+          record(redirect);
+        activeTarget = redirect.target;
+        reassess("Relay received / target reconsidered");
+        builder.interval("Receive", m("received", { player: owner }), 0.15, {
           kind: "held",
           owner,
         });
+        performThrow(redirect, true);
+        return;
       }
-    };
-    if (decision.target !== "hold") performThrow(decision);
-    else {
-      builder.assignments = defense.assign(
-        settings,
-        ball,
-        owner,
-        "hold",
-        builder.locations,
-        "fielded",
-      ).assignments;
-      builder.interval("Field & decide", m("targetHold"), 0.4, {
+      reassess("Base receiver has possession");
+      const base = target === "home" ? 4 : target;
+      const runner = next.runner
+        ? runners.find((r) => r.id === next.runner)
+        : runners.find(
+            (r) => r.status === "active" && r.goal >= base && r.progress < base,
+          );
+      if (runner && runner.status === "active") {
+        const force = isForced(runner, runners, base);
+        const remaining =
+          ((base - runner.progress) * assumptions.baseMetres) / runner.speed;
+        const crossing = builder.events.find(
+          (e) =>
+            e.type === "RunnerAdvanced" &&
+            e.player === runner.id &&
+            e.base === target,
+        );
+        const margin = crossing
+          ? crossing.time - builder.time - (force ? 0 : assumptions.tagTime)
+          : remaining - (force ? 0 : assumptions.tagTime);
+        if (Math.abs(margin) < assumptions.closeMargin) closePlays++;
+        if (!force) {
+          const attempting =
+            runner.goal >= base && runner.decision !== "retreat";
+          const wait =
+            attempting && remaining > assumptions.tagTime + 0.02
+              ? Math.max(assumptions.tagTime, remaining - 0.08)
+              : assumptions.tagTime;
+          builder.interval(
+            "Receive",
+            m("tag", { runner: runner.id, base: target }),
+            wait,
+            { kind: "held", owner },
+          );
+        }
+        if (
+          runner.progress < base - 0.00001 &&
+          runner.goal >= base &&
+          runner.decision !== "retreat"
+        )
+          builder.retire(runner.id, target, force);
+      }
+      reassess("Receive / tag resolved");
+      builder.interval("Receive", m("received", { player: owner }), 0.18, {
         kind: "held",
         owner,
       });
-    }
-    // Attempt a second out only after securing a lead force, and only while there
-    // is still time. With two outs initially, the first out ends all live decisions.
+    };
+    performThrow(decision);
     const br = runners.find((r) => r.id === "BR")!;
     if (
       settings.ball.type === "Ground ball" &&
@@ -356,23 +482,47 @@ export class DynamicPlayProvider implements PlayProvider {
       br.progress < 1 &&
       decision.target !== 1
     ) {
+      const currentBall = { ...ball, fieldingPoint: builder.locations[owner] };
+      const secondPlan = defense.assign(
+        settings,
+        currentBall,
+        owner,
+        1,
+        builder.locations,
+        "received",
+        {
+          runners,
+          outs: builder.state.outs,
+          ballInFlight: inFlight,
+          receptionTimes: Object.fromEntries(
+            Object.entries(deadlines).map(([p, t]) => [
+              p,
+              Math.max(0, t! - builder.time),
+            ]),
+          ),
+        },
+      );
       const margin =
         ((1 - br.progress) * assumptions.baseMetres) / br.speed -
-        throwing.arrival(builder.locations[owner], bases[1]);
+        defense.arrival(secondPlan, builder.locations, owner);
       if (margin > -0.35) {
-        decision = {
+        decision = record({
           target: 1,
           runner: "BR",
           force: true,
           margin,
           reason: m("targetForce"),
           override: false,
-        };
-        decisions.push(decision);
+        });
         performThrow(decision, true);
       }
     }
     if (builder.state.outs < 3) {
+      activeTarget = "hold";
+      deadlines = {};
+      activeBall = { ...ball, fieldingPoint: builder.locations[owner] };
+      stage = "received";
+      reassess("Runners finishing / no further throw");
       const remaining = Math.max(
         0,
         ...runners
@@ -400,6 +550,8 @@ export class DynamicPlayProvider implements PlayProvider {
       safe: Object.keys(builder.state.runners).length,
     });
     builder.event("PlayCompleted", result);
+    stage = "complete";
+    reassess("PlayCompleted");
     builder.interval("Outcome", result, 1, { kind: "held", owner }, false);
     return {
       id: "dynamic",
@@ -436,6 +588,7 @@ export class DynamicPlayProvider implements PlayProvider {
         events: builder.events,
         decisions,
         closePlays,
+        diagnostics,
         convention: m("convention"),
       },
     };

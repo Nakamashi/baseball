@@ -37,6 +37,7 @@ export class TimelineBuilder {
   state: GameState;
   locations: Record<string, Point>;
   runners: OffensiveRunner[];
+  reassess?: (trigger: string) => void;
   constructor(
     state: GameState,
     starting: Record<string, Point>,
@@ -210,12 +211,14 @@ export class TimelineBuilder {
       if (run) this.liveTime += dt;
       remaining = Math.max(0, remaining - dt);
       elapsed += dt;
+      let crossedBase = false;
       for (const [r, progress] of nextProgress) {
         const before = r.progress;
         r.progress = round(progress);
         if (Math.abs(r.progress - Math.round(r.progress)) < 0.00001)
           r.progress = Math.round(r.progress);
         if (r.progress !== before && Number.isInteger(r.progress)) {
+          crossedBase = true;
           const base: Base =
             r.progress === 4 ? "home" : (r.progress as 1 | 2 | 3);
           if (r.decision === "retreat") {
@@ -244,6 +247,7 @@ export class TimelineBuilder {
           }
         }
       }
+      if (crossedBase) this.reassess?.("RunnerAdvanced or RunnerRetreated");
     }
   }
   retire(runner: Runner, base: Base, force: boolean) {
@@ -271,5 +275,6 @@ export class TimelineBuilder {
         this.pendingRuns = 0;
       }
     }
+    this.reassess?.("RunnerOut");
   }
 }

@@ -37,29 +37,15 @@ Established runners begin with a small schematic lead (0.08 of a basepath). The 
 
 Change assumptions centrally, then run the tactical tests. Do not alter scoring or safe/out results directly to produce a desired animation.
 
-## Responsibilities and conflicts
+## Responsibilities and defensive decisions
 
-`defense.ts` gives each defender one primary assignment. Priority order is fielding/possession, the imminent receiving base, necessary cutoff/relay, remaining base coverage, imminent backup, then supporting position. A deterministic reservation map resolves conflicting roles. Reassigned players do not keep two simultaneous targets.
+The defensive fundamentals audit in [DEFENSIVE_AUDIT.md](DEFENSIVE_AUDIT.md) defines the adopted team system, all-nine position review, corrections, validation matrix, diagnostics commands and remaining limitations. It supersedes the earlier unconditional coverage and always-received cutoff conventions.
 
-The assignment stores its type, target, priority, supported base/teammate, explanation and replacement events. It drives both the movement target and coaching text. Nonessential movement stops when the ball is secured; the old thrower returns to support, the cutoff becomes the next ball holder, and base receivers remain at their targets. Each phase snapshots assignments rather than referring to a mutable future plan.
+The engine reserves one active job per player, driven by live threats, the selected throwing route, receiver readiness and backup availability. Assignments are reassessed at contact, fielding, throw release, receipt, runner-base crossings, outs and completion. Deliberate holding is stationary; supporting, trailing, receiving, fielding and backup assignments drive actual movement. Each phase snapshots the assignments for deterministic playback and complete English/Japanese explanations.
 
-The default convention is intentionally one coaching system, not a universal rule:
+The ball-side middle infielder cuts returns toward second; SS cuts toward third; 1B cuts toward home. Other players cover necessary vacated bases. A throw may travel directly, pass through a cutoff, use an actual long relay, stop at a cutoff, or be carried to a nearby base. Backups extend the actual incoming lane behind the receiving point, including a relay receiver. Arrival/deadline and limited-space issues are available through developer JSON diagnostics.
 
-- 1B cuts outfield throws home; 2B can cover first, SS covers second, C covers home, and P backs up home.
-- SS cuts throws toward third; 3B covers third, 2B covers second, and P backs up third when free.
-- 2B cuts returns toward second, with SS receiving at second when a separate cutoff is needed.
-- Long throws use a relay assignment and two actual throwing legs. A shorter cutoff return may also be received and redirected, or held on the coach's instruction.
-- A backup target lies beyond the receiver on the throwing line. Outfielders back up a fielding attempt without sending the entire defense toward the ball. Other players maintain useful support.
-
-The coverage preferences and cutoff maps are separated in `conventions.ts`. Future team-specific settings can replace them without modifying the renderer or path interpolation.
-
-## Defensive decisions
-
-At contact, the defense anticipates coverage and a likely return target. At fielding, the engine reevaluates forces and advancing runners using remaining running time versus estimated throwing time. It prefers an available lead force with fewer than two outs, a feasible out with two outs, or a timely critical home play under run-prevention strategy. Conservative defense requires a larger timing advantage. If there is no useful out, the ball is returned to the infield or held.
-
-A lead force can lead to a second throw only when outs remain and there is a plausible timing window. Successful double plays are not assumed. At three outs, live running and further throwing decisions stop.
-
-The late/close-game recommendation is a simple rule for innings six onward with a critical runner at third and fewer than two outs. The coach can override it. There are no win probabilities or professional strategy models.
+Throw comparisons consider each base an advancing runner is actually attempting, including home, rather than only the next base. Actual route/receiver time, force versus tag, outs and game context determine the choice. Realistic run prevention matters under standard strategy too; hopeless home throws cannot outrank available outs. A secure third force out has appropriate value under the run-scoring rules. A second throw remains conditional on time and outs, and live action stops at three outs.
 
 ## Baserunning
 
