@@ -1,5 +1,14 @@
 # Continuous ball motion and coordinated defense
 
+October 29 sliding approach: established runners stopping at second or third use a
+short final braking zone (effective deceleration 20 m/s²). Running acceleration,
+speed profiles, contact reactions, airborne reads and retouches are unchanged.
+This is simplified slide timing, not measured friction or a sliding animation.
+Predictions and compiled samples share the same plan, ending at the bag with zero
+velocity. Average R1 reaches second from a 2.19 m lead in 4.705 s after contact,
+versus 5.160 s, including 0.25 s reaction. Some deceleration remains, unlike the
+4.532 s unrestricted crossing estimate.
+
 > Thrown-ball update (October 29): [THROWING_RELAYS.md](THROWING_RELAYS.md) describes
 > the current gravity/linear-drag throwing model and bounded two-relay routes.
 > The historical constant-speed throwing limitation below is superseded.

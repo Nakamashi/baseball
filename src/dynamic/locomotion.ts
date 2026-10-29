@@ -45,6 +45,7 @@ export function speedPlan(
   acceleration: number,
   delay = 0,
   stop: boolean | number = true,
+  brakingAcceleration = acceleration,
 ): SpeedPlan {
   const legs: SpeedLeg[] = [];
   let time = 0,
@@ -86,8 +87,8 @@ export function speedPlan(
       maximum,
       Math.sqrt(v * v + 2 * acceleration * remaining),
     );
-    if (v * v > ending * ending + 2 * acceleration * remaining + 1e-14) {
-      push(v / acceleration, -acceleration);
+    if (v * v > ending * ending + 2 * brakingAcceleration * remaining + 1e-14) {
+      push(v / brakingAcceleration, -brakingAcceleration);
       const back = speedPlan(
         travelled - distance,
         0,
@@ -95,13 +96,16 @@ export function speedPlan(
         acceleration,
         0,
         true,
+        brakingAcceleration,
       );
       for (const leg of back.legs) push(leg.duration, -leg.acceleration);
       return { legs, duration: time, distance };
     }
     const peak = Math.min(
       maximum,
-      Math.sqrt(acceleration * remaining + (v * v + ending * ending) / 2),
+      Math.sqrt((2 * acceleration * brakingAcceleration * remaining +
+        brakingAcceleration * v * v + acceleration * ending * ending) /
+        (acceleration + brakingAcceleration)),
     );
     if (peak < v - 1e-8)
       throw new Error(
@@ -113,12 +117,12 @@ export function speedPlan(
         0,
         (distance -
           travelled -
-          (peak * peak - ending * ending) / (2 * acceleration)) /
+          (peak * peak - ending * ending) / (2 * brakingAcceleration)) /
           Math.max(peak, 1e-9),
       ),
       0,
     );
-    push((peak - ending) / acceleration, -acceleration);
+    push((peak - ending) / brakingAcceleration, -brakingAcceleration);
   }
   return { legs, duration: time, distance };
 }

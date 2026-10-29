@@ -1,5 +1,10 @@
 # Dynamic baserunning and home-ground calibration
 
+October 29: established runners advancing to second or third use a short sliding
+finish instead of ordinary running deceleration over the whole stopping distance.
+See [PHYSICS.md](PHYSICS.md) for timing and calibration. Retreats, retouches,
+first-base run-through/rounding and contact-dependent reads retain their rules.
+
 > Historical report for commit `3db4075`. The continuous-trajectory release supersedes the numerical speeds, endpoint retrieval, first-base braking and timing details below. Read [PHYSICS.md](PHYSICS.md) for the current implementation. The physical ground dimensions and the adopted running conventions remain relevant.
 
 This change improves the existing dynamic simulator. It preserves the shared field, playback controls and authored encyclopedia. The user's supplied home-ground dimensions are **90 m down the lines and 120 m to center**, with **27.43 m basepaths**. No errors, bobbles or overthrows are generated.

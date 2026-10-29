@@ -9,7 +9,7 @@ import {
 import { predictTrajectory, ballPhysics } from "../dynamic/trajectory";
 import { DynamicPlayProvider, defaultSettings } from "../dynamic/provider";
 import { BaserunningDecisionEngine } from "../dynamic/baserunning";
-import { runningTime, runnerPointAt } from "../dynamic/runningGeometry";
+import { runningTime, runningPlan, runnerPointAt } from "../dynamic/runningGeometry";
 import { metres, bases, toWorld, defaults } from "../dynamic/geometry";
 import { TimelineBuilder } from "../dynamic/timelineBuilder";
 import { message } from "../dynamic/messages";
@@ -17,6 +17,25 @@ import { sample, duration } from "../simulation/timeline";
 import { validateScenario } from "../simulation/scenarioValidation";
 import type { DynamicSettings } from "../dynamic/types";
 const provider = new DynamicPlayProvider();
+it("slides into second and third while preserving reactions and retouches", () => {
+  const c = defaultSettings();
+  const r = new BaserunningDecisionEngine().create(c).find(r => r.id === "R1")!;
+  for (const base of [2, 3]) {
+    const runner = { ...r, originBase: base - 1, progress: base - 1 + 0.08, goal: base };
+    const plan = runningPlan(runner, base);
+    expect(plan.duration).toBeCloseTo(4.704857, 4);
+    expect(plan.legs[0].duration).toBe(assumptions.reaction);
+    expect(plan.legs.at(-1)!.acceleration).toBe(-assumptions.slideDeceleration);
+    expect(sampleSpeed(plan, plan.duration).distance).toBeCloseTo(27.43 * 0.92, 6);
+    expect(sampleSpeed(plan, plan.duration).speed).toBeCloseTo(0, 6);
+    expect(runningTime({ ...runner, retouchBase: base as 2 | 3 }, base)).toBeGreaterThan(plan.duration);
+  }
+  c.ball = { type: "Bunt", destination: { x: 500, y: 650 }, strength: "soft" };
+  c.aggression = "aggressive";
+  const s = provider.generate(c);
+  expect(s.dynamic.decisions[0].target).toBe(1);
+  expect(validateScenario(s)).toEqual([]);
+});
 function settings(
   type: DynamicSettings["ball"]["type"] = "Ground ball",
   x = 396,

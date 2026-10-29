@@ -79,6 +79,9 @@ export function runningPlan(r: OffensiveRunner, target: number) {
           ? assumptions.firstBase.turnSpeed
           : false
         : true;
+  const sliding = r.originBase > 0 && ending === true && direction > 0 &&
+    (target === 2 || target === 3) && r.retouchBase === undefined &&
+    r.decision !== "retreat";
   return speedPlan(
     runningMetres(r, r.progress, target),
     (r.runVelocity ?? r.speed) * direction,
@@ -86,6 +89,7 @@ export function runningPlan(r: OffensiveRunner, target: number) {
     assumptions.runnerAcceleration,
     r.startDelay ?? 0,
     ending,
+    sliding ? assumptions.slideDeceleration : assumptions.runnerAcceleration,
   );
 }
 export const runningTime = (r: OffensiveRunner, target: number) =>

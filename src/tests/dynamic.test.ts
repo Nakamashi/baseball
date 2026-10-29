@@ -568,7 +568,7 @@ describe("varied deterministic inputs", () => {
 });
 describe("coverage and tag positioning regressions", () => {
   it("uses CF for ball backup, P for second-base backup and LF for second support", () => {
-    const s = make(),
+    const s = make({ throwTarget: 2 }),
       contact = s.phases.find((p) => p.title === "Contact")!;
     expect(contact.assignments!.find((a) => a.player === "CF")?.type).toBe(
       "BackupFielder",

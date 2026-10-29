@@ -21,6 +21,8 @@ export const assumptions = {
   fieldingReach: 0.6,
   secondaryLeadMetres: 27.43 * 0.08,
   runnerAcceleration,
+  // Effective sliding approach: short final braking zone, not measured friction.
+  slideDeceleration: 20,
   batterStart,
   homeToFirst,
   firstBase: {
