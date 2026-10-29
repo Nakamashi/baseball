@@ -29,6 +29,7 @@ import {
   toward,
   toWorld,
   fromWorld,
+  isInfieldDiamond,
 } from "./geometry";
 import { message as m, type DynamicMessageKey } from "./messages";
 import type {
@@ -118,6 +119,7 @@ const reasonKeys: Record<AssignmentReason, DynamicMessageKey> = {
   secondSupport: "secondSupportWhy",
   trailing: "trailWhy",
   guardThird: "guardThirdWhy",
+  thirdControl: "thirdControlWhy",
   guardSpace: "holdWhy",
   complete: "completeWhy",
   braking: "brakingWhy",
@@ -716,6 +718,7 @@ export class DefensiveDecisionEngine {
     const outfield =
       ["LF", "CF", "RF"].includes(owner) ||
       metres(bases.home, source) > assumptions.relayDistance;
+    const outfieldReturn = isOutfieldHit(ball);
     const put = (
       player: Position,
       type: DefensiveAssignment["type"],
@@ -875,7 +878,7 @@ export class DefensiveDecisionEngine {
             !map.has(p as Position) &&
             p !== context?.fixedReceiver &&
             !(target === 1 && p === "1B") &&
-            !(target === 3 && p === "3B"),
+            !(p === "3B" && (target === 3 || outfieldReturn)),
         ) as Position[])
       : [];
     let cutoff: Position | undefined;
@@ -932,7 +935,7 @@ export class DefensiveDecisionEngine {
     // Page 17: 1B anticipates the home cutoff while a middle infielder relays.
     // First need not consume P when BR is committed beyond it on a deep hit.
     const innerCutoff = target === "home" && actualRelay && !excluded.has("1B") &&
-      context?.fixedReceiver !== "1B" ? "1B" as const : undefined;
+      context?.fixedReceiver !== "1B" && !liveAt(1) ? "1B" as const : undefined;
     if (innerCutoff) excluded.add(innerCutoff);
     // A trailer may leave second only when a replacement is already there.
     // Keep this conditional rather than silently leaving second unprotected.
@@ -1115,6 +1118,9 @@ export class DefensiveDecisionEngine {
       map.get("P")!.throwOrigin = incoming;
       map.get("P")!.receivingPoint = bases[target];
     }
+    // BR can round second even when the current plan stops there. Keep third
+    // controlled before assigning any spare defender to an optional relay backup.
+    if (outfieldReturn && target !== 3) cover(3, 81, "thirdControl");
     // Occupancy/advancement creates a coverage need. An empty, passed base does
     // not consume a defender simply because it exists on the diamond.
     for (const base of (outfield && target === "home" ? [2, 3, 1] : [1, 2, 3]) as (1 | 2 | 3)[])
@@ -1122,7 +1128,7 @@ export class DefensiveDecisionEngine {
     // Control second on all outfield returns, even while BR is headed to first.
     if ((outfield || liveAt(1)) && target !== 2) cover(2, 78);
     if (deepReturn && source.x >= 500 && (target === "home" || target === 3) && !map.has("LF")) {
-      put("LF", "SupportBase", backupPoint(relayPoint ?? source, bases[3]), 77, "throwBackup", 3);
+      put("LF", "SupportBase", backupPoint(relayPoint ?? source, bases[3], conventions.secondaryBackupDepth), 77, "throwBackup", 3);
       map.get("LF")!.throwOrigin = relayPoint ?? source;
     }
     // A sacrifice runner's current goal of second does not make third safe to
@@ -1301,7 +1307,13 @@ export class DefensiveDecisionEngine {
         (stage === "contact" ? ball.fieldingTime : 0) +
           this.arrival(estimateLayout, locations, owner);
       const travel = (p: Position) => this.travel(p, locations[p], point);
-      const candidates = preferred.filter((p) => !map.has(p));
+      const candidates = preferred.filter((p) =>
+        !map.has(p) &&
+        !(outfieldReturn && ["LF", "CF", "RF"].includes(p) && isInfieldDiamond(point)) &&
+        // A distant optional backup must not consume a defender who cannot
+        // reach the reception before the ball. Base backups may still develop.
+        (!firstLeg || travel(p) <= neededIn + 0.05),
+      );
       // A conventional preference must never select a late backup over an
       // eligible defender who can actually reach the receiving lane in time.
       candidates.sort(
@@ -1332,7 +1344,6 @@ export class DefensiveDecisionEngine {
     // Outfield returns reserve P for a base overthrow, never for the deep
     // middle-infielder's relay reception. A control return to second can leave
     // a developing third-base play as P's more useful anticipated backup.
-    const outfieldReturn = isOutfieldHit(ball);
     if (target !== "hold" && !map.has("P") &&
         (outfieldReturn || target === "home" || target === 3)) {
       let pitcherBase: Base = target;
@@ -1381,15 +1392,15 @@ export class DefensiveDecisionEngine {
     if (cutoff && (route.kind === "relay" || route.kind === "cutoff-hold")) {
       const free = (
         stage === "contact"
-          ? ["3B", "2B", "SS", "1B"]
-          : ["CF", "RF", "LF", "3B", "2B", "SS", "1B"]
+          ? ["2B", "SS", "1B"]
+          : ["CF", "RF", "LF", "2B", "SS", "1B"]
       ).filter((p) => !map.has(p as Position)) as Position[];
       if (!backup(target as Base, free, 66, 6, route.cutoffPoint!, cutoff))
         issues.push({
           kind: "unfulfilled",
           base: target as Base,
           detail:
-            "No free defender can back the cutoff reception without leaving a higher-priority role.",
+            "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage.",
         });
     }
     // The far outfielder supports second on an outfield hit; the adjacent one
@@ -1405,10 +1416,10 @@ export class DefensiveDecisionEngine {
               ? "RF"
               : "LF";
       if (!map.has(opposite)) {
-        const secondOrigin =
-          target === "home" || target === 3
-            ? (route.cutoffPoint ?? bases[target])
-            : source;
+        // The pitcher backs the incoming outfield return. The far outfielder
+        // shades behind second for a possible subsequent throw from the infield,
+        // keeping outfield coverage instead of duplicating P inside the diamond.
+        const secondOrigin = bases.home;
         const point = backupPoint(
           secondOrigin,
           bases[2],
@@ -1489,11 +1500,13 @@ export class DefensiveDecisionEngine {
           firstPlay && p === "RF" ? 1 : p === "LF" && liveAt(3) ? 3 : 2;
         if (
           base !== 1 &&
-          [...map.values()].filter(
+          [...map.values()].some(
             (a) =>
+              ["LF", "CF", "RF"].includes(a.player) &&
               a.base === base &&
-              ["SupportBase", "BackupThrow"].includes(a.type),
-          ).length >= 2
+              (a.type === "SupportBase" ||
+                (a.type === "BackupThrow" && (!a.receivingPoint || metres(a.receivingPoint, bases[base]) < 0.1))),
+          )
         ) {
           put(p, "HoldPosition", locations[p], 20, "guardSpace");
           continue;
@@ -1501,12 +1514,12 @@ export class DefensiveDecisionEngine {
         put(
           p,
           "SupportBase",
-          backupPoint(source, bases[base], 12),
+          backupPoint(base === 2 && outfieldReturn ? bases.home : source, bases[base], 12),
           40,
           base === 2 ? "secondSupport" : "throwBackup",
           base,
         );
-        map.get(p)!.throwOrigin = source;
+        map.get(p)!.throwOrigin = base === 2 && outfieldReturn ? bases.home : source;
       } else
         put(
           p,

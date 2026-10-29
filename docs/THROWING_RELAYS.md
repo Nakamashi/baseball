@@ -15,6 +15,18 @@ third-base area. The primary middle infielder reverses on a left-center return.
 These jobs begin from the anticipated play and update with the ball and runners.
 The landing aim is not assumed to be the retrieval point; wall caroms matter.
 
+Third remains a control base throughout an outfield return even when BR's current
+goal is second. Its coverage takes priority over optional relay backup. 3B is not
+a spare deep relay/trailer; genuine primary fielding or a committed receiving job
+requires replacement coverage. Optional intermediate-reception backup is assigned
+only if it can reach the reception in time. Otherwise report missing support and
+retain useful coverage. The far outfielder's second-base support stays on the
+outfield side for a potential next throw from the infield, rather than duplicating
+P behind an outfield return inside the diamond. This is not a ban on outfielders
+fielding a ball, receiving at a vacated base, or backing first/third in foul ground.
+Only one outfielder supplies the secondary support at a given base; the others
+retain field coverage instead of converging on an already-supported lane.
+
 P is excluded from backing an intermediate relay reception. On a return to
 second, P backs the actual second-base receiver; when that return offers no
 timely out and a runner is advancing to third, P can anticipate third instead.
@@ -43,6 +55,10 @@ a home return, preventing a temporary first assignment from consuming the
 pitcher or the remaining middle infielder. Existing late/unfulfilled diagnostics
 remain visible. The last meaningful incoming lane is retained through a
 receiver's tag, so plate backup does not collapse onto the catcher.
+
+An optional inner home cutoff also yields to a genuine runner return at first.
+This preserves live base coverage while the initial airborne read is unresolved;
+1B can establish the inner cutoff once first is released.
 
 ## Bounded routes and cutoff decisions
 

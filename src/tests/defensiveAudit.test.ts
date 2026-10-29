@@ -198,8 +198,9 @@ describe("defensive fundamentals review situations", () => {
         .movements.some((m) => m.player === "RF"),
     ).toBe(true);
     expect(assignment(s, "3B")).toMatchObject({
-      type: "HoldPosition",
-      reason: "guardThird",
+      type: "CoverBase",
+      base: 3,
+      reason: "thirdControl",
     });
   });
   it("6: on a left-field single, ball-side SS cuts while 2B receives", () => {

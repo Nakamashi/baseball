@@ -38,6 +38,12 @@ export function fromWorld(p: Point): Point {
   return { x: bases.home.x + p.x * scale, y: bases.home.y + p.y * scale };
 }
 export const metres = (a: Point, b: Point) => distance(toWorld(a), toWorld(b));
+/** Interior of the four-base diamond, excluding its boundary. Outfield support
+ * may shade the grass or foul ground, but should not crowd the basepath square. */
+export function isInfieldDiamond(p: Point) {
+  const point = toWorld(p), centre = toWorld(bases[2]).y / 2;
+  return Math.abs(point.x) + Math.abs(point.y - centre) < -centre - 0.01;
+}
 export const mix = (a: Point, b: Point, t: number): Point => ({
   x: a.x + (b.x - a.x) * t,
   y: a.y + (b.y - a.y) * t,

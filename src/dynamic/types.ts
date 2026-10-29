@@ -121,6 +121,7 @@ export type AssignmentReason =
   | "secondSupport"
   | "trailing"
   | "guardThird"
+  | "thirdControl"
   | "guardSpace"
   | "complete"
   | "braking"

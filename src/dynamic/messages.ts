@@ -123,7 +123,9 @@ const english = {
   catcherBackupWhy:
     "Home has no immediate scoring threat. In this team's optional convention, move up the first-base foul side to support the routine throw; return if the scoring threat changes.",
   secondSupportWhy:
-    "The adjacent outfielder supports the batted ball. You support a possible throw into second and adjust when the target or coverage changes.",
+    "The adjacent outfielder supports the batted ball. Shade behind second on the outfield side for a possible next throw from the infield; keep the diamond clear for its receivers and backups.",
+  thirdControlWhy:
+    "An outfield hit can develop into an advance beyond second. Keep third covered before considering any optional relay backup.",
   trailWhy:
     "BR has passed first and no return to first needs coverage. Trail outside the running lane toward second; a receiving, cutoff, or live-base duty takes priority.",
   guardThirdWhy:
@@ -362,7 +364,9 @@ const japanese: Record<DynamicMessageKey, string> = {
   catcherBackupWhy:
     "すぐに生還できる走者はいません。このチームの選択する分担では、一塁側のファウル地域を進んで送球を支えます。生還の危険が生じたら本塁へ戻ります。",
   secondSupportWhy:
-    "隣の外野手が打球を支えます。あなたは二塁への送球を支え、送球先やカバーの変化に合わせて動きます。",
+    "隣の外野手が打球を支えます。内野から二塁への次の送球に備え、二塁の外野側で支えます。塁間の内側は受け手やバックアップ役のために空けておきます。",
+  thirdControlWhy:
+    "外野への安打では二塁を回って進塁する可能性があります。任意の中継バックアップより先に、三塁のカバーを確保します。",
   trailWhy:
     "BRは一塁を通過し、一塁への帰塁を守る必要もありません。走路の外を二塁方向へ追います。捕球・中継・必要な塁のカバーを優先します。",
   guardThirdWhy:

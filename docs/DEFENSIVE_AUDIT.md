@@ -2,6 +2,19 @@
 
 ## October 29: Inside Baseball gap-relay update
 
+Third-coverage follow-up: the normal line drive at 678,104 with empty bases and
+aggressive runners reproduced 3B running behind 2B's deep relay while LF entered
+the diamond to duplicate second support. A runner goal of second no longer makes
+third expendable on an outfield return: cover third before speculative support,
+and exclude 3B from deep relay/cutoff fallback and intermediate-reception backup.
+Primary fielding and committed receiving remain valid exceptions with replacement
+coverage. Optional relay backups must meet the receiving deadline; otherwise
+report the gap instead of inventing a long pursuit. Secondary outfield support
+at second shades the outfield side for a possible infield throw, keeping the
+diamond clear. Genuine fielding, emergency receiving, and foul-ground backup
+remain supported. Regressions inspect all-nine assignments, compiled positions,
+left/right fly/line returns, runner occupancy, target changes and late support.
+
 Follow-up: fly/line-drive returns to second could still consume a free P as a
 backup behind the deep middle-infielder relay. The empty-base hard fly at
 635,209 reproduced a final pitcher depth of 66.8 m. P is now reserved for the

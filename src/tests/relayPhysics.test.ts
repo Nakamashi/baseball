@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { throwFlight, throwSamples, cutoffCrossing, throwPhysics, directThrowRange } from "../dynamic/throwing";
-import { bases, fromWorld, metres, mixPhysical } from "../dynamic/geometry";
+import { bases, fromWorld, metres, mixPhysical, isInfieldDiamond } from "../dynamic/geometry";
 import { DynamicPlayProvider, defaultSettings } from "../dynamic/provider";
 import { MovementEngine } from "../dynamic/movement";
 import { BaserunningDecisionEngine } from "../dynamic/baserunning";
@@ -58,6 +58,86 @@ describe("thrown-ball flight", () => {
 });
 
 describe("manual-based gap returns and all-nine movement", () => {
+  it("protects third and keeps LF outside the diamond on the reported normal line drive", () => {
+    const c = gap();
+    c.ball = { type: "Line drive", destination: { x: 678, y: 104 }, strength: "normal" };
+    c.state.runners = {};
+    const s = provider.generate(c);
+    expect(s.dynamic.ball.fielder).toBe("CF");
+    expect(s.dynamic.ball.caught).toBe(false);
+    for (const p of s.phases) {
+      if (p.title === "Outcome") continue;
+      const third = p.assignments!.find(a => a.player === "3B")!;
+      expect(["CoverBase", "HoldPosition"]).toContain(third.type);
+      expect(third.target).toEqual(bases[3]);
+      const lf = p.assignments!.find(a => a.player === "LF")!;
+      if (["SupportBase", "BackupThrow"].includes(lf.type)) expect(isInfieldDiamond(lf.target)).toBe(false);
+    }
+    const early = sample(s, 4).players.find(p => p.id === "3B")!;
+    expect(metres(early.position, bases[3])).toBeLessThan(0.001);
+    const final = sample(s, duration(s));
+    expect(metres(final.players.find(p => p.id === "3B")!.position, bases[3])).toBeLessThan(0.001);
+    expect(isInfieldDiamond(final.players.find(p => p.id === "LF")!.position)).toBe(false);
+    expect(s.dynamic.diagnostics.some(f => f.issues.some(i => i.kind === "unfulfilled" && /cutoff reception/.test(i.detail)))).toBe(true);
+    expect(validateScenario(s)).toEqual([]);
+  });
+  it.each(["Fly ball", "Line drive"] as const)(
+    "prioritizes third coverage and useful support across outfield %s returns", type => {
+      for (const x of [322, 678])
+        for (const runners of [{}, { R1: 1 as const }, { R2: 2 as const }])
+          for (const throwTarget of ["auto", 2, 3, "home"] as const) {
+            const c = gap(x);
+            c.ball = { type, destination: { x, y: 104 }, strength: "normal" };
+            c.state.runners = runners; c.throwTarget = throwTarget;
+            const s = provider.generate(c);
+            expect(["LF", "CF", "RF"]).toContain(s.dynamic.ball.fielder);
+            for (const f of s.dynamic.diagnostics) {
+              expect(new Set(f.assignments.map(a => a.player))).toEqual(new Set(positions));
+              if (f.trigger === "PlayCompleted" || f.state.outs === 3) continue;
+              expect(f.assignments.some(a => a.type === "CoverBase" && a.base === 3)).toBe(true);
+              const third = f.assignments.find(a => a.player === "3B")!;
+              expect(["Relay", "Cutoff", "BackupThrow", "SupportBase"]).not.toContain(third.type);
+              expect(f.assignments.filter(a => ["LF", "CF", "RF"].includes(a.player) && a.type === "SupportBase" && a.base === 2).length)
+                .toBeLessThanOrEqual(1);
+              for (const a of f.assignments) {
+                if (["LF", "CF", "RF"].includes(a.player) && ["SupportBase", "BackupThrow"].includes(a.type))
+                  expect(isInfieldDiamond(a.target)).toBe(false);
+                if (a.type === "BackupThrow" && a.receivingPoint && a.base && metres(a.receivingPoint, bases[a.base]) > 1)
+                  expect(a.arrivalTime!).toBeLessThanOrEqual(a.neededBy! + 0.051);
+              }
+            }
+            expect(validateScenario(s)).toEqual([]);
+          }
+    },
+  );
+  it("keeps the diamond clear without banning legitimate foul-ground backup", () => {
+    expect(isInfieldDiamond({ x: 500, y: 570 })).toBe(true);
+    expect(isInfieldDiamond({ x: 455, y: 496 })).toBe(true);
+    expect(isInfieldDiamond(bases[2])).toBe(false);
+    expect(isInfieldDiamond({ x: 500, y: 300 })).toBe(false);
+    expect(isInfieldDiamond({ x: 240, y: 620 })).toBe(false);
+  });
+  it("keeps genuine primary fielding ahead of third-base coverage", () => {
+    const c = gap(), movement = new MovementEngine(), loc = movement.starting(c), ball = movement.field(c, loc);
+    const runners = new BaserunningDecisionEngine().create(c);
+    const layout = new DefensiveDecisionEngine().assign(c, { ...ball, fielder: "3B" }, "3B", 2, loc, "contact", { runners, outs: 0 });
+    expect(layout.assignments.find(a => a.player === "3B")).toMatchObject({ type: "FieldBall" });
+    expect(layout.assignments.some(a => a.player !== "3B" && a.type === "CoverBase" && a.base === 3)).toBe(true);
+  });
+  it("does not reserve an optional inner cutoff ahead of an actual return to first", () => {
+    const c = gap(365);
+    c.ball.destination = { x: 170, y: 200 }; // One actual relay; the inner cutoff is optional.
+    c.state.runners = { R1: 1, R2: 2 };
+    const movement = new MovementEngine(), loc = movement.starting(c), ball = movement.field(c, loc);
+    const runners = new BaserunningDecisionEngine().create(c);
+    Object.assign(runners.find(r => r.id === "R1")!, { goal: 1, decision: "retreat" });
+    Object.assign(runners.find(r => r.id === "R2")!, { goal: 2, decision: "retreat" });
+    const layout = new DefensiveDecisionEngine().assign(c, ball, ball.fielder, "home", loc, "contact", { runners, outs: 0 });
+    expect(layout.route.innerCutoff).toBeUndefined();
+    expect(layout.route.relays!.map(s => s.player)).toEqual(["SS"]);
+    expect(layout.assignments.find(a => a.player === "1B")).toMatchObject({ type: "CoverBase", base: 1 });
+    expect(layout.assignments.find(a => a.player === "3B")).toMatchObject({ type: "CoverBase", base: 3 });
+  });
   it.each(["Fly ball", "Line drive"] as const)(
     "keeps P on base backup throughout left/right outfield %s returns", type => {
       for (const x of [365, 635])
