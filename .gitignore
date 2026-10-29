@@ -2,3 +2,9 @@ node_modules/
 dist/
 *.tsbuildinfo
 .browser-tests/
+
+# Reproducible bulky audit evidence; keep compact baseline summaries/results.
+audit/**/traces.jsonl.gz
+audit/**/player-audits.jsonl.gz
+audit/**/examples/
+audit/**/results.json

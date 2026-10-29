@@ -54,6 +54,7 @@ export interface DynamicSettings {
   throwTarget: ThrowTarget;
 }
 export interface BattedBall {
+  catchPriority?: { convention: "reachable-priority"; selected: Position; yielded: Position[] };
   type: DynamicSettings["ball"]["type"];
   origin: Point;
   destination: Point;
@@ -84,6 +85,7 @@ export interface BattedBall {
   }[];
 }
 export interface DefensiveAssignment {
+  reception?: import("./receiving").MovingReception;
   player: Position;
   type: AssignmentType;
   target: Point;
@@ -102,6 +104,7 @@ export interface DefensiveAssignment {
   receivingPoint?: Point;
 }
 export type AssignmentReason =
+  | "priorityCatch"
   | "primary"
   | "release"
   | "possession"
@@ -129,6 +132,7 @@ export type AssignmentReason =
   | "buntCharge"
   | "buntRecoverThird";
 export interface AssignmentContext {
+  fixedReception?: { player: Position; reception: import("./receiving").MovingReception };
   fixedRouteKind?: ThrowRoute["kind"];
   opportunitiesClosed?: boolean;
   ballDead?: boolean;
@@ -251,6 +255,7 @@ export interface SimulationEvent {
     | "BallContact"
     | "BallFielded"
     | "ThrowStarted"
+    | "ThrowCancelled"
     | "ThrowReceived"
     | "ThrowGloveContact"
     | "CutoffIntercepted"

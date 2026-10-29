@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-29T13:09:19.495Z",
+  "sourceCommit": "8331a1c06e7d2e3d73cdb7f4407a241b3435b567",
+  "proposedBaseline": 1104,
+  "validBaseline": 1032,
+  "exclusions": 72,
+  "adjustments": 120,
+  "executed": 2202,
+  "generated": 2202,
+  "unflagged": 328,
+  "flagged": 1874,
+  "scenarioSeverity": {
+    "Critical": 0,
+    "High": 97,
+    "Medium": 1777,
+    "Low": 0
+  },
+  "byCode": {
+    "double-play-coverage-floor": 46,
+    "forecast-control-drift": 8,
+    "late-coverage-review": 12,
+    "late-support-review": 1812,
+    "optional-support-review": 227,
+    "pop-priority-review": 8,
+    "runner-first-touch-forecast": 51
+  },
+  "byGroup": {
+    "baseline": {
+      "executed": 1032,
+      "flagged": 799
+    },
+    "strength": {
+      "executed": 724,
+      "flagged": 665
+    },
+    "bunt-anticipation": {
+      "executed": 104,
+      "flagged": 93
+    },
+    "double-play": {
+      "executed": 270,
+      "flagged": 250
+    },
+    "seed": {
+      "executed": 60,
+      "flagged": 58
+    },
+    "focus": {
+      "executed": 12,
+      "flagged": 9
+    }
+  },
+  "byType": {
+    "Ground ball": {
+      "executed": 1030,
+      "flagged": 967
+    },
+    "Line drive": {
+      "executed": 314,
+      "flagged": 313
+    },
+    "Fly ball": {
+      "executed": 290,
+      "flagged": 220
+    },
+    "Pop-up": {
+      "executed": 240,
+      "flagged": 74
+    },
+    "Bunt": {
+      "executed": 328,
+      "flagged": 300
+    }
+  },
+  "elapsedSeconds": 98.066,
+  "assumptions": {
+    "baseMetres": 27.43,
+    "field": {
+      "cornerMetres": 90,
+      "centreMetres": 120,
+      "infieldMetres": 39
+    },
+    "defenderSpeed": 6.905435585477974,
+    "defenderAcceleration": 5,
+    "fieldingReach": 0.6,
+    "secondaryLeadMetres": 2.1944,
+    "runnerAcceleration": 5.5,
+    "slideDeceleration": 20,
+    "batterStart": 0.1,
+    "homeToFirst": {
+      "slow": 5.3,
+      "average": 4.7,
+      "fast": 4.2
+    },
+    "firstBase": {
+      "overrunMetres": 8,
+      "roundMetres": 4,
+      "turnSpeed": 4,
+      "returnSpeed": 3,
+      "readTime": 0.35
+    },
+    "fieldDelay": 0.25,
+    "transfer": 0.3,
+    "catchTime": 0.12,
+    "tagTime": 0.25,
+    "reaction": 0.25,
+    "runnerSpeed": {
+      "slow": 5.879304588107345,
+      "average": 6.905435585477974,
+      "fast": 8.170413775076835
+    },
+    "cutoffDistance": 23,
+    "relayDistance": 55,
+    "closeMargin": 0.45
+  },
+  "ballPhysics": {
+    "version": "trajectory-2-tactics",
+    "gravity": 9.81,
+    "step": 0.008333333333333333,
+    "wallHeight": 2.5,
+    "bounceRestitution": 0.42,
+    "impactRetention": 0.82,
+    "airDrag": 0.015,
+    "dirtRollingDeceleration": 1.2,
+    "grassRollingDeceleration": 1.8,
+    "contactHeight": 0.8,
+    "maximumCatchHeight": 2.25,
+    "horizon": 30
+  },
+  "throwProfiles": {
+    "feed": {
+      "speed": 16,
+      "prepare": 0.2
+    },
+    "infield": {
+      "speed": 23,
+      "prepare": 0.3
+    },
+    "pivot": {
+      "speed": 23,
+      "prepare": 0.22
+    },
+    "relay": {
+      "speed": 28,
+      "prepare": 0.26
+    },
+    "outfield": {
+      "speed": 30,
+      "prepare": 0.38
+    }
+  },
+  "throwPhysics": {
+    "gravity": 9.81,
+    "drag": 0.08,
+    "releaseHeight": 0.8,
+    "receivingHeight": 0.8,
+    "accurateAngle": 0.4363323129985824,
+    "maximumAngle": 0.7853981633974483,
+    "relayRead": 0.15,
+    "maximumRelays": 2
+  },
+  "evidenceSha256": "4b5115f40b45fccb5858af3861decf4c6f126b358f86994a2a301699ebbd81ce",
+  "determinismReplays": 60,
+  "notes": [
+    "Flagged includes advisory reviews; unflagged means passed implemented checks, not certified correct baseball.",
+    "Seeds perturb complete inputs; production simulation is deterministic and has no random seed API.",
+    "Times retain production microsecond quantization and include 1 second before contact."
+  ]
+}

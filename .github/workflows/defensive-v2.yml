@@ -1,0 +1,46 @@
+name: Defensive V2 regression
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm run audit:defense:v2 -- --strict
+      - run: npm run audit:defense:v2:summary
+      - name: Install browser
+        run: |
+          npx playwright-core install --with-deps chromium
+          node --input-type=module -e 'import {chromium} from "playwright-core"; console.log("CHROMIUM_PATH=" + chromium.executablePath())' >> "$GITHUB_ENV"
+      - name: Browser and mobile regressions
+        run: |
+          npm run dev -- --host 127.0.0.1 > /tmp/baseball-vite.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            curl --fail --silent http://127.0.0.1:5173 > /dev/null && break
+            sleep 1
+          done
+          npm run test:browser
+          npm run test:dynamic:browser
+          npm run test:mobile:browser
+          npm run test:pages
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: defensive-v2-verification
+          path: |
+            .browser-tests/
+            audit/defensive-v2-after/summary.json
+            audit/defensive-v2-after/analysis.json

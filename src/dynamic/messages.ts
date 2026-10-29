@@ -2,6 +2,11 @@ import type { Locale } from "../i18n/ui";
 // Generated plays carry typed message references. Formatting belongs to the display
 // boundary, so changing languages never changes paths, decisions or timestamps.
 const english = {
+  priorityCatchWhy: "Claim this reachable pop-up under the team's priority system. Teammates yield and cover the vacated bases or back up the catch.",
+  baseContact: "{player} touches {base} while securely holding the ball.",
+  challengeExpired: "The opportunity at {base} has ended before release. The defender reads the live play again.",
+  gloveContact: "The throw reaches {player}'s glove. Secure control is still being established.",
+  throwSecured: "{player} secures the throw and can now make a play.",
   wallCaromWhy:
     "The ball strikes the wall or training net and rebounds into play. A catch after wall contact is not an airborne out; runners and all nine defenders reassess the carom.",
   targetDoublePlay:
@@ -12,7 +17,7 @@ const english = {
   postPlayBrakingWhy:
     "The third out ends live play. Runners stop; moving defenders only finish braking. No coverage, pursuit or throwing opportunity is started.",
   buntScope:
-    "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model.",
+    "Aim an ordinary fair bunt within 25 m of home. Runners use normal live-play reads; no dedicated squeeze, bunt pop-up or foul-bunt strike rule is modeled.",
   trainingFenceWhy:
     "Keep-in-play training mode uses a virtual high net. The displayed fence height is provisional, not a measurement of the home ground; this mode deliberately keeps boundary flights playable.",
   buntChargeWhy:
@@ -248,6 +253,11 @@ const english = {
 };
 export type DynamicMessageKey = keyof typeof english;
 const japanese: Record<DynamicMessageKey, string> = {
+  priorityCatchWhy: "捕球可能なフライに対し、チームの優先順位に従って声をかけて捕球します。他の野手は譲り、空いた塁のカバーや捕球のバックアップに回ります。",
+  baseContact: "{player}がボールを確実に保持した状態で{base}を踏みます。",
+  challengeExpired: "送球前に{base}でアウトを取る機会がなくなりました。野手はプレーの状況を見直します。",
+  gloveContact: "送球が{player}のグラブに届きました。まだ確実に保持する動作の途中です。",
+  throwSecured: "{player}が送球を確実に保持しました。ここからアウトを取る動作や次の送球に移れます。",
   wallCaromWhy:
     "打球がフェンスまたは練習ネットに当たり、場内へ跳ね返りました。その後に捕ってもフライアウトにはなりません。走者と野手全員が跳ね返りに対応します。",
   targetDoublePlay:
@@ -258,7 +268,7 @@ const japanese: Record<DynamicMessageKey, string> = {
   postPlayBrakingWhy:
     "第3アウトでプレーは終了です。走者は停止し、動いていた野手だけが減速を終えます。新しいカバー、追球、送球は始めません。",
   buntScope:
-    "本塁から25m以内の通常のフェアバントに対応します。三塁走者がいるスクイズ、バントフライ、ファウルバントのストライク判定は対象外です。",
+    "本塁から25m以内の通常のフェアバントに対応します。走者は通常のプレー状況を読んで判断します。専用のスクイズ戦術、バントフライ、ファウルバントのストライク判定は対象外です。",
   trainingFenceWhy:
     "場内に残す練習モードでは仮想の高いネットを使います。表示した高さは仮設定で、本拠地の実測値ではありません。境界に届く打球も意図的に場内へ戻します。",
   buntChargeWhy:

@@ -1,0 +1,33 @@
+{
+  "references": [
+    {
+      "file": "1-Baseball_Positive_Coaching_Manual.pdf",
+      "providedLocalPath": "/tmp/codex-remote-attachments/01a187ae-6321-703a-ba3d-717534365088/e302763e-8e29-473d-9972-88450c21b387/1-Baseball_Positive_Coaching_Manual.pdf",
+      "sha256": "01e3b95675b950a18d1798c27a84f0bdbb1b80b9137f76e47642fb3d3d0b9071",
+      "method": "Local pdftotext -layout extraction; textual rules and positional instructions consulted. No online retrieval."
+    },
+    {
+      "file": "2-2026-official-baseball-rules.pdf",
+      "providedLocalPath": "/tmp/codex-remote-attachments/01a187ae-6321-703a-ba3d-717534365088/e302763e-8e29-473d-9972-88450c21b387/2-2026-official-baseball-rules.pdf",
+      "sha256": "f85860f3b754dfb5e07269e9d3a86c77c89b856376f6e3ba8345af36db997859",
+      "method": "Local pdftotext -layout extraction; textual rules and positional instructions consulted. No online retrieval."
+    },
+    {
+      "file": "3-Baseball-Cutoff-Relay.pdf",
+      "providedLocalPath": "/tmp/codex-remote-attachments/01a187ae-6321-703a-ba3d-717534365088/e302763e-8e29-473d-9972-88450c21b387/3-Baseball-Cutoff-Relay.pdf",
+      "sha256": "bb171acb01f8cdf0918ef4f6b4409d65f75ce4d2486b431b879b6548940973c0",
+      "method": "Local pdftotext -layout extraction; textual rules and positional instructions consulted. No online retrieval."
+    },
+    {
+      "file": "4-Perry-Hills-Infield-System-Training-Manual.pdf",
+      "providedLocalPath": "/tmp/codex-remote-attachments/01a187ae-6321-703a-ba3d-717534365088/e302763e-8e29-473d-9972-88450c21b387/4-Perry-Hills-Infield-System-Training-Manual.pdf",
+      "sha256": "4fa70ea131c5a918ccc5771b301b929e7c8dc56dc6400b0340d7b261f3042a54",
+      "method": "Local pdftotext -layout extraction; textual rules and positional instructions consulted. No online retrieval."
+    }
+  ],
+  "instructions": {
+    "file": "5-Defensive_Audit_V2_Codex_Instructions.md",
+    "sha256": "6daac23b6fb47d9442ca7ca43980580db9371006b0bcf77f9b4c6bbda1cda75d"
+  },
+  "coachingPolicy": "Retain declared 1B home cutoff/P backup system; distinguish alternatives from rule violations. No numerical junior-high benchmarks inferred from the manuals."
+}

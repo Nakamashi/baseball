@@ -1,0 +1,45 @@
+{
+  "productionCommit": "8331a1c06e7d2e3d73cdb7f4407a241b3435b567",
+  "productionMechanicsModified": false,
+  "commands": [
+    {
+      "command": "npm test",
+      "result": "passed",
+      "tests": 339,
+      "files": 12,
+      "log": "verification-tests.txt"
+    },
+    {
+      "command": "npm run build",
+      "result": "passed",
+      "log": "verification-build.txt"
+    },
+    {
+      "command": "npm run audit:defense:v2 -- --strict",
+      "result": "passed implemented hard assertions",
+      "distinctScenarios": 2202,
+      "identicalInputReplays": 60,
+      "log": "verification-audit.txt"
+    },
+    {
+      "command": "node scripts/summarize-defensive-audit-v2.mjs",
+      "result": "passed",
+      "examples": 21,
+      "log": "verification-analysis.txt"
+    },
+    {
+      "command": "node --check scripts/defensive-audit-v2.mjs; node --check scripts/summarize-defensive-audit-v2.mjs",
+      "result": "passed"
+    }
+  ],
+  "browserSuites": "Not rerun; no simulator/UI code changed. Source and compiled-state review used for presentation finding.",
+  "independentPhysicalChecks": [
+    "Recorded base touches at actual base",
+    "Retouches and tag-up departures at original base",
+    "Caught ball first touched before ground/wall contact",
+    "Runner and defender profile speed caps",
+    "Force/tag/receiving geometry and possession",
+    "Independent force/out/scoring reconstruction"
+  ],
+  "traceSha256": "4b5115f40b45fccb5858af3861decf4c6f126b358f86994a2a301699ebbd81ce"
+}

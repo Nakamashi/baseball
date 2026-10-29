@@ -11,7 +11,10 @@
     "test:browser": "node scripts/browser-smoke.mjs",
     "test:pages": "node scripts/pages-smoke.mjs",
     "test:dynamic:browser": "node scripts/dynamic-browser-smoke.mjs",
-    "audit:defense": "node scripts/defensive-audit.mjs"
+    "test:mobile:browser": "node scripts/mobile-generate-browser.mjs",
+    "audit:defense": "node scripts/defensive-audit.mjs",
+    "audit:defense:v2": "node scripts/defensive-audit-v2.mjs",
+    "audit:defense:v2:summary": "node scripts/summarize-defensive-audit-v2.mjs"
   },
   "dependencies": {
     "react": "^19.1.0",

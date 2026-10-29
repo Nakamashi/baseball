@@ -1,0 +1,96 @@
+
+> baseball-coach@2.0.0 audit:defense:v2
+> node scripts/defensive-audit-v2.mjs --strict
+
+Audited 250/2202
+Audited 500/2202
+Audited 750/2202
+Audited 1000/2202
+Audited 1250/2202
+Audited 1500/2202
+Audited 1750/2202
+Audited 2000/2202
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-29T13:09:19.495Z",
+  "sourceCommit": "8331a1c06e7d2e3d73cdb7f4407a241b3435b567",
+  "proposedBaseline": 1104,
+  "validBaseline": 1032,
+  "exclusions": 72,
+  "adjustments": 120,
+  "executed": 2202,
+  "generated": 2202,
+  "unflagged": 328,
+  "flagged": 1874,
+  "scenarioSeverity": {
+    "Critical": 0,
+    "High": 97,
+    "Medium": 1777,
+    "Low": 0
+  },
+  "byCode": {
+    "double-play-coverage-floor": 46,
+    "forecast-control-drift": 8,
+    "late-coverage-review": 12,
+    "late-support-review": 1812,
+    "optional-support-review": 227,
+    "pop-priority-review": 8,
+    "runner-first-touch-forecast": 51
+  },
+  "byGroup": {
+    "baseline": {
+      "executed": 1032,
+      "flagged": 799
+    },
+    "strength": {
+      "executed": 724,
+      "flagged": 665
+    },
+    "bunt-anticipation": {
+      "executed": 104,
+      "flagged": 93
+    },
+    "double-play": {
+      "executed": 270,
+      "flagged": 250
+    },
+    "seed": {
+      "executed": 60,
+      "flagged": 58
+    },
+    "focus": {
+      "executed": 12,
+      "flagged": 9
+    }
+  },
+  "byType": {
+    "Ground ball": {
+      "executed": 1030,
+      "flagged": 967
+    },
+    "Line drive": {
+      "executed": 314,
+      "flagged": 313
+    },
+    "Fly ball": {
+      "executed": 290,
+      "flagged": 220
+    },
+    "Pop-up": {
+      "executed": 240,
+      "flagged": 74
+    },
+    "Bunt": {
+      "executed": 328,
+      "flagged": 300
+    }
+  },
+  "elapsedSeconds": 98.066,
+  "evidenceSha256": "4b5115f40b45fccb5858af3861decf4c6f126b358f86994a2a301699ebbd81ce",
+  "determinismReplays": 60,
+  "notes": [
+    "Flagged includes advisory reviews; unflagged means passed implemented checks, not certified correct baseball.",
+    "Seeds perturb complete inputs; production simulation is deterministic and has no random seed API.",
+    "Times retain production microsecond quantization and include 1 second before contact."
+  ]
+}

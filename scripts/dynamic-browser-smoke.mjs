@@ -79,6 +79,7 @@ const configure = async ({
 };
 const generate = async () => {
   await page.locator(".generate-button").click();
+  await page.waitForFunction(() => !document.querySelector(".generate-button")?.disabled);
   assert.equal(await page.getByRole("alert").count(), 0);
   assert.equal(await page.locator(".play-button").isDisabled(), false);
 };

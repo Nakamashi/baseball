@@ -1,0 +1,1 @@
+Analyzed 2202 scenarios, 21 detailed examples, and all nine defenders. Wrote analysis.json and player-audits.jsonl.gz.

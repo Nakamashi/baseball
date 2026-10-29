@@ -1,5 +1,19 @@
 # Continuous ball motion and coordinated defense
 
+Defensive Audit V2: tactical arrival means the earliest physical base crossing,
+not the duration of the complete stop/overshoot/return plan. The event compiler
+shares the crossing-root calculation and ignores stationary reaction intervals
+as new touches. Settling duration still drives completion and first-base returns.
+
+Eligible force feeds to second use `receiving.ts`: a bounded approach continues
+0.144 m beyond the bag, so the body crosses it at a provisional 1.2 m/s under
+the existing 5 m/s² deceleration. Glove contact is 0.12 s before controlled
+base contact. Early waiting occurs only at rest; late/off-lane approaches retain
+stopped receiving. Velocity persists into the next throw's braking preparation.
+This adds no runner, arm or top-speed bonus. It is simplified point-marker
+footwork, not measured adolescent receiving performance. Relays still physically
+read for 0.15 s, now before their continuation forecast's reference instant.
+
 October 29 sliding approach: established runners stopping at second or third use a
 short final braking zone (effective deceleration 20 m/s²). Running acceleration,
 speed profiles, contact reactions, airborne reads and retouches are unchanged.

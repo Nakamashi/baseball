@@ -1,6 +1,6 @@
 import {
   advanceProgress,
-  runningTime,
+  baseTouchTime,
   remainingRunningTime,
   runningAdvance,
 } from "./runningGeometry";
@@ -125,8 +125,7 @@ export function validateSettings(
     return m("invalid");
   if (
     settings.ball.type === "Bunt" &&
-    (settings.state.runners.R3 ||
-      metres(bases.home, settings.ball.destination) > 25)
+    metres(bases.home, settings.ball.destination) > 25
   )
     return m("buntScope");
 }
@@ -195,6 +194,7 @@ export class DynamicPlayProvider implements PlayProvider {
       position: builder.locations[player],
       velocity: builder.velocities[player],
       reaction: Math.max(0, assumptions.reaction - builder.liveTime),
+      time: builder.liveTime,
     });
     ball.infieldFly = qualifiesInfieldFly(settings, ball);
     let closePlays = 0,
@@ -248,6 +248,7 @@ export class DynamicPlayProvider implements PlayProvider {
       lockedReceiver: Position | undefined;
     let lockedRelays: RelayStop[] | undefined;
     let lockedRouteKind: ThrowRoute["kind"] | undefined;
+    let lockedReception: import("./types").AssignmentContext["fixedReception"];
     let incomingFrom: Point | undefined;
     let opportunitiesClosed = false;
     let deadlines: Partial<Record<Position, number>> = {};
@@ -291,6 +292,7 @@ export class DynamicPlayProvider implements PlayProvider {
           fixedReceiver: lockedReceiver,
           fixedRelays: lockedRelays,
           fixedRouteKind: lockedRouteKind,
+          fixedReception: lockedReception,
           incomingFrom,
           receptionTimes: Object.fromEntries(
             Object.entries(deadlines).map(([p, t]) => [
@@ -544,7 +546,7 @@ export class DynamicPlayProvider implements PlayProvider {
                   position: toWorld(builder.locations[a.player]),
                   velocity: builder.velocities[a.player],
                 },
-                toWorld(a.target),
+                toWorld(a.reception?.throughPoint ?? a.target),
                 assumptions.defenderSpeed,
                 assumptions.defenderAcceleration,
                 Math.max(
@@ -709,6 +711,9 @@ export class DynamicPlayProvider implements PlayProvider {
       lockedCutoff = plan.cutoff;
       lockedReceiver = plan.receiver;
       lockedRouteKind = plan.route.kind;
+      const receivingAssignment = plan.assignments.find(a => a.player === plan.receiver);
+      lockedReception = receivingAssignment?.reception && plan.receiver
+        ? { player: plan.receiver, reception: receivingAssignment.reception } : undefined;
       lockedRelays = plan.route.relays?.length ? plan.route.relays : plan.cutoff && plan.route.cutoffPoint
         ? [{ player: plan.cutoff, point: plan.route.cutoffPoint }] : undefined;
       const firstRoute = {
@@ -729,7 +734,8 @@ export class DynamicPlayProvider implements PlayProvider {
       // deliberate cutoff-and-hold really changes possession at the cutoff.
       let to = plan.route.legs[0];
       if (!to) return;
-      const destination = plan.assignments.find((a) => a.player === to)!.target;
+      const receiverAssignment = plan.assignments.find((a) => a.player === to)!;
+      const destination = receiverAssignment.reception?.catchPoint ?? receiverAssignment.target;
       const carrying = owner === to;
       const release = defense.release(
         owner,
@@ -745,7 +751,7 @@ export class DynamicPlayProvider implements PlayProvider {
       let flight = trajectory.duration;
       let intercepted = false;
       let receivingHeight = throwPhysics.receivingHeight;
-      const receiverTime = defense.travel(
+      const receiverTime = receiverAssignment.reception?.catchAfter ?? defense.travel(
         to,
         builder.locations[to],
         destination,
@@ -773,6 +779,25 @@ export class DynamicPlayProvider implements PlayProvider {
           prepare,
           { kind: "held", owner },
         );
+        const challenged = next.runner && runners.find(r => r.id === next.runner);
+        const targetNumber = target === "home" ? 4 : target;
+        const expired = challenged && (challenged.status !== "active" ||
+          (next.appeal ? challenged.retouchBase !== targetNumber :
+            next.force ? !isForced(challenged, runners, targetNumber) :
+              challenged.goal < targetNumber || challenged.progress >= targetNumber));
+        if (settings.throwTarget === "auto" && expired) {
+          // Preparation is still reversible; released flights remain reserved.
+          lockedCutoff = undefined; lockedReceiver = undefined;
+          lockedRouteKind = undefined; lockedRelays = undefined; deadlines = {};
+          lockedReception = undefined;
+          activeBall = { ...ball, fieldingPoint: builder.locations[owner] };
+          const revised = defense.choose(settings, activeBall, runners,
+            builder.state.outs, builder.locations, owner, "received");
+          builder.event("ThrowCancelled", m("challengeExpired", { base: target }), owner, target);
+          record(revised);
+          performThrow(revised, true, undefined, relayCount);
+          return;
+        }
         // Preparation can include sub-millimetre stopping differences. Start
         // the actual flight at the compiled release, never an old forecast.
         trajectory = throwFlight(builder.locations[owner], destination, owner, settings.armStrength);
@@ -832,7 +857,7 @@ export class DynamicPlayProvider implements PlayProvider {
         });
         builder.event(
           "ThrowGloveContact",
-          m("received", { player: to, base: target }),
+          m("gloveContact", { player: to, base: target }),
           to,
           target,
         );
@@ -848,15 +873,21 @@ export class DynamicPlayProvider implements PlayProvider {
       lockedReceiver = undefined;
       lockedRouteKind = undefined;
       lockedRelays = undefined;
+      lockedReception = undefined;
       owner = to;
       if (intercepted)
         builder.event("CutoffIntercepted", m("cutoffIntercepted", { player: owner }), owner, target);
       builder.event(
         carrying ? "BaseTouched" : "ThrowReceived",
-        m(carrying ? "carry" : "received", { player: owner, base: target }),
+        m(carrying ? "carry" : "throwSecured", { player: owner, base: target }),
         owner,
         target,
       );
+      if (!carrying && receiverAssignment.reception) {
+        if (metres(builder.locations[owner], bases[target]) > 0.02)
+          throw new Error("Moving receiver missed the scheduled force-base contact");
+        builder.event("BaseTouched", m("baseContact", { player: owner, base: target }), owner, target);
+      }
       activeBall = { ...ball, fieldingPoint: builder.locations[owner] };
       stage = "received";
       if ((intercepted || ((plan.route.relays?.some(s => s.player === to) || to === plan.cutoff) && plan.route.kind !== "through-cutoff")) && !carrying) {
@@ -873,6 +904,13 @@ export class DynamicPlayProvider implements PlayProvider {
         const remainingStops = (plan.route.relays ?? []).slice(1);
         defense.relayBudget = Math.max(0, throwPhysics.maximumRelays - relayCount - 1);
         defense.continuation = remainingStops.length ? { target, stops: remainingStops } : undefined;
+        // The physical read elapses before the decision reference instant.
+        // Both runners and defenders advance, then the opportunity is ranked.
+        reassess("Relay secured / reading live runners");
+        builder.interval("Receive", m("received", { player: owner }), throwPhysics.relayRead, {
+          kind: "held", owner,
+        });
+        activeBall = { ...ball, fieldingPoint: builder.locations[owner] };
         // Read the live runners at every relay receipt. At most two intermediate
         // players may receive this return, including any redirected chain.
         const redirect =
@@ -891,14 +929,12 @@ export class DynamicPlayProvider implements PlayProvider {
           record(redirect);
         activeTarget = redirect.target;
         reassess("Relay received / target reconsidered");
-        builder.interval("Receive", m("received", { player: owner }), 0.15, {
-          kind: "held",
-          owner,
-        });
         performThrow(redirect, true, redirect.target === target ? remainingStops : undefined, relayCount + 1);
         return;
       }
-      reassess("Base receiver has possession");
+      // Resolve an immediately available force before allocating new live
+      // coverage. A pre-out snapshot at this same instant invents late jobs
+      // after a play that has already ended.
       const base = target === "home" ? 4 : target;
       const runner = next.runner
         ? runners.find((r) => r.id === next.runner)
@@ -911,7 +947,7 @@ export class DynamicPlayProvider implements PlayProvider {
             builder.retire(runner.id, target, false, "appeal");
         } else {
           const force = isForced(runner, runners, base);
-          const remaining = runningTime(runner, base);
+          const remaining = baseTouchTime(runner, base);
           const crossing = builder.events.find(
             (e) =>
               e.type === "RunnerAdvanced" &&
@@ -1015,7 +1051,7 @@ export class DynamicPlayProvider implements PlayProvider {
         },
       );
       const margin =
-        runningTime(br, 1) -
+        baseTouchTime(br, 1) -
         defense.arrival(secondPlan, builder.locations, owner);
       if (margin > -0.35) {
         decision = record({

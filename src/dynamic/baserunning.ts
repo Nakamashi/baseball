@@ -2,7 +2,7 @@ import type { Base } from "../simulation/types";
 import type { BattedBall, DynamicSettings, OffensiveRunner } from "./types";
 import { assumptions } from "./conventions";
 import { isOutfield, isOutfieldHit, metres, bases } from "./geometry";
-import { runningTime } from "./runningGeometry";
+import { baseTouchTime } from "./runningGeometry";
 import { message as m } from "./messages";
 import { isForced, ThrowingEngine } from "./defense";
 export class BaserunningDecisionEngine {
@@ -64,7 +64,7 @@ export class BaserunningDecisionEngine {
       const contactGo =
         contactRead &&
         (settings.aggression === "aggressive" ||
-          runningTime(r, 4) +
+          baseTouchTime(r, 4) +
             (settings.aggression === "conservative" ? 1.6 : 0.4) <
             Math.max(0, ball.fieldingTime - elapsed) +
               throwing.returnTime(ball, 4, "home") +
@@ -86,7 +86,7 @@ export class BaserunningDecisionEngine {
           settings.aggression
         ];
         for (let base = goal + 1; base <= max; base++) {
-          const runnerTime = runningTime(r, Math.max(r.progress, base));
+          const runnerTime = baseTouchTime(r, Math.max(r.progress, base));
           const defensiveTime =
             Math.max(0, ball.fieldingTime - elapsed) +
             throwing.returnTime(ball, base, hint) +
@@ -166,7 +166,7 @@ export class BaserunningDecisionEngine {
       if (
         last > r.originBase &&
         fraction < 0.45 &&
-        runningTime(r, base) > throwTime + 0.6 &&
+        baseTouchTime(r, base) > throwTime + 0.6 &&
         !runners.some(
           (v) => v !== r && v.status === "active" && v.goal === last,
         )

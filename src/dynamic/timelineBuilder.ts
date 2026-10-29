@@ -190,7 +190,7 @@ export class TimelineBuilder {
             position: toWorld(from),
             velocity: this.velocities[assignment.player],
           },
-          toWorld(assignment.target),
+          toWorld(assignment.reception?.throughPoint ?? assignment.target),
           assumptions.defenderSpeed,
           assumptions.defenderAcceleration,
           Math.max(

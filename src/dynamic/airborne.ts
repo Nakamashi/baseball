@@ -4,7 +4,7 @@ import { isAirborneType, ballPhysics } from "./trajectory";
 import { positions } from "../simulation/types";
 import { metres, bases, toward } from "./geometry";
 import { arrivalTime } from "./locomotion";
-import { runningTime } from "./runningGeometry";
+import { baseTouchTime } from "./runningGeometry";
 import { ThrowingEngine } from "./defense";
 import { message as m } from "./messages";
 
@@ -78,8 +78,8 @@ export function releaseTagUps(
       startDelay: 0.1,
     };
     const offensive =
-      (r.progress > r.originBase + 1e-5 ? runningTime(r, r.originBase) : 0) +
-      runningTime(returnRunner, next);
+      (r.progress > r.originBase + 1e-5 ? baseTouchTime(r, r.originBase) : 0) +
+      baseTouchTime(returnRunner, next);
     const defense =
       assumptions.catchTime +
       (returnEstimate?.(r, next) ??
@@ -234,7 +234,7 @@ export function updateAirReads(
     );
     while (
       lead > 0.3 &&
-      runningTime(
+      baseTouchTime(
         {
           ...r,
           progress: r.originBase + lead / assumptions.baseMetres,

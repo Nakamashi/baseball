@@ -5,7 +5,7 @@ import {
   type Position,
   type Responsibility,
 } from "../simulation/types";
-import { runningTime, runningAdvance } from "./runningGeometry";
+import { baseTouchTime, runningAdvance } from "./runningGeometry";
 import {
   arrivalTime,
   planMotion,
@@ -14,6 +14,7 @@ import {
 } from "./locomotion";
 import { assumptions, conventions } from "./conventions";
 import { throwingProfile, directThrowRange, throwFlight, throwPhysics } from "./throwing";
+import { planMovingReception } from "./receiving";
 import {
   bases,
   defaults,
@@ -100,6 +101,7 @@ export class ThrowingEngine {
   }
 }
 const reasonKeys: Record<AssignmentReason, DynamicMessageKey> = {
+  priorityCatch: "priorityCatchWhy",
   primary: "fieldWhy",
   release: "releaseWhy",
   possession: "ownerWhy",
@@ -205,6 +207,7 @@ export class DefensiveDecisionEngine {
     position: Point;
     velocity: Point;
     reaction: number;
+    time?: number;
   };
   travel(player: Position, from: Point, to: Point) {
     const state = this.motion?.(player),
@@ -305,7 +308,7 @@ export class DefensiveDecisionEngine {
           }
         : actual;
       const retouchDelay = pending
-        ? runningTime(actual, actual.retouchBase!)
+        ? baseTouchTime(actual, actual.retouchBase!)
         : 0;
       for (
         let next = Math.floor(runner.progress + 0.00001) + 1;
@@ -318,6 +321,7 @@ export class DefensiveDecisionEngine {
         let route: ThrowRoute["kind"] = "direct";
         if (locations) {
           let readyLocations = locations;
+          const readyVelocities: Record<string, Point> = {};
           if (preparation) {
             // A contact forecast must advance supporting defenders as well as
             // runners. Evaluate each possible target with its own early duties,
@@ -339,7 +343,7 @@ export class DefensiveDecisionEngine {
                   position: toWorld(locations[a.player]),
                   velocity: state?.velocity ?? zeroVelocity(),
                 },
-                toWorld(a.target),
+                toWorld(a.reception?.throughPoint ?? a.target),
                 assumptions.defenderSpeed,
                 assumptions.defenderAcceleration,
                 Math.max(
@@ -347,24 +351,22 @@ export class DefensiveDecisionEngine {
                   a.notBefore ?? 0,
                 ),
               );
-              readyLocations[a.player] = fromWorld(
-                sampleMotion(plan, preparation.seconds).position,
-              );
+              const at = sampleMotion(plan, preparation.seconds);
+              readyLocations[a.player] = fromWorld(at.position);
+              readyVelocities[a.player] = at.velocity;
             }
           }
-          const layout = this.assign(
-            settings,
-            ball,
-            owner,
-            target,
-            readyLocations,
-            stage,
-            context,
-          );
-          route = layout.route.kind;
-          elapsed = this.arrival(layout, readyLocations, owner);
+          const originalMotion = this.motion;
+          if (preparation) this.motion = p => ({ position: readyLocations[p],
+            velocity: readyVelocities[p] ?? zeroVelocity(), reaction: 0,
+            time: (originalMotion?.(p)?.time ?? 0) + preparation.seconds });
+          try {
+            const layout = this.assign(settings, ball, owner, target, readyLocations, stage, context);
+            route = layout.route.kind;
+            elapsed = this.arrival(layout, readyLocations, owner);
+          } finally { this.motion = originalMotion; }
         }
-        const runnerArrival = retouchDelay + runningTime(runner, next);
+        const runnerArrival = retouchDelay + baseTouchTime(runner, next);
         const margin =
           runnerArrival - elapsed - (force ? 0 : assumptions.tagTime);
         const viable =
@@ -409,7 +411,7 @@ export class DefensiveDecisionEngine {
         const scoring = runners.filter(
           (r) => active(r) && r.goal === 4 && r.decision !== "retreat",
         );
-        const firstRun = Math.min(...scoring.map((r) => runningTime(r, 4)));
+        const firstRun = Math.min(...scoring.map((r) => baseTouchTime(r, 4)));
         // A non-force third out only stops a run if the tag happens before it
         // scores. An early catch at second is not itself an out: the receiver
         // must wait for the advancing runner to enter tagging reach.
@@ -464,7 +466,7 @@ export class DefensiveDecisionEngine {
       const elapsed = layout
         ? this.arrival(layout, locations!, owner)
         : throwing.arrival(ball.fieldingPoint, bases[target]);
-      const runnerArrival = runningTime(runner, runner.retouchBase),
+      const runnerArrival = baseTouchTime(runner, runner.retouchBase),
         margin = runnerArrival - elapsed;
       candidates.push({
         target,
@@ -479,7 +481,7 @@ export class DefensiveDecisionEngine {
         preventsRun:
           outs === 2 &&
           runners.some(
-            (r) => active(r) && r.goal === 4 && runningTime(r, 4) > elapsed,
+            (r) => active(r) && r.goal === 4 && baseTouchTime(r, 4) > elapsed,
           ),
         score: Math.min(2, margin) + (outs === 2 ? 3 : 1),
         reason: margin > 0.05 ? "tag-opportunity" : "too-late",
@@ -504,21 +506,19 @@ export class DefensiveDecisionEngine {
         );
         if (!first.receiver) continue;
         const projected = { ...locations };
-        for (const a of first.assignments)
-          projected[a.player] = fromWorld(
-            sampleMotion(
-              planMotion(
-                {
-                  position: toWorld(locations[a.player]),
-                  velocity: this.motion?.(a.player)?.velocity ?? zeroVelocity(),
-                },
-                toWorld(a.target),
-                assumptions.defenderSpeed,
-                assumptions.defenderAcceleration,
-              ),
-              c.ballArrival,
-            ).position,
-          );
+        const projectedVelocities: Record<string, Point> = {};
+        for (const a of first.assignments) {
+          const motion = this.motion?.(a.player);
+          const at = sampleMotion(planMotion({ position: toWorld(locations[a.player]),
+            velocity: motion?.velocity ?? zeroVelocity() },
+            toWorld(a.reception?.throughPoint ?? a.target), assumptions.defenderSpeed,
+            assumptions.defenderAcceleration, Math.max(motion?.reaction ?? 0,
+              (a.notBefore ?? 0) - (motion?.time ?? 0))), c.ballArrival);
+          projected[a.player] = fromWorld(at.position);
+          projectedVelocities[a.player] = at.velocity;
+        }
+        const reception = first.assignments.find(a => a.player === first.receiver)?.reception;
+        if (reception) projectedVelocities[first.receiver] = reception.controlVelocity;
         projected[first.receiver] = bases[2];
         const nextRunners = structuredClone(runners);
         for (const r of nextRunners) {
@@ -529,19 +529,16 @@ export class DefensiveDecisionEngine {
           if (r.id === c.runner) r.status = "out";
         }
         const nextBall = { ...ball, fieldingPoint: bases[2] };
-        const second = this.assign(
-          settings,
-          nextBall,
-          first.receiver,
-          1,
-          projected,
-          "received",
-          { runners: nextRunners, outs: outs + 1 },
-        );
-        const arrival =
-            c.ballArrival + this.arrival(second, projected, first.receiver),
-          runnerArrival = runningTime(br, 1),
-          margin = runnerArrival - arrival;
+        const originalMotion = this.motion;
+        this.motion = p => ({ position: projected[p], velocity: projectedVelocities[p],
+          reaction: 0, time: (originalMotion?.(p)?.time ?? 0) + c.ballArrival });
+        let arrival: number;
+        try {
+          const second = this.assign(settings, nextBall, first.receiver, 1, projected,
+            "received", { runners: nextRunners, outs: outs + 1 });
+          arrival = c.ballArrival + this.arrival(second, projected, first.receiver);
+        } finally { this.motion = originalMotion; }
+        const runnerArrival = baseTouchTime(br, 1), margin = runnerArrival - arrival;
         c.continuation = {
           target: 1,
           arrival,
@@ -681,7 +678,8 @@ export class DefensiveDecisionEngine {
     let elapsed = 0,
       from = layout.route.from;
     for (const [legIndex, player] of layout.route.legs.entries()) {
-      const point = layout.assignments.find((a) => a.player === player)!.target;
+      const assignment = layout.assignments.find((a) => a.player === player)!;
+      const point = assignment.reception?.catchPoint ?? assignment.target;
       if (player === owner) {
         elapsed += Math.max(
           0.001,
@@ -710,7 +708,7 @@ export class DefensiveDecisionEngine {
         const flight = trajectory.duration;
         const receiverTime = Math.max(
           0,
-          this.travel(player, locations[player], point) - elapsed,
+          (assignment.reception?.catchAfter ?? this.travel(player, locations[player], point)) - elapsed,
         );
         // A direct throw may pass a late optional cutoff. Only an actual
         // relay receiver imposes a receiving-readiness wait.
@@ -737,6 +735,7 @@ export class DefensiveDecisionEngine {
     context?: AssignmentContext,
   ): DefensiveLayout {
     this.settings = settings;
+    const outs = context?.outs ?? settings.state.outs;
     const map = new Map<Position, DefensiveAssignment>(),
       issues: CoverageIssue[] = [];
     const runners = context?.runners ?? [];
@@ -825,7 +824,7 @@ export class DefensiveDecisionEngine {
       stage === "contact"
         ? ball.boundary
           ? "boundaryTrack"
-          : "primary"
+          : ball.catchPriority ? "priorityCatch" : "primary"
         : context?.ballInFlight
           ? "release"
           : "possession",
@@ -844,6 +843,9 @@ export class DefensiveDecisionEngine {
         if (
           map.has(p) ||
           p === context?.fixedReceiver ||
+          // When C fields near home with R3 present, keep P available for
+          // plate coverage rather than sending every corner/mound player in.
+          (p === "P" && owner === "C" && runners.some(r => active(r) && r.originBase === 3)) ||
           (p === "P" &&
             owner === "3B" &&
             runners.some(
@@ -874,7 +876,10 @@ export class DefensiveDecisionEngine {
     };
     const homeThreat = runners.some(
       (r) =>
-        active(r) && (r.goal === 4 || r.progress >= 2.8 || r.originBase === 3),
+        // Reserve the plate before an advancing runner reaches third. Sending
+        // C on optional first-base support until then pulls 3B off the live
+        // bag when C cannot recover promptly.
+        active(r) && (r.goal >= 3 || r.progress >= 2.8 || r.originBase === 3),
     );
     const distanceToTarget = target === "hold" ? 0 : metres(source, bases[target]);
     const deepReturn = outfield && distanceToTarget > directThrowRange(owner, settings.armStrength);
@@ -1001,7 +1006,7 @@ export class DefensiveDecisionEngine {
                   r.goal >= 2)),
           )
           .map((r) =>
-            runningTime(
+            baseTouchTime(
               reason === "buntRecoverThird" && r.goal < 3
                 ? { ...r, goal: 3 }
                 : r,
@@ -1011,6 +1016,7 @@ export class DefensiveDecisionEngine {
       );
       const carry =
         stage !== "contact" &&
+        base === target &&
         (metres(locations[owner], bases[base]) < 0.1 ||
           (owner === "1B" &&
             base === 1 &&
@@ -1107,6 +1113,37 @@ export class DefensiveDecisionEngine {
       if (player) {
         if (carry) map.delete(owner);
         put(player, "CoverBase", bases[base], priority, reason, base);
+        const assignment = map.get(player)!;
+        const fixed = context?.fixedReception;
+        const state = this.motion?.(player);
+        const time = state?.time ?? 0;
+        if (fixed?.player === player && base === target) {
+          assignment.reception = { ...fixed.reception,
+            catchAfter: Math.max(0, fixed.reception.plannedAt + fixed.reception.catchAfter - time),
+            controlAfter: Math.max(0, fixed.reception.plannedAt + fixed.reception.controlAfter - time),
+            plannedAt: time };
+        } else if (base === 2 && target === 2 && player !== owner && !outfield &&
+          settings.ball.type === "Ground ball" && outs < 2 &&
+          ["SS", "2B"].includes(player) && !context?.ballInFlight &&
+          runners.some(r => r.originBase === 1 && isForced(r, runners, 2)) &&
+          runners.some(r => r.id === "BR" && active(r) && r.progress < 1)) {
+          const velocity = state && metres(state.position, locations[player]) < 0.001
+            ? state.velocity : zeroVelocity();
+          assignment.reception = planMovingReception(locations[player], velocity, bases[2],
+            state?.reaction ?? 0, point => {
+              const prep = stage === "contact"
+                ? Math.max(throwingProfile(source, point, owner, settings.armStrength).prepare,
+                    (ball.candidates?.find(c => c.player === owner)?.endingSpeed ?? 0) /
+                      assumptions.defenderAcceleration - assumptions.fieldDelay)
+                : this.release(owner, locations[owner], point).time;
+              return (stage === "contact" ? ball.fieldingTime : 0) + prep +
+                throwFlight(source, point, owner, settings.armStrength).duration;
+            }, time);
+        }
+        if (assignment.reception) {
+          assignment.notBefore = assignment.reception.notBefore;
+          assignment.arrivalTime = assignment.reception.controlAfter;
+        }
         if (map.get(player)!.arrivalTime! > deadline)
           issues.push({
             kind: "late-coverage",
@@ -1411,7 +1448,7 @@ export class DefensiveDecisionEngine {
             this.arrival({ assignments: [...map.values()], route, receiver, cutoff, issues }, locations, owner));
         const secondOut = runners.some(r => active(r) && r.decision === "advance" &&
           r.progress < 2 && r.goal >= 2 &&
-          runningTime(r, 2) - returnTime - (isForced(r, runners, 2) ? 0 : assumptions.tagTime) > 0.05);
+          baseTouchTime(r, 2) - returnTime - (isForced(r, runners, 2) ? 0 : assumptions.tagTime) > 0.05);
         if (!secondOut && runners.some(r => active(r) && r.decision === "advance" && r.progress < 3 && r.goal >= 3))
           pitcherBase = 3;
       }

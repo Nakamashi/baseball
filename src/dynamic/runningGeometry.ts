@@ -94,44 +94,60 @@ export function runningPlan(r: OffensiveRunner, target: number) {
 }
 export const runningTime = (r: OffensiveRunner, target: number) =>
   runningPlan(r, target).duration;
-/** Find base touches on every acceleration/braking segment, including a base
- * crossed before a late stop/return. Goal arrival alone can miss that touch. */
-export function nextRunnerBoundaryTime(r: OffensiveRunner, maximum: number) {
-  const plan = runningPlan(r, r.goal),
-    direction = Math.sign(r.goal - r.progress) || 1;
-  let earliest = Math.min(maximum, plan.duration || maximum);
-  for (let base = 0; base <= 4; base++) {
-    const target =
-      runningMetres(r, r.progress, base) *
-      Math.sign((base - r.progress) * direction);
-    for (const leg of plan.legs) {
-      const delta = target - leg.distance;
-      let roots: number[] = [];
-      if (Math.abs(leg.acceleration) < 1e-10) {
-        if (Math.abs(leg.speed) > 1e-10) roots = [delta / leg.speed];
-      } else {
-        const disc = leg.speed * leg.speed + 2 * leg.acceleration * delta;
-        if (disc >= -1e-8) {
-          const root = Math.sqrt(Math.max(0, disc));
-          roots = [
-            (-leg.speed + root) / leg.acceleration,
-            (-leg.speed - root) / leg.acceleration,
-          ];
-        }
-      }
-      for (const t of roots) {
-        if (
-          Math.abs(target) < 1e-8 &&
-          Math.abs(leg.distance) < 1e-8 &&
-          Math.abs(leg.speed) < 1e-8 &&
-          t < 1e-6
-        )
-          continue;
-        const time = leg.start + t;
-        if (t >= -1e-8 && t <= leg.duration + 1e-8 && time > 1e-6)
-          earliest = Math.min(earliest, time);
+/** Earliest crossing of a signed route distance, including a crossing before
+ * an overshoot/return finishes. The compiler and tactical forecasts share this
+ * event definition; settling duration remains available as runningTime. */
+export function firstDistanceCrossing(
+  plan: ReturnType<typeof runningPlan>, distance: number, after = -1e-8,
+) {
+  let earliest = Infinity;
+  for (const leg of plan.legs) {
+    const delta = distance - leg.distance;
+    let roots: number[] = [];
+    if (Math.abs(leg.acceleration) < 1e-10) {
+      if (Math.abs(leg.speed) > 1e-10) roots = [delta / leg.speed];
+      else if (Math.abs(delta) < 1e-8) roots = [0];
+    } else {
+      const disc = leg.speed ** 2 + 2 * leg.acceleration * delta;
+      if (disc >= -1e-8) {
+        const root = Math.sqrt(Math.max(0, disc));
+        roots = [(-leg.speed + root) / leg.acceleration,
+          (-leg.speed - root) / leg.acceleration];
       }
     }
+    for (const dt of roots) {
+      // Starting at a base and waiting/reacting there is not a new touch.
+      // Keep the next-event compiler from splitting the Contact phase at
+      // the end of a stationary delay, before anyone has actually moved.
+      if (after >= 0 && Math.abs(distance) < 1e-8 &&
+          Math.abs(leg.distance) < 1e-8 && Math.abs(leg.speed) < 1e-8 &&
+          dt < 1e-6) continue;
+      const time = leg.start + dt;
+      if (dt >= -1e-8 && dt <= leg.duration + 1e-8 && time > after)
+        earliest = Math.min(earliest, Math.max(0, time));
+    }
+  }
+  return earliest;
+}
+/** Time to the next physical touch, not the subsequent stop/read/return.
+ * Retouch legality is supplied by the caller's retouch state; a previous
+ * first-base touch never creates a new force on an overrun/rounding runner. */
+export function baseTouchTime(r: OffensiveRunner, target: number) {
+  if (Math.abs(target - r.progress) < 1e-8) return 0;
+  const plan = runningPlan(r, target);
+  const distance = runningMetres(r, r.progress, target);
+  // runningPlan measures distance positively in its chosen direction.
+  const touch = firstDistanceCrossing(plan, distance);
+  return Number.isFinite(touch) ? touch : plan.duration;
+}
+/** Compiler boundary roots use the same crossing calculation as forecasts. */
+export function nextRunnerBoundaryTime(r: OffensiveRunner, maximum: number) {
+  const plan = runningPlan(r, r.goal), direction = Math.sign(r.goal - r.progress) || 1;
+  let earliest = Math.min(maximum, plan.duration || maximum);
+  for (let base = 0; base <= 4; base++) {
+    const distance = runningMetres(r, r.progress, base) *
+      Math.sign((base - r.progress) * direction);
+    earliest = Math.min(earliest, firstDistanceCrossing(plan, distance, 1e-6));
   }
   return earliest;
 }

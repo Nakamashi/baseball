@@ -1,5 +1,36 @@
 # Defensive fundamentals audit
 
+## Defensive Audit V2 implementation (October 29)
+
+The historical [V2 audit](DEFENSIVE_AUDIT_V2.md) remains unchanged. Current fixes
+and measured regressions are documented in
+[DEFENSIVE_AUDIT_V2_IMPLEMENTATION.md](DEFENSIVE_AUDIT_V2_IMPLEMENTATION.md).
+
+- Forecasts use earliest physical base crossings, including crossings before
+  braking/return completes. A relay's 0.15 s read precedes its live decision;
+  automatic challenges that expire during preparation can be cancelled.
+- Eligible middle-infield force receptions can gather while moving through
+  second. Secure control and actual bag contact precede the force; velocity
+  persists into braking/pivot preparation. Stopped receptions remain available.
+- Ordinary fair bunts accept R3 in all occupancies. Existing force/tag and
+  scoring rules apply; there is no squeeze strategy. When C fields with R3,
+  P remains available for plate coverage. Optional catcher support at first
+  yields to plate protection as soon as a runner is advancing to third;
+  do not wait until C's departure would pull 3B away from the live third-base bag.
+- Similar reachable pop-ups use CF, LF, RF, SS, 2B, 3B, 1B, C, P priority.
+  Candidates must be within 0.08 s of the earliest opportunity and within
+  max(20 m, earliest route + 8 m); this modest convention is provisional.
+  Perry Hill p.38 supplies C-over-P priority; Baseball Positive p.118 differs.
+  A substantially better-positioned P remains eligible to take the catch.
+- Resolve an immediately controlled force before allocating the next live jobs.
+  Do not display a pre-third-out transition as meaningful uncovered coverage.
+  Actual late/space-limited backups remain disclosed, including in gap returns.
+
+Inside Baseball pp.12–19 supports the retained deep relay, separate home cutoff
+and pitcher backup system. Perry Hill pp.23–31 supports moving feeds/pivots,
+not the numerical 1.2 m/s receiving parameter. The four supplied PDFs were
+consulted for V2; the older source-access notes below describe historical work.
+
 ## October 29: Inside Baseball gap-relay update
 
 Bases-loaded catch follow-up: hard fly 509,91, aggressive average runners.

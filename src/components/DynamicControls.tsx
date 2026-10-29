@@ -1,4 +1,4 @@
-import type { Dispatch, SetStateAction } from "react";
+import { useEffect, useRef, type Dispatch, type SetStateAction } from "react";
 import type { DynamicSettings } from "../dynamic/types";
 import { recommendStrategy } from "../dynamic/conventions";
 import { ui, type Locale } from "../i18n";
@@ -9,6 +9,7 @@ interface Props {
   setSettings: Dispatch<SetStateAction<DynamicSettings>>;
   locale: Locale;
   onGenerate: () => void;
+  generating: boolean;
   pending: boolean;
   error?: string;
   picking: boolean;
@@ -20,12 +21,36 @@ export function DynamicControls({
   setSettings,
   locale,
   onGenerate,
+  generating,
   pending,
   error,
   picking,
   setPicking,
   preview,
 }: Props) {
+  const generateBar = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const bar = generateBar.current;
+    const main = bar?.closest("main");
+    if (!bar || !main) return;
+    const update = () => {
+      main.style.setProperty("--generate-bar-height", `${bar.getBoundingClientRect().height}px`);
+      const viewport = window.visualViewport;
+      main.style.setProperty("--generate-bottom-inset", `${viewport
+        ? Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop) : 0}px`);
+    };
+    const observer = new ResizeObserver(update);
+    observer.observe(bar); update();
+    window.visualViewport?.addEventListener("resize", update);
+    window.visualViewport?.addEventListener("scroll", update);
+    return () => {
+      observer.disconnect();
+      window.visualViewport?.removeEventListener("resize", update);
+      window.visualViewport?.removeEventListener("scroll", update);
+      main.style.removeProperty("--generate-bar-height");
+      main.style.removeProperty("--generate-bottom-inset");
+    };
+  }, []);
   const t = ui(locale),
     s = settings.state;
   const state = (patch: Partial<typeof s>) =>
@@ -444,14 +469,16 @@ export function DynamicControls({
           </label>
         </div>
       </details>
-      <div className="generate-box">
+      <div className="generate-box" ref={generateBar} aria-busy={generating}>
         {error && (
-          <p role="alert" className="notice">
+          <p id="generation-error" role="alert" className="notice">
             {error}
           </p>
         )}
-        <button className="generate-button" onClick={onGenerate}>
-          {t(pending ? "generate" : "regenerate")}
+        <button type="button" className="generate-button" onClick={onGenerate}
+          disabled={generating} aria-describedby={error ? "generation-error" : undefined}>
+          {generating && <span className="generation-spinner" aria-hidden="true" />}
+          {t(generating ? "generatingPlay" : pending ? "generate" : "regenerate")}
         </button>
         <p className="hint">{t("compareNote")}</p>
       </div>

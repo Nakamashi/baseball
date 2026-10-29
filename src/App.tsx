@@ -1,6 +1,7 @@
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
   type Dispatch,
   type SetStateAction,
@@ -42,6 +43,8 @@ export default function App() {
   );
   const [generationError, setGenerationError] = useState(""),
     [picking, setPicking] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const generationInProgress = useRef(false);
   const [scriptedScenario, setScenario] = useState(scenarios[0]),
     [category, setCategory] = useState("all"),
     [situation, setSituation] = useState("all"),
@@ -84,22 +87,31 @@ export default function App() {
   const updateSettings: Dispatch<SetStateAction<DynamicSettings>> = (
     update,
   ) => {
+    if (generationInProgress.current) return;
     playback.restart();
     setSettings(update);
     setGenerationError("");
   };
-  function generate() {
+  async function generate() {
+    if (generationInProgress.current) return;
     const error = validateSettings(settings);
     if (error) {
       setGenerationError(error);
       return;
     }
+    generationInProgress.current = true;
+    setGenerating(true);
+    // Paint disabled/progress feedback before synchronous compilation begins.
+    await new Promise<void>(resolve => requestAnimationFrame(() => setTimeout(resolve, 0)));
     try {
       setGenerated(new DynamicPlayProvider().generate(settings));
     } catch (error) {
       console.error("Dynamic play generation failed", error);
       setGenerationError(dynamicMessage("generationUnavailable"));
       return;
+    } finally {
+      generationInProgress.current = false;
+      setGenerating(false);
     }
     setGenerationError("");
     setPicking(false);
@@ -177,7 +189,7 @@ export default function App() {
   const previousDisabled = pending || playback.time === 0,
     nextDisabled = pending || playback.time >= playback.total;
   return (
-    <main>
+    <main className={viewMode === "dynamic" ? "dynamic-mode" : undefined}>
       <div className="utility">
         <nav className="app-modes" aria-label={t("mode")}>
           {(["encyclopedia", "dynamic"] as const).map((mode) => (
@@ -215,6 +227,7 @@ export default function App() {
               setSettings={updateSettings}
               locale={locale}
               onGenerate={generate}
+              generating={generating}
               pending={pending}
               error={
                 generationError

@@ -1,0 +1,395 @@
+{
+  "aggregate": {
+    "P": {
+      "scenarios": 2202,
+      "maxSpeed": 6.905435933615448,
+      "initiallyHolding": 91,
+      "initialRoles": {
+        "BackupThrow": 1034,
+        "FieldBall": 595,
+        "CoverBase": 354,
+        "HoldPosition": 91,
+        "ChargeBunt": 128
+      },
+      "receptions": 52,
+      "supportingAtRelease": 1386,
+      "relevantBaseBackups": 872,
+      "baseBackupsReadyAtGlove": 169,
+      "supportChangedBeforeGlove": 38
+    },
+    "C": {
+      "scenarios": 2202,
+      "maxSpeed": 6.905435600458457,
+      "initiallyHolding": 415,
+      "initialRoles": {
+        "BackupThrow": 866,
+        "CoverBase": 825,
+        "HoldPosition": 415,
+        "FieldBall": 96
+      },
+      "receptions": 119,
+      "supportingAtRelease": 889,
+      "relevantBaseBackups": 470,
+      "baseBackupsReadyAtGlove": 0,
+      "supportChangedBeforeGlove": 4
+    },
+    "1B": {
+      "scenarios": 2202,
+      "maxSpeed": 6.905435585727515,
+      "initiallyHolding": 2,
+      "initialRoles": {
+        "CoverBase": 1471,
+        "FieldBall": 368,
+        "Cutoff": 53,
+        "ChargeBunt": 308,
+        "HoldPosition": 2
+      },
+      "receptions": 565,
+      "supportingAtRelease": 20,
+      "relevantBaseBackups": 0,
+      "baseBackupsReadyAtGlove": 0,
+      "supportChangedBeforeGlove": 0
+    },
+    "2B": {
+      "scenarios": 2202,
+      "maxSpeed": 6.905435592121888,
+      "initiallyHolding": 114,
+      "initialRoles": {
+        "CoverBase": 1381,
+        "BackupThrow": 283,
+        "HoldPosition": 114,
+        "FieldBall": 164,
+        "Cutoff": 130,
+        "Relay": 130
+      },
+      "receptions": 669,
+      "supportingAtRelease": 355,
+      "relevantBaseBackups": 206,
+      "baseBackupsReadyAtGlove": 0,
+      "supportChangedBeforeGlove": 0
+    },
+    "3B": {
+      "scenarios": 2202,
+      "maxSpeed": 6.905435585623575,
+      "initiallyHolding": 549,
+      "initialRoles": {
+        "FieldBall": 334,
+        "HoldPosition": 549,
+        "CoverBase": 1221,
+        "ChargeBunt": 94,
+        "BackupThrow": 4
+      },
+      "receptions": 136,
+      "supportingAtRelease": 0,
+      "relevantBaseBackups": 0,
+      "baseBackupsReadyAtGlove": 0,
+      "supportChangedBeforeGlove": 0
+    },
+    "SS": {
+      "scenarios": 2202,
+      "maxSpeed": 6.9054355881009615,
+      "initiallyHolding": 457,
+      "initialRoles": {
+        "HoldPosition": 457,
+        "CoverBase": 1345,
+        "FieldBall": 155,
+        "Cutoff": 120,
+        "BackupThrow": 28,
+        "Relay": 97
+      },
+      "receptions": 453,
+      "supportingAtRelease": 132,
+      "relevantBaseBackups": 0,
+      "baseBackupsReadyAtGlove": 0,
+      "supportChangedBeforeGlove": 0
+    },
+    "LF": {
+      "scenarios": 2202,
+      "maxSpeed": 6.90543561909006,
+      "initiallyHolding": 88,
+      "initialRoles": {
+        "BackupFielder": 1087,
+        "FieldBall": 157,
+        "HoldPosition": 88,
+        "SupportBase": 571,
+        "BackupThrow": 299
+      },
+      "receptions": 0,
+      "supportingAtRelease": 1298,
+      "relevantBaseBackups": 229,
+      "baseBackupsReadyAtGlove": 16,
+      "supportChangedBeforeGlove": 19
+    },
+    "CF": {
+      "scenarios": 2202,
+      "maxSpeed": 6.905435698990326,
+      "initiallyHolding": 617,
+      "initialRoles": {
+        "SupportBase": 1052,
+        "HoldPosition": 617,
+        "BackupFielder": 314,
+        "FieldBall": 175,
+        "BackupThrow": 43,
+        "TrackBall": 1
+      },
+      "receptions": 0,
+      "supportingAtRelease": 851,
+      "relevantBaseBackups": 28,
+      "baseBackupsReadyAtGlove": 0,
+      "supportChangedBeforeGlove": 0
+    },
+    "RF": {
+      "scenarios": 2202,
+      "maxSpeed": 6.905435644446698,
+      "initiallyHolding": 158,
+      "initialRoles": {
+        "SupportBase": 770,
+        "BackupThrow": 316,
+        "BackupFielder": 801,
+        "FieldBall": 156,
+        "HoldPosition": 158,
+        "TrackBall": 1
+      },
+      "receptions": 0,
+      "supportingAtRelease": 1668,
+      "relevantBaseBackups": 310,
+      "baseBackupsReadyAtGlove": 8,
+      "supportChangedBeforeGlove": 19
+    }
+  },
+  "doublePlayMatrix": [
+    {
+      "strength": "soft",
+      "speed": "slow",
+      "scenarios": 20,
+      "doublePlays": 0,
+      "twoThrows": 10
+    },
+    {
+      "strength": "soft",
+      "speed": "average",
+      "scenarios": 20,
+      "doublePlays": 0,
+      "twoThrows": 0
+    },
+    {
+      "strength": "soft",
+      "speed": "fast",
+      "scenarios": 20,
+      "doublePlays": 0,
+      "twoThrows": 0
+    },
+    {
+      "strength": "normal",
+      "speed": "slow",
+      "scenarios": 20,
+      "doublePlays": 20,
+      "twoThrows": 20
+    },
+    {
+      "strength": "normal",
+      "speed": "average",
+      "scenarios": 20,
+      "doublePlays": 0,
+      "twoThrows": 14
+    },
+    {
+      "strength": "normal",
+      "speed": "fast",
+      "scenarios": 20,
+      "doublePlays": 0,
+      "twoThrows": 0
+    },
+    {
+      "strength": "hard",
+      "speed": "slow",
+      "scenarios": 20,
+      "doublePlays": 14,
+      "twoThrows": 14
+    },
+    {
+      "strength": "hard",
+      "speed": "average",
+      "scenarios": 20,
+      "doublePlays": 0,
+      "twoThrows": 14
+    },
+    {
+      "strength": "hard",
+      "speed": "fast",
+      "scenarios": 20,
+      "doublePlays": 0,
+      "twoThrows": 2
+    }
+  ],
+  "situations": {
+    "bases-empty-outs-0": {
+      "executed": 88,
+      "flagged": 71,
+      "outsRecorded": 77,
+      "runs": 0
+    },
+    "bases-empty-outs-1": {
+      "executed": 88,
+      "flagged": 71,
+      "outsRecorded": 77,
+      "runs": 0
+    },
+    "bases-empty-outs-2": {
+      "executed": 84,
+      "flagged": 63,
+      "outsRecorded": 73,
+      "runs": 0
+    },
+    "bases-1-outs-0": {
+      "executed": 193,
+      "flagged": 179,
+      "outsRecorded": 179,
+      "runs": 0
+    },
+    "bases-1-outs-1": {
+      "executed": 199,
+      "flagged": 185,
+      "outsRecorded": 192,
+      "runs": 0
+    },
+    "bases-1-outs-2": {
+      "executed": 207,
+      "flagged": 178,
+      "outsRecorded": 181,
+      "runs": 0
+    },
+    "bases-2-outs-0": {
+      "executed": 98,
+      "flagged": 86,
+      "outsRecorded": 81,
+      "runs": 8
+    },
+    "bases-2-outs-1": {
+      "executed": 98,
+      "flagged": 86,
+      "outsRecorded": 81,
+      "runs": 8
+    },
+    "bases-2-outs-2": {
+      "executed": 84,
+      "flagged": 66,
+      "outsRecorded": 74,
+      "runs": 4
+    },
+    "bases-12-outs-0": {
+      "executed": 91,
+      "flagged": 80,
+      "outsRecorded": 84,
+      "runs": 7
+    },
+    "bases-12-outs-1": {
+      "executed": 91,
+      "flagged": 82,
+      "outsRecorded": 84,
+      "runs": 8
+    },
+    "bases-12-outs-2": {
+      "executed": 93,
+      "flagged": 80,
+      "outsRecorded": 83,
+      "runs": 10
+    },
+    "bases-3-outs-0": {
+      "executed": 71,
+      "flagged": 57,
+      "outsRecorded": 60,
+      "runs": 12
+    },
+    "bases-3-outs-1": {
+      "executed": 71,
+      "flagged": 57,
+      "outsRecorded": 61,
+      "runs": 11
+    },
+    "bases-3-outs-2": {
+      "executed": 64,
+      "flagged": 49,
+      "outsRecorded": 54,
+      "runs": 11
+    },
+    "bases-13-outs-0": {
+      "executed": 70,
+      "flagged": 58,
+      "outsRecorded": 59,
+      "runs": 19
+    },
+    "bases-13-outs-1": {
+      "executed": 70,
+      "flagged": 58,
+      "outsRecorded": 60,
+      "runs": 19
+    },
+    "bases-13-outs-2": {
+      "executed": 60,
+      "flagged": 45,
+      "outsRecorded": 53,
+      "runs": 7
+    },
+    "bases-23-outs-0": {
+      "executed": 60,
+      "flagged": 51,
+      "outsRecorded": 52,
+      "runs": 12
+    },
+    "bases-23-outs-1": {
+      "executed": 60,
+      "flagged": 51,
+      "outsRecorded": 52,
+      "runs": 12
+    },
+    "bases-23-outs-2": {
+      "executed": 60,
+      "flagged": 47,
+      "outsRecorded": 52,
+      "runs": 12
+    },
+    "bases-123-outs-0": {
+      "executed": 71,
+      "flagged": 64,
+      "outsRecorded": 65,
+      "runs": 36
+    },
+    "bases-123-outs-1": {
+      "executed": 70,
+      "flagged": 63,
+      "outsRecorded": 64,
+      "runs": 35
+    },
+    "bases-123-outs-2": {
+      "executed": 61,
+      "flagged": 47,
+      "outsRecorded": 54,
+      "runs": 14
+    }
+  },
+  "examples": [
+    "base-ground-second-b1-o0",
+    "base-ground-left-center-b2-o2",
+    "base-line-left-b0-o0",
+    "base-pop-pitcher-b1-o0",
+    "strength-hard-ground-short-b1-o0",
+    "anticipate-bunt-third-line-b3-o0-normal",
+    "anticipate-bunt-first-line-b1-o0-soft",
+    "dp-ss-slow-hard-o0",
+    "dp-ss-average-hard-o0",
+    "dp-2b-average-hard-o0",
+    "dp-3b-average-hard-o0",
+    "dp-p-average-hard-o0",
+    "dp-1b-line-average-hard-o0",
+    "focus-caught-line-retouch",
+    "focus-infield-fly",
+    "focus-caught-third-out",
+    "focus-right-center-manual",
+    "focus-left-center-manual",
+    "focus-right-center-home",
+    "focus-left-center-home",
+    "focus-loaded-relay"
+  ],
+  "supportCaveat": "Support positions compare the release assignment to actual compiled position at glove contact. Only relevantBaseBackup jobs are judged as backups of this reception. Cutoff readiness needs its earlier flight-crossing deadline; future-base support and changed assignments are not automatically errors."
+}

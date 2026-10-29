@@ -1,5 +1,13 @@
 # Dynamic baserunning and home-ground calibration
 
+Defensive Audit V2 distinguishes earliest base touch from completed settling
+or returning. Forecasts and compiled crossings share that definition; retouch
+permission and removed forces still determine legality. Ordinary fair bunts with
+R3 are supported in all occupancies, using the existing contact/freeze reads.
+R3 is forced home only with a live chain through BR/R1/R2. Otherwise a home out
+requires a tag. There is no dedicated squeeze setting or automatic R3 break on
+every bunt. The original V2 report's 72 exclusions remain historical evidence.
+
 October 29: established runners advancing to second or third use a short sliding
 finish instead of ordinary running deceleration over the whole stopping distance.
 See [PHYSICS.md](PHYSICS.md) for timing and calibration. Retreats, retouches,

@@ -359,13 +359,13 @@ describe("manual-based gap returns and all-nine movement", () => {
   it("preserves the incoming plate lane after C has received", () => {
     const s = provider.generate(gap());
     const receipt = s.dynamic.events.find(e => e.type === "ThrowReceived" && e.player === "C")!;
-    const f = s.dynamic.diagnostics.find(f => f.time >= receipt.time && f.trigger === "Base receiver has possession")!;
+    const f = s.dynamic.diagnostics.find(f => f.time >= receipt.time && f.trigger === "Receive / tag resolved")!;
     const backup = f.assignments.find(a => a.player === "P")!;
     expect(backup.type).toBe("BackupThrow");
     expect(metres(backup.target, bases.home)).toBeGreaterThan(6);
     expect(backup.target.y).toBeGreaterThan(bases.home.y);
   });
-  it("allows a ready cutoff to collect a through throw and choose another base", () => {
+  it("allows a ready cutoff to collect a through throw and decline an expired first-base force", () => {
     const c = defaultSettings();
     c.state.runners = {};
     c.runnerSpeed = "fast";
@@ -377,7 +377,9 @@ describe("manual-based gap returns and all-nine movement", () => {
     const reception = sample(s, glove.time);
     expect(reception.ballHeight).toBeLessThanOrEqual(2.25);
     expect(s.dynamic.events.filter(e => e.type === "ThrowStarted").map(e => [e.player, e.base]))
-      .toEqual([["RF", 2], ["2B", 1]]);
+      .toEqual([["RF", 2]]);
+    const hold = s.dynamic.decisions.find(d => d.owner === "2B" && d.target === "hold")!;
+    expect(hold.alternatives!.find(a => a.target === 1)!.viable).toBe(false);
     expect(validateScenario(s)).toEqual([]);
   });
   it.each([2, 3, "home"] as const)("reallocates a deep return toward %s without a tertiary relay", target => {

@@ -1,0 +1,3462 @@
+{
+  "exclusions": [
+    {
+      "id": "base-bunt-third-line-b4-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 431.0030201595603,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-third-line-b4-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 431.0030201595603,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-third-line-b4-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 431.0030201595603,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-third-line-b5-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 431.0030201595603,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-third-line-b5-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 431.0030201595603,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-third-line-b5-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 431.0030201595603,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-third-line-b6-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 431.0030201595603,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-third-line-b6-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 431.0030201595603,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-third-line-b6-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 431.0030201595603,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-third-line-b7-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 431.0030201595603,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-third-line-b7-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 431.0030201595603,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-third-line-b7-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 431.0030201595603,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-short-push-b4-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 404.12836672165315,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-short-push-b4-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 404.12836672165315,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-short-push-b4-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 404.12836672165315,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-short-push-b5-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 404.12836672165315,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-short-push-b5-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 404.12836672165315,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-short-push-b5-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 404.12836672165315,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-short-push-b6-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 404.12836672165315,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-short-push-b6-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 404.12836672165315,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-short-push-b6-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 404.12836672165315,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-short-push-b7-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 404.12836672165315,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-short-push-b7-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 404.12836672165315,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-short-push-b7-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 404.12836672165315,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-pitcher-b4-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 625.6398842637744
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-pitcher-b4-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 625.6398842637744
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-pitcher-b4-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 625.6398842637744
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-pitcher-b5-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 625.6398842637744
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-pitcher-b5-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 625.6398842637744
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-pitcher-b5-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 625.6398842637744
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-pitcher-b6-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 625.6398842637744
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-pitcher-b6-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 625.6398842637744
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-pitcher-b6-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 625.6398842637744
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-pitcher-b7-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 625.6398842637744
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-pitcher-b7-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 625.6398842637744
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-pitcher-b7-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 625.6398842637744
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-second-push-b4-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 595.8716332783468,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-second-push-b4-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 595.8716332783468,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-second-push-b4-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 595.8716332783468,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-second-push-b5-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 595.8716332783468,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-second-push-b5-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 595.8716332783468,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-second-push-b5-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 595.8716332783468,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-second-push-b6-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 595.8716332783468,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-second-push-b6-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 595.8716332783468,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-second-push-b6-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 595.8716332783468,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-second-push-b7-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 595.8716332783468,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-second-push-b7-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 595.8716332783468,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-second-push-b7-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 595.8716332783468,
+            "y": 564.4026189540306
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-first-line-b4-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 568.9969798404397,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-first-line-b4-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 568.9969798404397,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-first-line-b4-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 568.9969798404397,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-first-line-b5-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 568.9969798404397,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-first-line-b5-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 568.9969798404397,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-first-line-b5-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 568.9969798404397,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-first-line-b6-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 568.9969798404397,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-first-line-b6-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 568.9969798404397,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-first-line-b6-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 568.9969798404397,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-first-line-b7-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 568.9969798404397,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-first-line-b7-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 568.9969798404397,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-first-line-b7-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 568.9969798404397,
+            "y": 693.3710907037902
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-catcher-b4-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 739.0656894850945
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-catcher-b4-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 739.0656894850945
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-catcher-b4-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 739.0656894850945
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-catcher-b5-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 739.0656894850945
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-catcher-b5-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 739.0656894850945
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-catcher-b5-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 739.0656894850945
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-catcher-b6-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 739.0656894850945
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-catcher-b6-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 739.0656894850945
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-catcher-b6-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 739.0656894850945
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-catcher-b7-o0",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 739.0656894850945
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-catcher-b7-o1",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 1,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 739.0656894850945
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    },
+    {
+      "id": "base-bunt-catcher-b7-o2",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 2,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2,
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 739.0656894850945
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "reason": "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model."
+    }
+  ],
+  "adjustments": [
+    {
+      "id": "base-pop-left-b0-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b0-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b0-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b1-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b1-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b1-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b2-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b2-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b2-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b3-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b3-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b3-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b4-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b4-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b4-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b5-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b5-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b5-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b6-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b6-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b6-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b7-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b7-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-b7-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b0-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b0-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b0-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b1-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b1-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b1-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b2-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b2-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b2-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b3-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b3-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b3-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b4-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b4-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b4-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b5-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b5-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b5-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b6-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b6-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b6-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b7-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b7-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-left-center-b7-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b0-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b0-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b0-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b1-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b1-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b1-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b2-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b2-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b2-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b3-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b3-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b3-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b4-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b4-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b4-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b5-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b5-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b5-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b6-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b6-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b6-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b7-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b7-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-center-b7-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 80,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b0-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b0-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b0-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b1-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b1-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b1-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b2-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b2-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b2-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b3-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b3-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b3-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b4-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b4-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b4-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b5-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b5-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b5-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b6-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b6-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b6-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b7-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b7-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-center-b7-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 88,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b0-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b0-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b0-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b1-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b1-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b1-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b2-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b2-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b2-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b3-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b3-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b3-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b4-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b4-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b4-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b5-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b5-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b5-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b6-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b6-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b6-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b7-o0",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b7-o1",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    },
+    {
+      "id": "base-pop-right-b7-o2",
+      "reason": "Outfield-sector pop-up reinterpreted as same azimuth at 32 m; conventional deep outfield pop-up excluded.",
+      "requestedDepth": 65,
+      "actualDepth": 32
+    }
+  ]
+}

@@ -135,7 +135,20 @@ export class MovementEngine {
           metres(starting[b.player], b.point) ||
         positions.indexOf(a.player) - positions.indexOf(b.player),
     );
-    const first = candidates[0];
+    let first = candidates[0];
+    let catchPriority: BattedBall["catchPriority"];
+    if (first?.caught && settings.ball.type === "Pop-up") {
+      // Perry Hill's priority, only among comparable controlled opportunities.
+      // Reachability and a reasonable route take precedence over a position name.
+      const priority: Position[] = ["CF", "LF", "RF", "SS", "2B", "3B", "1B", "C", "P"];
+      const distance = metres(starting[first.player], first.point);
+      const comparable = candidates.filter(c => c.caught && c.time <= first!.time + 0.08 &&
+        metres(starting[c.player], c.point) <= Math.max(20, distance + 8));
+      comparable.sort((a, b) => priority.indexOf(a.player) - priority.indexOf(b.player) || a.time - b.time);
+      first = comparable[0] ?? first;
+      if (comparable.length > 1) catchPriority = { convention: "reachable-priority",
+        selected: first.player, yielded: comparable.filter(c => c !== first).map(c => c.player) };
+    }
     const point = first?.point ?? boundary!.point;
     const fielder =
       first?.player ??
@@ -167,6 +180,7 @@ export class MovementEngine {
       : bodyPoint;
     const pursuitDelay = moving ? Math.max(0, first.time - first.arrival) : 0;
     return {
+      catchPriority,
       type: settings.ball.type,
       origin: bases.home,
       destination: settings.ball.destination,

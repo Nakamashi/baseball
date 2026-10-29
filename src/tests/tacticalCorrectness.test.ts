@@ -607,10 +607,10 @@ describe("shared tactical timing and live-play reevaluation", () => {
       spy.mockRestore();
     }
   });
-  it("rejects unsupported squeezes and impossible fence values explicitly", () => {
+  it("accepts ordinary fair bunts with R3 and rejects impossible fence values", () => {
     const c = make(500, 650, "Bunt");
     c.state.runners = { R3: 3 };
-    expect(validateSettings(c)).toBeDefined();
+    expect(validateSettings(c)).toBeUndefined();
     c.state.runners = { R1: 1 };
     c.field = { fenceHeight: 0, fenceMode: "standard" };
     expect(validateSettings(c)).toBeDefined();
