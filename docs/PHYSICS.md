@@ -1,5 +1,7 @@
 # Continuous ball motion and coordinated defense
 
+> Historical implementation report for `75896bf`. The tactical-corrections review branch updates throwing/movement profiles, airborne reads, fence configuration and dynamic pop-ups/bunts. See [TACTICAL_CORRECTIONS.md](TACTICAL_CORRECTIONS.md) for its current behavior and evidence.
+
 This release implements the six-stage physical-simulation development plan on the existing dynamic provider. The authored encyclopedia is unchanged. Both modes still use the same field, playback controls, teaching navigation, player focus and bilingual display boundary.
 
 ## Scope and evidence

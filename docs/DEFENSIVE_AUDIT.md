@@ -158,6 +158,7 @@ At the same coordinate with normal contact and an average aggressive runner, the
 The regression suite adds the named `center-home-close` fixture, all-nine checks at nine nearby coordinates under standard/prevent strategies and different outs, explicit competitive-versus-favorable timing, run-consequence comparisons, the ordinary-base-receiver follow-up, conservative/hold overrides, and bilingual production-browser replay. Existing speed, possession, scoring, seek and tactical-matrix checks remain required.
 
 Follow-up verification: `npm test` passes 163 tests in five files, including 54 nearby coordinate/strategy/out combinations checked across all nine defenders. The production build passes; the expanded dynamic browser suite verifies both `CF → 1B → C` and `CF → SS → C` plus the new Japanese close-play explanation.
+
 ## Home-ground and baserunning follow-up
 
 The user's ground is 90 m in the corners and 120 m to center. [BASERUNNING.md](BASERUNNING.md) documents the new physical-space calibration, shared throw/movement clock, extra-base decisions, natural first-base movement and contact reads. Earlier outcome examples using the compressed 60–69 m outfield no longer establish the same timing at identical display coordinates. Representative home-play fixtures were relocated to competitive opportunities under the real dimensions; run-prevention priorities, force/tag legality, all-nine coverage and possession checks remain. Throwing lanes and backup depths are now validated in physical coordinates and projected onto the schematic field.
@@ -170,5 +171,8 @@ Contact, first touch, control, throw release, receiving glove contact, receiving
 
 The existing all-nine 576-case target matrix remains, alongside a further 576 trajectory/base/out cases and focused airborne rules. Lane tests use actual/predicted release geometry. Momentum may initially carry a reassigned player away from a target, so tests validate timed speed/acceleration rather than requiring instantaneous turns and monotonically decreasing target distance. Settling assignments clear obsolete throw-lane metadata.
 
-
 Current release verification: 256 automated tests pass in 10 files, preserving both 576-case matrices. A further independent 1,000-situation continuous-coordinate exploration produced no generation errors or scenario-validation failures. Production build, both bilingual browser suites and root/repository-path static Pages checks pass. See [PHYSICS.md](PHYSICS.md) for the timing audit, detailed verification, performance observations and remaining model limits; these checks establish internal consistency, not a claim that every coaching convention is universal.
+
+## Tactical review follow-up
+
+[TACTICAL_CORRECTIONS.md](TACTICAL_CORRECTIONS.md) records direct offline review of Baseball Positive, Perry Hill and FCA, the coherent convention choices, A–K reproductions, double-play sequence evaluation, pending tag-up/home priorities, committed-receiver protection, meaningful runner-event reevaluation, cancellation/braking, progressive airborne reads, role-specific throws, high-fence configuration, pop-ups and ordinary bunt rotations. Old exact coordinate outcomes and universal-20-m/s assumptions are historical. Named fixtures now declare meaningful timing opportunities under the updated model; independent rule tests protect competitive timing, third-out scoring and appeals without forcing obsolete outcomes.

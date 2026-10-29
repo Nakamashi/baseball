@@ -1,6 +1,6 @@
 # Field Notes — Baseball Coaching Lab
 
-A bilingual browser-based defensive play simulator for coaches and new players. **Play encyclopedia** keeps all 24 authored plays. **Dynamic simulator (Phase 2A)** generates fair ground-ball and outfield-hit plays from continuous field coordinates, the game situation, and coaching settings. Follow any of the nine defenders or individual runners and inspect every stage of the play. This is an instructional diagram, not a game or a prediction engine.
+A bilingual browser-based defensive play simulator for coaches and new players. **Play encyclopedia** keeps all 24 authored plays. **Dynamic simulator** generates ground balls, line drives, fly balls, high pop-ups and ordinary fair bunts from continuous field coordinates, the game situation, and coaching settings. Follow any of the nine defenders or individual runners and inspect every stage of the play. This is an instructional diagram, not a game or a prediction engine.
 
 ## Run
 
@@ -33,20 +33,20 @@ Use `npm ci` rather than `npm install` for a repeatable lockfile installation.
 
 The field and playback controls fit in the viewport at the tested laptop, tablet and phone sizes. On desktop, the sidebars scroll independently. On phones, the field comes first, then the reading/player panels and the catalogue. Sections can collapse; the field preserves its proportions.
 
-## Dynamic simulator — Phase 2A
+## Dynamic simulator
 
 Switch modes using the compact buttons at the top. The encyclopedia remains available with its guided, supported-situation selection.
 
 1. Set outs and any combination of runners. Count, inning/half, home/away scores and fielding team are supported; half and fielding team remain consistent automatically.
-2. Choose a ground ball or outfield base hit, strength, runner aggression, runner speed and defensive strategy. The recommended strategy can be applied or overridden.
-3. Click fair territory to select a continuous destination. Use **Place hit location** to place directly over a player, enter X/Y coordinates, or focus the destination marker and use arrow keys. An infield ball should use Ground ball; Outfield base hit requires an outfield location.
+2. Choose a physical ball type, strength, runner aggression, runner speed and defensive strategy. Ordinary fair bunts are limited to 25 m and exclude squeezes. The recommended strategy can be applied or overridden.
+3. Click fair territory or enter X/Y coordinates. Ground clicks aim a direction/depth; airborne clicks request the first untouched landing. The preview discloses launch constraints. Fielders intercept the moving ball; a click does not stop it. The projected-path layer shows the unobstructed continuation, height and interception.
 4. Click **Generate play**. Draft edits pause and disable playback until generated, so the displayed play never silently changes to an unrelated input.
 5. Use the same field, focus panel, reading arrows, step-by-step pauses and timeline as the encyclopedia. Optional path colors identify fielding, coverage, cutoff/relay and backup duties. The event log follows the current timeline position.
 6. Change one input or the throwing target and generate again. Coach overrides include first, second, third, home, hold, and an outfield cutoff-and-hold. Coverage, throwing lanes, backups and runner choices are recalculated. An ill-advised throw can let trailing runners advance.
 
 All generated coaching text is available in English and Japanese. The field and playback controls retain the compact viewport layout; the settings and teaching sidebars scroll independently on desktop. On phones, **Configure play** jumps to settings and generation returns to the field.
 
-Phase 2A uses deterministic timing, not guaranteed outcomes. Close plays are labeled. The simulator supports direct throws, cutoff returns, long relays, feasible ground-ball double-play attempts, force versus tag resolution, and third-out scoring rules. Cutoff conventions and youth timing assumptions are editable in code. See [dynamic engine architecture and limits](docs/DYNAMIC.md).
+The simulator uses deterministic timing, not guaranteed outcomes. The field/throwing settings expose arm profiles, anticipated-bunt positioning and a provisional fence height. Default keep-in-play mode is a training net; standard mode applies the configured boundary height. No measured height is claimed for the home ground. Close plays are labeled. The simulator supports direct throws, cutoff returns, long relays, feasible ground-ball double-play attempts, force versus tag resolution, and third-out scoring rules. Cutoff conventions and youth timing assumptions are editable in code. See [dynamic engine architecture and limits](docs/DYNAMIC.md).
 
 ## Play catalogue
 
@@ -112,8 +112,8 @@ Vite uses `base: './'` and all assets are bundled locally. To deploy, enable Git
 
 ## Current scope
 
-All 24 scripted situations remain available in English and Japanese. Phase 2A dynamically generates fair ground balls and common outfield hits. Dynamic fly balls, tag-ups, line drives, bunts, bobbles, overthrows, custom defensive-position editing, quizzes, printouts and a saved side-by-side comparison view are not implemented. Fly balls/bunts and their rules still exist in the authored encyclopedia. Changing a throwing target and regenerating provides an alternative-play demonstration; it does not store earlier runs.
+All 24 scripted situations remain available in English and Japanese. Dynamic play supports continuous ground/air trajectories, interception, progressive airborne reads, legal tag-ups/retouches, conditional infield fly, ordinary fair bunts, coordinated base/backup/cutoff roles, complete double-play evaluation, target redirection and renewed opportunities after runner events. Surface and athletic parameters remain provisional. See [tactical corrections and evidence](docs/TACTICAL_CORRECTIONS.md).
 
-The engine uses simplified youth speeds and deterministic estimates. It models outfield-hit travel to the selected location and ground-ball interception along the path, with no detailed aerodynamics or collision physics. Generated base occupancy describes stationary runners; in-transit runners are represented by their timeline positions. Runs are provisional until the play's third-out rules are settled. At the third out, inning occupancy is cleared and remaining movement stops. This is one ball-in-play at a time, not a complete match engine. See the documented assumptions before adapting to your team.
+Errors, bobbles, overthrows, squeezes/bunt pop-ups/foul-bunt strike rules, full rundowns, detailed body mechanics, custom individual defensive-position editing, quizzes, printouts and saved comparisons are not generated. The application models one ball in play, not a full match. Pending runs respect third-out rules. At the third out, runners and live decisions stop; defenders can finish a separate braking phase without starting a new tactical assignment.
 
 No backend, external APIs, runtime network assets or accounts are required. Only the language preference is stored locally. GitHub Pages deployment and the existing custom domain configuration remain unchanged.
