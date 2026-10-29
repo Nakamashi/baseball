@@ -48,6 +48,7 @@ import type {
   ThrowDecision,
   DefensiveAuditFrame,
   RelayStop,
+  ThrowRoute,
 } from "./types";
 export function defaultSettings(): DynamicSettings {
   return {
@@ -246,6 +247,7 @@ export class DynamicPlayProvider implements PlayProvider {
     let lockedCutoff: Position | undefined,
       lockedReceiver: Position | undefined;
     let lockedRelays: RelayStop[] | undefined;
+    let lockedRouteKind: ThrowRoute["kind"] | undefined;
     let incomingFrom: Point | undefined;
     let opportunitiesClosed = false;
     let deadlines: Partial<Record<Position, number>> = {};
@@ -288,6 +290,7 @@ export class DynamicPlayProvider implements PlayProvider {
           opportunitiesClosed,
           fixedReceiver: lockedReceiver,
           fixedRelays: lockedRelays,
+          fixedRouteKind: lockedRouteKind,
           incomingFrom,
           receptionTimes: Object.fromEntries(
             Object.entries(deadlines).map(([p, t]) => [
@@ -705,6 +708,7 @@ export class DynamicPlayProvider implements PlayProvider {
       const plan = layout;
       lockedCutoff = plan.cutoff;
       lockedReceiver = plan.receiver;
+      lockedRouteKind = plan.route.kind;
       lockedRelays = plan.route.relays?.length ? plan.route.relays : plan.cutoff && plan.route.cutoffPoint
         ? [{ player: plan.cutoff, point: plan.route.cutoffPoint }] : undefined;
       const firstRoute = {
@@ -842,6 +846,7 @@ export class DynamicPlayProvider implements PlayProvider {
       inFlight = false;
       lockedCutoff = undefined;
       lockedReceiver = undefined;
+      lockedRouteKind = undefined;
       lockedRelays = undefined;
       owner = to;
       if (intercepted)

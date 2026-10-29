@@ -129,6 +129,7 @@ export type AssignmentReason =
   | "buntCharge"
   | "buntRecoverThird";
 export interface AssignmentContext {
+  fixedRouteKind?: ThrowRoute["kind"];
   opportunitiesClosed?: boolean;
   ballDead?: boolean;
   fixedCutoff?: Position;

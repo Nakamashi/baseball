@@ -2,6 +2,21 @@
 
 ## October 29: Inside Baseball gap-relay update
 
+Bases-loaded catch follow-up: hard fly 509,91, aggressive average runners.
+CF secured the catch at 5.083 s but waited until 8.881 s to release because 2B
+had to reach a fixed relay depth after the anticipated target changed. Home was
+already too late; this was an unnecessary receiving-readiness wait, not a modeled
+3.8-second decision process. Uncommitted deep relays now accept a physically
+reachable reception farther toward the infield, or at the selected infielder's
+stopping point when it advances the return. A timely relay keeps its preferred
+depth. If no prompt relay reception is available, compare a physically reachable
+direct base return and bypass the late cutoff when that full return is faster.
+The selected route, receiver and reception points remain reserved during flight.
+The corrected example releases at 5.563 s, reaches 2B at 7.561 s and SS at second
+at 8.867 s. R3 still scores. All-nine regressions cover all three running speeds,
+actual glove contact, third coverage, moving-relay readiness, direct bypass and
+the two-relay bound. No fielder or ball is teleported to satisfy prompt release.
+
 Third-coverage follow-up: the normal line drive at 678,104 with empty bases and
 aggressive runners reproduced 3B running behind 2B's deep relay while LF entered
 the diamond to duplicate second support. A runner goal of second no longer makes

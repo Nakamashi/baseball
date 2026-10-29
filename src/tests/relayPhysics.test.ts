@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { throwFlight, throwSamples, cutoffCrossing, throwPhysics, directThrowRange } from "../dynamic/throwing";
-import { bases, fromWorld, metres, mixPhysical, isInfieldDiamond } from "../dynamic/geometry";
+import { bases, fromWorld, metres, mixPhysical, isInfieldDiamond, toward } from "../dynamic/geometry";
 import { DynamicPlayProvider, defaultSettings } from "../dynamic/provider";
 import { MovementEngine } from "../dynamic/movement";
 import { BaserunningDecisionEngine } from "../dynamic/baserunning";
@@ -58,6 +58,73 @@ describe("thrown-ball flight", () => {
 });
 
 describe("manual-based gap returns and all-nine movement", () => {
+  it.each(["slow", "average", "fast"] as const)("returns the reported bases-loaded catch promptly with %s runners", runnerSpeed => {
+    const c = gap();
+    c.ball.destination = { x: 509, y: 91 };
+    c.state.runners = { R1: 1, R2: 2, R3: 3 };
+    c.runnerSpeed = runnerSpeed;
+    const s = provider.generate(c);
+    const caught = s.dynamic.events.find(e => e.type === "BallCaught")!;
+    const started = s.dynamic.events.find(e => e.type === "ThrowStarted")!;
+    expect(caught.player).toBe("CF");
+    expect(started.time - caught.time).toBeLessThan(0.6);
+    expect(started.base).toBe(2); // Control the infield when home is already too late.
+    expect(s.dynamic.events.some(e => e.type === "RunScored" && e.player === "R3")).toBe(true);
+    const first = s.dynamic.diagnostics.find(f => f.trigger === "Throw timing established")!;
+    const reception = first.assignments.find(a => a.player === first.route.legs[0])!;
+    const atRelease = sample(s, started.time).players.find(p => p.id === reception.player)!;
+    expect(metres(atRelease.position, reception.target)).toBeGreaterThan(0.5);
+    const ideal = toward(first.route.from, bases[2], metres(first.route.from, bases[2]) * 0.55);
+    expect(metres(reception.target, ideal)).toBeGreaterThan(5);
+    for (const e of s.dynamic.events.filter(e => e.type === "ThrowGloveContact")) {
+      const at = sample(s, e.time);
+      expect(metres(at.ball, at.players.find(p => p.id === e.player)!.position)).toBeLessThan(0.01);
+      expect(at.ballHeight).toBeLessThanOrEqual(2.25);
+    }
+    for (const f of s.dynamic.diagnostics) {
+      expect(new Set(f.assignments.map(a => a.player))).toEqual(new Set(positions));
+      expect(f.assignments.find(a => a.player === "3B")!.target).toEqual(bases[3]);
+      expect((f.route.relaysUsed ?? 0) + (f.route.relays?.length ?? 0)).toBeLessThanOrEqual(2);
+    }
+    expect(validateScenario(s)).toEqual([]);
+  });
+  it("meets a moving relay at a reachable reception instead of waiting for its ideal depth", () => {
+    const c = gap(), movement = new MovementEngine(), loc = movement.starting(c);
+    loc.CF = fromWorld({ x: 0, y: -110 });
+    loc["2B"] = fromWorld({ x: 0, y: -55 });
+    const engine = new DefensiveDecisionEngine(); engine.settings = c;
+    engine.motion = player => ({ position: loc[player], velocity: { x: 0, y: player === "2B" ? -4 : 0 }, reaction: 0 });
+    const ideal = mixPhysical(loc.CF, bases.home, 0.55);
+    const point = engine.relayReception("CF", "2B", loc.CF, bases.home, ideal, loc);
+    const flight = throwFlight(loc.CF, point, "CF");
+    const prepare = engine.release("CF", loc.CF, point).time;
+    expect(metres(point, ideal)).toBeGreaterThan(5);
+    expect(engine.travel("2B", loc["2B"], point)).toBeGreaterThan(prepare);
+    expect(engine.travel("2B", loc["2B"], point)).toBeLessThan(prepare + flight.duration);
+    expect(flight.reachable).toBe(true);
+  });
+  it("bypasses an unavailable relay when a prompt reachable base return is faster, preserving its commitment", () => {
+    const c = gap(), movement = new MovementEngine(), loc = movement.starting(c);
+    const ball = movement.field(c, loc);
+    loc.CF = fromWorld({ x: 0, y: -105 });
+    loc["2B"] = fromWorld({ x: 20, y: -45 });
+    loc.SS = bases[2];
+    const engine = new DefensiveDecisionEngine();
+    const layout = engine.assign(c, { ...ball, fieldingPoint: loc.CF }, "CF", 2, loc, "fielded", { runners: [], outs: 1 });
+    expect(layout.route.kind).toBe("through-cutoff");
+    expect(layout.route.legs).toEqual(["SS"]);
+    expect(layout.route.relays).toEqual([]);
+    const flight = throwFlight(loc.CF, bases[2], "CF");
+    expect(flight.reachable).toBe(true);
+    expect(engine.arrival(layout, loc, "CF")).toBeCloseTo(0.38 + flight.duration + 0.12, 6);
+    loc["2B"] = layout.route.cutoffPoint!;
+    const locked = engine.assign(c, { ...ball, fieldingPoint: loc.CF }, "CF", 2, loc, "fielded", {
+      runners: [], outs: 1, fixedReceiver: layout.receiver, fixedCutoff: layout.cutoff,
+      fixedRouteKind: layout.route.kind, fixedRelays: [{ player: layout.cutoff!, point: layout.route.cutoffPoint! }],
+    });
+    expect(locked.route.kind).toBe("through-cutoff");
+    expect(locked.route.legs).toEqual(["SS"]);
+  });
   it("protects third and keeps LF outside the diamond on the reported normal line drive", () => {
     const c = gap();
     c.ball = { type: "Line drive", destination: { x: 678, y: 104 }, strength: "normal" };

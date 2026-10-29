@@ -74,6 +74,24 @@ preparation, catching and a 0.15-second relay read. Each receiver reevaluates th
 live runners and can continue, redirect or hold. Fixed receivers and remaining
 relay points are reserved through each committed flight.
 
+Before commitment, a late relay's preferred depth can move toward the infield
+within controlled throwing range. The selected infielder's actual stopping point
+is another candidate when it makes progress toward the target. Current velocity,
+braking, receiver travel and flight time determine whether the ball can leave
+promptly; the infielder need not be at the reception point at release. Receivers
+still reach the actual glove-contact point in time. A ready preferred relay stays
+in place. If a relay still requires extra waiting, a physically reachable direct
+base return can pass the optional cutoff when its complete arrival is faster.
+That comparison includes the higher arc's actual flight duration; controlled
+range remains the preference for a ready relay, not an absolute airborne limit.
+Route kind is reserved along with the receiver/points so live runner updates
+cannot turn an already committed through throw back into a mandatory relay.
+
+For the bases-loaded hard fly at 509,91 with aggressive average runners, control
+is at 5.083 s and CF releases at 5.563 s (including braking), instead of 8.881 s.
+The return is CF–2B–SS at second; SS controls it at 8.867 s and R3 still scores.
+The correction gets the ball in promptly without inventing a play at home.
+
 A ready optional cutoff can intercept a through throw when its actual trajectory
 crosses the receiving point between 0.3 and 2.25 m high and a better redirection
 or hold is available after the original out disappears. The event history records

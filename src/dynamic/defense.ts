@@ -241,6 +241,37 @@ export class DefensiveDecisionEngine {
       }),
     };
   }
+  /** A relay's drawn depth is a preference, not a prerequisite for release.
+   * Bring a late reception back toward the infield within controlled range.
+   * The receiver still has to arrive by the real flight's glove contact. */
+  relayReception(owner: Position, player: Position, source: Point, target: Point,
+    preferred: Point, locations: Record<string, Point>) {
+    const release = this.release(owner, locations[owner], preferred);
+    const wait = (point: Point) => Math.max(release.time,
+      this.travel(player, locations[player], point) -
+        throwFlight(source, point, owner, this.settings?.armStrength).duration);
+    let best = preferred, earliest = wait(preferred);
+    if (earliest <= release.time + 0.001) return best;
+    const distance = metres(source, target), first = metres(source, preferred);
+    const last = Math.min(distance - 5, directThrowRange(owner, this.settings?.armStrength));
+    const consider = (point: Point) => {
+      const preparation = wait(point);
+      if (preparation < earliest - 0.001) { best = point; earliest = preparation; }
+    };
+    // Meet the selected infielder at its real stopping point when that gets
+    // the ball toward the target, rather than waiting for perfect alignment.
+    const stop = this.release(player, locations[player]).point;
+    const a = toWorld(source), b = toWorld(target), p = toWorld(stop);
+    const along = ((p.x - a.x) * (b.x - a.x) + (p.y - a.y) * (b.y - a.y)) / distance;
+    if (along > 5 && along < distance - 5 && metres(source, stop) <= last &&
+        metres(stop, target) < distance - 5)
+      consider(stop);
+    for (let i = 1; i <= 16 && last > first; i++) {
+      const point = toward(source, target, first + (last - first) * i / 16);
+      consider(point);
+    }
+    return best;
+  }
   choose(
     settings: DynamicSettings,
     ball: BattedBall,
@@ -912,9 +943,12 @@ export class DefensiveDecisionEngine {
             ? cutoffCandidates[0]
             : candidates[0];
     }
-    const relayPoint = cutoff ? (context?.fixedRelays?.find(s => s.player === cutoff)?.point ??
-      pending?.[0]?.point ?? (deepReturn ? initialRelayPoint : mixPhysical(source, bases[target as Base], 0.55))) : undefined;
-    const actualRelay = !!cutoff && (deepReturn || !!pending?.length);
+    const committedPoint = context?.fixedRelays?.find(s => s.player === cutoff)?.point ?? pending?.[0]?.point;
+    let relayPoint = cutoff ? (committedPoint ??
+      (deepReturn ? initialRelayPoint : mixPhysical(source, bases[target as Base], 0.55))) : undefined;
+    if (cutoff && deepReturn && target !== "hold" && stage !== "contact" && !committedPoint)
+      relayPoint = this.relayReception(owner, cutoff, source, bases[target], relayPoint!, locations);
+    const actualRelay = !!cutoff && context?.fixedRouteKind !== "through-cutoff" && (deepReturn || !!pending?.length);
     const relayStops: RelayStop[] = actualRelay ? [{ player: cutoff!, point: relayPoint! }] : [];
     const excluded = new Set<Position>([owner, ...(cutoff ? [cutoff] : [])]);
     if (actualRelay && this.relayBudget > 1 && target !== "hold") {
@@ -1193,8 +1227,7 @@ export class DefensiveDecisionEngine {
             : cutoff
               ? settings.throwTarget === "cutoff"
                 ? "cutoff-hold"
-                : metres(source, bases[target as Base]) >
-                    directThrowRange(owner, settings.armStrength)
+                : actualRelay
                   ? "relay"
                   : "through-cutoff"
               : "direct",
@@ -1229,6 +1262,29 @@ export class DefensiveDecisionEngine {
         relayStops.push({ player: innerCutoff, point: inner.target });
         inner.type = "Relay";
         route.legs = [...relayStops.map(s => s.player), receiver];
+      }
+    }
+    // Controlled-range guidance must not force a slower, late relay when a
+    // physically reachable return can get to its base sooner. Keep the cutoff
+    // optional, and preserve this choice throughout the committed flight.
+    if (stage !== "contact" && route.kind === "relay" && target !== "hold" && receiver &&
+        settings.throwTarget !== "cutoff" && !pending?.length && !context?.fixedRouteKind) {
+      const direct = { ...route, kind: "through-cutoff" as const, legs: [receiver], relays: [] };
+      const layout = { assignments: [...map.values()], route, issues, receiver, cutoff };
+      const first = map.get(route.legs[0])!.target;
+      const release = this.release(owner, locations[owner], first);
+      const promptArrival = release.time + throwFlight(release.point, first, owner, settings.armStrength).duration + assumptions.catchTime;
+      const firstArrival = this.arrival({ ...layout, route: { ...route, legs: route.legs.slice(0, 1) } }, locations, owner);
+      if (firstArrival > promptArrival + 0.05 &&
+          throwFlight(source, bases[target], owner, settings.armStrength).reachable &&
+          this.arrival({ ...layout, route: direct }, locations, owner) + 0.05 < this.arrival(layout, locations, owner)) {
+        Object.assign(route, direct);
+        relayStops.length = 0;
+        for (const a of map.values()) if (a.type === "Relay") {
+          a.type = "Cutoff";
+          a.reason = a.player === innerCutoff ? "innerCutoff" : "cutoffLane";
+          a.explanation = assignmentText(a).why;
+        }
       }
     }
     // A compulsory override still cannot make an impossible airborne throw.
