@@ -1,0 +1,82 @@
+
+> baseball-coach@2.0.0 test
+> vitest run
+
+
+ RUN  v3.2.7 /workspace/baseball
+
+ ✓ src/tests/defensiveAudit.test.ts (62 tests) 50758ms
+   ✓ reusable tactical rules and diagnostics > keeps all-nine invariants in the 576-case matrix, occupancy mask 0  4702ms
+   ✓ reusable tactical rules and diagnostics > keeps all-nine invariants in the 576-case matrix, occupancy mask 1  4822ms
+   ✓ reusable tactical rules and diagnostics > keeps all-nine invariants in the 576-case matrix, occupancy mask 2  6061ms
+   ✓ reusable tactical rules and diagnostics > keeps all-nine invariants in the 576-case matrix, occupancy mask 3  6106ms
+   ✓ reusable tactical rules and diagnostics > keeps all-nine invariants in the 576-case matrix, occupancy mask 4  5100ms
+   ✓ reusable tactical rules and diagnostics > keeps all-nine invariants in the 576-case matrix, occupancy mask 5  5802ms
+   ✓ reusable tactical rules and diagnostics > keeps all-nine invariants in the 576-case matrix, occupancy mask 6  5161ms
+   ✓ reusable tactical rules and diagnostics > keeps all-nine invariants in the 576-case matrix, occupancy mask 7  5330ms
+   ✓ center-field run-prevention regression > challenges the plate near 557,282 in standard and prevent strategies  501ms
+   ✓ center-field run-prevention regression > challenges the plate near 557,284 in standard and prevent strategies  513ms
+   ✓ center-field run-prevention regression > challenges the plate near 557,286 in standard and prevent strategies  519ms
+   ✓ center-field run-prevention regression > challenges the plate near 558,282 in standard and prevent strategies  490ms
+   ✓ center-field run-prevention regression > challenges the plate near 558,284 in standard and prevent strategies  472ms
+   ✓ center-field run-prevention regression > challenges the plate near 558,286 in standard and prevent strategies  506ms
+   ✓ center-field run-prevention regression > challenges the plate near 559,282 in standard and prevent strategies  512ms
+   ✓ center-field run-prevention regression > challenges the plate near 559,284 in standard and prevent strategies  544ms
+   ✓ center-field run-prevention regression > challenges the plate near 559,286 in standard and prevent strategies  535ms
+ ✓ src/tests/physicalMatrix.test.ts (24 tests) 26772ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Ground ball, occupancy mask 0  1247ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Ground ball, occupancy mask 1  1159ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Ground ball, occupancy mask 2  996ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Ground ball, occupancy mask 3  1104ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Ground ball, occupancy mask 4  1057ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Ground ball, occupancy mask 5  1300ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Ground ball, occupancy mask 6  1320ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Ground ball, occupancy mask 7  1297ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Line drive, occupancy mask 0  1137ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Line drive, occupancy mask 1  1245ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Line drive, occupancy mask 2  1217ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Line drive, occupancy mask 3  1288ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Line drive, occupancy mask 4  1103ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Line drive, occupancy mask 5  1328ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Line drive, occupancy mask 6  1261ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Line drive, occupancy mask 7  1424ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Fly ball, occupancy mask 0  743ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Fly ball, occupancy mask 1  987ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Fly ball, occupancy mask 2  808ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Fly ball, occupancy mask 3  931ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Fly ball, occupancy mask 4  806ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Fly ball, occupancy mask 5  990ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Fly ball, occupancy mask 6  1002ms
+   ✓ physical and baseball invariants across 576 trajectories > validates all nine and all out states for Fly ball, occupancy mask 7  1022ms
+ ✓ src/tests/dynamic.test.ts (39 tests) 13215ms
+   ✓ generated-state invariants across base/out situations > validates every occupancy and out count at 350,450  1273ms
+   ✓ generated-state invariants across base/out situations > validates every occupancy and out count at 640,430  1096ms
+   ✓ generated-state invariants across base/out situations > validates every occupancy and out count at 650,550  1086ms
+   ✓ generated-state invariants across base/out situations > validates every occupancy and out count at 510,620  916ms
+   ✓ generated-state invariants across base/out situations > validates every occupancy and out count at 240,300  979ms
+   ✓ generated-state invariants across base/out situations > validates every occupancy and out count at 800,240  969ms
+   ✓ generated-state invariants across base/out situations > validates every occupancy and out count at 400,130  1293ms
+   ✓ varied deterministic inputs > keeps all invariants and translations across overrides, strengths and strategies  4027ms
+ ✓ src/tests/relayPhysics.test.ts (31 tests) 5288ms
+   ✓ manual-based gap returns and all-nine movement > prioritizes third coverage and useful support across outfield Fly ball returns  1050ms
+   ✓ manual-based gap returns and all-nine movement > prioritizes third coverage and useful support across outfield Line drive returns  1187ms
+   ✓ manual-based gap returns and all-nine movement > keeps P on base backup throughout left/right outfield Fly ball returns  1042ms
+   ✓ manual-based gap returns and all-nine movement > keeps P on base backup throughout left/right outfield Line drive returns  1043ms
+ ✓ src/tests/trajectoryEdges.test.ts (10 tests) 4532ms
+   ✓ resolves 128 independent seeded ball, runner, base/out and strategy combinations  4061ms
+ ✓ src/tests/tacticalCorrectness.test.ts (51 tests) 2962ms
+ ✓ src/tests/defensiveV2Corrections.test.ts (25 tests) 2597ms
+   ✓ V2 ordinary R3 bunts and cooperative pop-ups > executes all 18 formerly excluded base/out/bunt combinations for mask 4  327ms
+   ✓ V2 ordinary R3 bunts and cooperative pop-ups > executes all 18 formerly excluded base/out/bunt combinations for mask 5  401ms
+   ✓ V2 ordinary R3 bunts and cooperative pop-ups > executes all 18 formerly excluded base/out/bunt combinations for mask 7  377ms
+ ✓ src/tests/baserunning.test.ts (21 tests) 1114ms
+ ✓ src/tests/airborne.test.ts (9 tests) 457ms
+ ✓ src/tests/physics.test.ts (23 tests) 448ms
+ ✓ src/tests/localization.test.ts (28 tests) 65ms
+ ✓ src/tests/simulation.test.ts (35 tests) 84ms
+ ✓ src/tests/teaching.test.ts (6 tests) 6ms
+
+ Test Files  13 passed (13)
+      Tests  364 passed (364)
+   Start at  21:15:19
+   Duration  111.49s (transform 490ms, setup 0ms, collect 1.08s, tests 108.30s, environment 2ms, prepare 637ms)

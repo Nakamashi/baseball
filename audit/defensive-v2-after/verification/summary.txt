@@ -1,0 +1,5 @@
+
+> baseball-coach@2.0.0 audit:defense:v2:summary
+> node scripts/summarize-defensive-audit-v2.mjs
+
+Analyzed 2522 scenarios, 21 detailed examples, and all nine defenders. Wrote analysis.json and player-audits.jsonl.gz.

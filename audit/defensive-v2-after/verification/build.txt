@@ -1,0 +1,13 @@
+
+> baseball-coach@2.0.0 build
+> tsc -b && vite build
+
+vite v6.4.5 building for production...
+transforming...
+✓ 59 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.42 kB │ gzip:   0.30 kB
+dist/assets/index-DJCXai_R.css   14.22 kB │ gzip:   3.99 kB
+dist/assets/index-CUTjAVRL.js   446.94 kB │ gzip: 144.80 kB
+✓ built in 1.30s

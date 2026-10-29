@@ -1,0 +1,3164 @@
+{
+  "before": {
+    "configurations": 2202,
+    "flags": {
+      "late-support-review": 1812,
+      "forecast-control-drift": 8,
+      "runner-first-touch-forecast": 51,
+      "late-coverage-review": 12,
+      "optional-support-review": 227,
+      "pop-priority-review": 8,
+      "double-play-coverage-floor": 46
+    },
+    "doublePlays": [
+      {
+        "contact": "soft",
+        "runner": "slow",
+        "tested": 20,
+        "zero": 0,
+        "one": 20,
+        "two": 0
+      },
+      {
+        "contact": "soft",
+        "runner": "average",
+        "tested": 20,
+        "zero": 2,
+        "one": 18,
+        "two": 0
+      },
+      {
+        "contact": "soft",
+        "runner": "fast",
+        "tested": 20,
+        "zero": 10,
+        "one": 10,
+        "two": 0
+      },
+      {
+        "contact": "normal",
+        "runner": "slow",
+        "tested": 20,
+        "zero": 0,
+        "one": 0,
+        "two": 20
+      },
+      {
+        "contact": "normal",
+        "runner": "average",
+        "tested": 20,
+        "zero": 0,
+        "one": 20,
+        "two": 0
+      },
+      {
+        "contact": "normal",
+        "runner": "fast",
+        "tested": 20,
+        "zero": 0,
+        "one": 20,
+        "two": 0
+      },
+      {
+        "contact": "hard",
+        "runner": "slow",
+        "tested": 20,
+        "zero": 0,
+        "one": 6,
+        "two": 14
+      },
+      {
+        "contact": "hard",
+        "runner": "average",
+        "tested": 20,
+        "zero": 2,
+        "one": 18,
+        "two": 0
+      },
+      {
+        "contact": "hard",
+        "runner": "fast",
+        "tested": 20,
+        "zero": 6,
+        "one": 14,
+        "two": 0
+      }
+    ]
+  },
+  "commonAfter": {
+    "configurations": 2202,
+    "flags": {
+      "late-support-review": 1774,
+      "optional-support-review": 227,
+      "late-coverage-review": 60
+    }
+  },
+  "expandedAfter": {
+    "configurations": 2522,
+    "flags": {
+      "late-support-review": 2074,
+      "optional-support-review": 227,
+      "late-coverage-review": 60
+    },
+    "doublePlays": [
+      {
+        "contact": "soft",
+        "runner": "slow",
+        "tested": 20,
+        "zero": 0,
+        "one": 20,
+        "two": 0
+      },
+      {
+        "contact": "soft",
+        "runner": "average",
+        "tested": 20,
+        "zero": 2,
+        "one": 18,
+        "two": 0
+      },
+      {
+        "contact": "soft",
+        "runner": "fast",
+        "tested": 20,
+        "zero": 10,
+        "one": 10,
+        "two": 0
+      },
+      {
+        "contact": "normal",
+        "runner": "slow",
+        "tested": 20,
+        "zero": 0,
+        "one": 0,
+        "two": 20
+      },
+      {
+        "contact": "normal",
+        "runner": "average",
+        "tested": 20,
+        "zero": 0,
+        "one": 12,
+        "two": 8
+      },
+      {
+        "contact": "normal",
+        "runner": "fast",
+        "tested": 20,
+        "zero": 0,
+        "one": 20,
+        "two": 0
+      },
+      {
+        "contact": "hard",
+        "runner": "slow",
+        "tested": 20,
+        "zero": 0,
+        "one": 6,
+        "two": 14
+      },
+      {
+        "contact": "hard",
+        "runner": "average",
+        "tested": 20,
+        "zero": 2,
+        "one": 6,
+        "two": 12
+      },
+      {
+        "contact": "hard",
+        "runner": "fast",
+        "tested": 20,
+        "zero": 6,
+        "one": 14,
+        "two": 0
+      }
+    ]
+  },
+  "examples": {
+    "base-ground-second-b1-o0": {
+      "before": {
+        "id": "base-ground-second-b1-o0",
+        "fielder": "RF",
+        "outs": 0,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 4.62645,
+          "secured": 4.87645,
+          "throws": [
+            {
+              "from": "RF",
+              "to": "2B",
+              "target": 2,
+              "release": 5.25645,
+              "previousControl": 4.87645,
+              "preparation": 0.3799999999999999,
+              "glove": 5.723862,
+              "control": 5.843862,
+              "flight": 0.4674119999999995,
+              "distance": 13.622422272201538
+            },
+            {
+              "from": "2B",
+              "to": "1B",
+              "target": 1,
+              "release": 6.293862,
+              "previousControl": 5.843862,
+              "preparation": 0.4500000000000002,
+              "glove": 7.504426,
+              "control": 7.624426,
+              "flight": 1.2105639999999998,
+              "distance": 25.607840256901643
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "target": 2,
+            "force": false,
+            "reason": "@v2:targetReturn:{}",
+            "override": false,
+            "alternatives": [
+              {
+                "target": 2,
+                "runner": "R1",
+                "force": true,
+                "runnerArrival": 0.8284039123700956,
+                "ballArrival": 1.3632822581663988,
+                "margin": -0.5348783457963032,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 0.8651216542036967,
+                "route": "through-cutoff",
+                "reason": "too-late"
+              },
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 1.3924717026320899,
+                "ballArrival": 1.5434982987254315,
+                "margin": -0.15102659609334168,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": -0.15102659609334168,
+                "route": "through-cutoff",
+                "reason": "too-late"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": 2,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": 3,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": "home",
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              }
+            ],
+            "time": 4.87645,
+            "owner": "RF"
+          },
+          {
+            "target": 1,
+            "runner": "BR",
+            "force": true,
+            "margin": 0.5502943254355945,
+            "reason": "@v2:targetForce:{}",
+            "override": false,
+            "alternatives": [
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 2.1808585652582844,
+                "ballArrival": 1.6305642398226898,
+                "margin": 0.5502943254355945,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 0.5502943254355945,
+                "route": "direct",
+                "reason": "lead-force"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 2,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": 3,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": "home",
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              }
+            ],
+            "time": 5.843862,
+            "owner": "2B"
+          }
+        ],
+        "outsLedger": [],
+        "runnerTouches": [
+          {
+            "id": "event-7",
+            "time": 5.704854,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":2}",
+            "player": "R1",
+            "base": 2
+          },
+          {
+            "id": "event-11",
+            "time": 6.26892,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":1}",
+            "player": "BR",
+            "base": 1
+          }
+        ],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "forecast-control-drift",
+            "detail": "Compiled control time differs from selected direct/carry forecast by more than 40 ms.",
+            "evidence": {
+              "decisionTime": 5.843862,
+              "target": 1,
+              "predicted": 1.6305642398226898,
+              "actual": 1.780564,
+              "error": 0.1499997601773102
+            }
+          },
+          {
+            "severity": "High",
+            "code": "runner-first-touch-forecast",
+            "detail": "Selected first-base challenge overestimates time to BR first touch by more than 200 ms despite unchanged goal; inspect stop/return duration versus first crossing.",
+            "evidence": {
+              "decisionTime": 5.843862,
+              "predictedRemaining": 2.1808585652582844,
+              "actualRemaining": 0.42505799999999994,
+              "touch": 6.26892,
+              "predictedBallControl": 1.6305642398226898,
+              "selectedMargin": 0.5502943254355945
+            }
+          },
+          {
+            "severity": "Medium",
+            "code": "late-support-review",
+            "detail": "Allocator reports late or space-limited support; advisory, not an automatic tactical error.",
+            "evidence": [
+              {
+                "time": 4.87645,
+                "kind": "late-backup",
+                "player": "LF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.87645,
+                "kind": "late-backup",
+                "player": "LF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 5.25645,
+                "kind": "late-backup",
+                "player": "LF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 5.704854,
+                "kind": "late-backup",
+                "player": "LF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 5.843862,
+                "kind": "late-backup",
+                "player": "P",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 5.843862,
+                "kind": "late-backup",
+                "player": "C",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 5.843862,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 5.993862,
+                "kind": "late-backup",
+                "player": "P",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              }
+            ]
+          }
+        ]
+      },
+      "after": {
+        "id": "base-ground-second-b1-o0",
+        "fielder": "RF",
+        "outs": 0,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 4.62645,
+          "secured": 4.87645,
+          "throws": [
+            {
+              "from": "RF",
+              "to": "2B",
+              "target": 2,
+              "release": 5.25645,
+              "previousControl": 4.87645,
+              "preparation": 0.3799999999999999,
+              "glove": 5.723862,
+              "control": 5.843862,
+              "flight": 0.4674119999999995,
+              "distance": 13.622422272201538
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "target": 2,
+            "force": false,
+            "reason": "@v2:targetReturn:{}",
+            "override": false,
+            "alternatives": [
+              {
+                "target": 2,
+                "runner": "R1",
+                "force": true,
+                "runnerArrival": 0.8284039123700956,
+                "ballArrival": 1.3632822581663988,
+                "margin": -0.5348783457963032,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 0.8651216542036967,
+                "route": "through-cutoff",
+                "reason": "too-late"
+              },
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 1.3924717026320899,
+                "ballArrival": 1.5434982987254315,
+                "margin": -0.15102659609334168,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": -0.15102659609334168,
+                "route": "through-cutoff",
+                "reason": "too-late"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": 2,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": 3,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": "home",
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              }
+            ],
+            "time": 4.87645,
+            "owner": "RF"
+          },
+          {
+            "target": "hold",
+            "force": false,
+            "reason": "@v2:targetHold:{}",
+            "override": false,
+            "alternatives": [
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 0.27505841792753327,
+                "ballArrival": 1.6305642398226898,
+                "margin": -1.3555058218951566,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": -1.3555058218951566,
+                "route": "direct",
+                "reason": "too-late"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": 2,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": 3,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": "home",
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              }
+            ],
+            "time": 5.993862,
+            "owner": "2B"
+          }
+        ],
+        "outsLedger": [],
+        "runnerTouches": [
+          {
+            "id": "event-7",
+            "time": 5.704854,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":2}",
+            "player": "R1",
+            "base": 2
+          },
+          {
+            "id": "event-11",
+            "time": 6.26892,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":1}",
+            "player": "BR",
+            "base": 1
+          }
+        ],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "late-support-review",
+            "detail": "Allocator reports late or space-limited support; advisory, not an automatic tactical error.",
+            "evidence": [
+              {
+                "time": 4.87645,
+                "kind": "late-backup",
+                "player": "LF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.87645,
+                "kind": "late-backup",
+                "player": "LF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 5.25645,
+                "kind": "late-backup",
+                "player": "LF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 5.704854,
+                "kind": "late-backup",
+                "player": "LF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 5.843862,
+                "kind": "late-backup",
+                "player": "LF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "dp-ss-average-hard-o0": {
+      "before": {
+        "id": "dp-ss-average-hard-o0",
+        "fielder": "SS",
+        "outs": 1,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 2.223991,
+          "secured": 2.473991,
+          "throws": [
+            {
+              "from": "SS",
+              "to": "2B",
+              "target": 2,
+              "release": 3.234254,
+              "previousControl": 2.473991,
+              "preparation": 0.7602630000000001,
+              "glove": 3.936207,
+              "control": 4.056207,
+              "flight": 0.701953,
+              "distance": 10.660969888790735
+            },
+            {
+              "from": "2B",
+              "to": "1B",
+              "target": 1,
+              "release": 4.276207,
+              "previousControl": 4.056207,
+              "preparation": 0.22000000000000064,
+              "glove": 5.586486,
+              "control": 5.706486,
+              "flight": 1.3102789999999995,
+              "distance": 27.43
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "target": 2,
+            "runner": "R1",
+            "continuation": {
+              "target": 1,
+              "arrival": 3.232495171684306,
+              "runnerArrival": 3.2260094130554475,
+              "margin": -0.006485758628858473,
+              "pivot": 0.22
+            },
+            "force": true,
+            "margin": 1.6486494238477634,
+            "reason": "@v2:targetDoublePlay:{}",
+            "override": false,
+            "alternatives": [
+              {
+                "target": 2,
+                "runner": "R1",
+                "force": true,
+                "runnerArrival": 3.2308651202633776,
+                "ballArrival": 1.5822156964156142,
+                "margin": 1.6486494238477634,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 5.048649423847763,
+                "route": "direct",
+                "reason": "lead-force",
+                "continuation": {
+                  "target": 1,
+                  "arrival": 3.232495171684306,
+                  "runnerArrival": 3.2260094130554475,
+                  "margin": -0.006485758628858473,
+                  "pivot": 0.22
+                }
+              },
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 3.2260094130554475,
+                "ballArrival": 1.8265577829252098,
+                "margin": 1.3994516301302378,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 1.3994516301302378,
+                "route": "direct",
+                "reason": "lead-force"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 2,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 3,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": "home",
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              }
+            ],
+            "time": 2.473991,
+            "owner": "SS"
+          },
+          {
+            "target": 1,
+            "runner": "BR",
+            "force": true,
+            "margin": -0.006485989761244593,
+            "reason": "@v2:targetForce:{}",
+            "override": false,
+            "time": 4.056207,
+            "owner": "2B"
+          }
+        ],
+        "outsLedger": [
+          {
+            "id": "event-8",
+            "time": 4.056207,
+            "type": "RunnerOut",
+            "explanation": "@v2:forceOut:{\"runner\":\"R1\",\"base\":2}",
+            "player": "R1",
+            "base": 2,
+            "force": true
+          }
+        ],
+        "runnerTouches": [
+          {
+            "id": "event-11",
+            "time": 5.700001,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":1}",
+            "player": "BR",
+            "base": 1
+          }
+        ],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "late-support-review",
+            "detail": "Allocator reports late or space-limited support; advisory, not an automatic tactical error.",
+            "evidence": [
+              {
+                "time": 2.473991,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 2.473991,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 3.234254,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.056207,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.056207,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.056207,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.056207,
+                "kind": "late-backup",
+                "player": "P",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.056207,
+                "kind": "late-backup",
+                "player": "C",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              }
+            ]
+          },
+          {
+            "severity": "High",
+            "code": "double-play-coverage-floor",
+            "detail": "Rest-to-rest second-base coverage creates a lower bound later than the average BR, even with an early hard-grounder pickup. Confirmed model bottleneck; calibration/footwork correction needs review.",
+            "evidence": {
+              "receiver": "2B",
+              "startingDistance": 9.01963301983512,
+              "minimumStoppedTravel": 2.6862066964156157,
+              "earliestControl": 4.056206696415615,
+              "earliestFirstControl": 5.706485696415615,
+              "brTouch": 5.700001,
+              "deficit": 0.006484696415614444
+            }
+          }
+        ]
+      },
+      "after": {
+        "id": "dp-ss-average-hard-o0",
+        "fielder": "SS",
+        "outs": 2,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 2.223991,
+          "secured": 2.473991,
+          "throws": [
+            {
+              "from": "SS",
+              "to": "2B",
+              "target": 2,
+              "release": 2.895032,
+              "previousControl": 2.473991,
+              "preparation": 0.4210410000000002,
+              "glove": 3.597565,
+              "control": 3.717565,
+              "flight": 0.7025329999999999,
+              "distance": 10.669089050889877
+            },
+            {
+              "from": "2B",
+              "to": "1B",
+              "target": 1,
+              "release": 3.957565,
+              "previousControl": 3.717565,
+              "preparation": 0.2400000000000002,
+              "glove": 5.275769,
+              "control": 5.395769,
+              "flight": 1.3182040000000002,
+              "distance": 27.572334218777506
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "target": 2,
+            "runner": "R1",
+            "continuation": {
+              "target": 1,
+              "arrival": 2.9217780827698103,
+              "runnerArrival": 3.2260094130554475,
+              "margin": 0.3042313302856372,
+              "pivot": 0.22
+            },
+            "force": true,
+            "margin": 1.987291455131984,
+            "reason": "@v2:targetDoublePlay:{}",
+            "override": false,
+            "alternatives": [
+              {
+                "target": 2,
+                "runner": "R1",
+                "force": true,
+                "runnerArrival": 3.2308651202633776,
+                "ballArrival": 1.2435736651313936,
+                "margin": 1.987291455131984,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 5.387291455131984,
+                "route": "direct",
+                "reason": "lead-force",
+                "continuation": {
+                  "target": 1,
+                  "arrival": 2.9217780827698103,
+                  "runnerArrival": 3.2260094130554475,
+                  "margin": 0.3042313302856372,
+                  "pivot": 0.22
+                }
+              },
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 3.2260094130554475,
+                "ballArrival": 1.8265577829252098,
+                "margin": 1.3994516301302378,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 1.3994516301302378,
+                "route": "direct",
+                "reason": "lead-force"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 2,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 3,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": "home",
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              }
+            ],
+            "time": 2.473991,
+            "owner": "SS"
+          },
+          {
+            "target": 1,
+            "runner": "BR",
+            "force": true,
+            "margin": 0.3042302214164403,
+            "reason": "@v2:targetForce:{}",
+            "override": false,
+            "time": 3.717565,
+            "owner": "2B"
+          }
+        ],
+        "outsLedger": [
+          {
+            "id": "event-9",
+            "time": 3.717565,
+            "type": "RunnerOut",
+            "explanation": "@v2:forceOut:{\"runner\":\"R1\",\"base\":2}",
+            "player": "R1",
+            "base": 2,
+            "force": true
+          },
+          {
+            "id": "event-13",
+            "time": 5.395769,
+            "type": "RunnerOut",
+            "explanation": "@v2:forceOut:{\"runner\":\"BR\",\"base\":1}",
+            "player": "BR",
+            "base": 1,
+            "force": true
+          }
+        ],
+        "runnerTouches": [
+          {
+            "id": "event-14",
+            "time": 5.699998,
+            "type": "RunnerBaseTouch",
+            "explanation": "@v2:runnerFinishOut:{}",
+            "player": "BR",
+            "base": 1
+          }
+        ],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "late-support-review",
+            "detail": "Allocator reports late or space-limited support; advisory, not an automatic tactical error.",
+            "evidence": [
+              {
+                "time": 2.473991,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 2.473991,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 2.895032,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 3.717565,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 3.717565,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 3.717565,
+                "kind": "late-backup",
+                "player": "P",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 3.717565,
+                "kind": "late-backup",
+                "player": "C",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 3.717565,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "base-pop-pitcher-b1-o0": {
+      "before": {
+        "id": "base-pop-pitcher-b1-o0",
+        "fielder": "P",
+        "outs": 1,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 4.65075,
+          "secured": 4.77075,
+          "throws": []
+        },
+        "decisions": [
+          {
+            "target": "hold",
+            "force": false,
+            "reason": "@v2:targetHold:{}",
+            "override": false,
+            "alternatives": [
+              {
+                "target": 1,
+                "runner": "R1",
+                "force": false,
+                "appeal": true,
+                "runnerArrival": 0.5252062785018323,
+                "ballArrival": 1.3126751153546583,
+                "margin": -0.787468836852826,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 0.21253116314717402,
+                "reason": "too-late",
+                "route": "direct"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": 2,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": 3,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": "home",
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              }
+            ],
+            "time": 4.77075,
+            "owner": "P"
+          }
+        ],
+        "outsLedger": [
+          {
+            "id": "event-8",
+            "time": 4.77075,
+            "type": "RunnerOut",
+            "explanation": "@v2:catchOut:{\"runner\":\"BR\",\"base\":1}",
+            "player": "BR",
+            "base": 1,
+            "force": false
+          }
+        ],
+        "runnerTouches": [
+          {
+            "id": "event-10",
+            "time": 5.29597,
+            "type": "RunnerRetouched",
+            "explanation": "@v2:retouchCompleted:{}",
+            "player": "R1",
+            "base": 1
+          }
+        ],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "late-support-review",
+            "detail": "Allocator reports late or space-limited support; advisory, not an automatic tactical error.",
+            "evidence": [
+              {
+                "time": 1.35,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 1.7,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 2.05,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 2.6,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.77075,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              }
+            ]
+          },
+          {
+            "severity": "Medium",
+            "code": "pop-priority-review",
+            "detail": "P catches a fly/pop despite other reachable infield catches; compare Perry Hill p38 priority convention.",
+            "evidence": [
+              {
+                "player": "2B",
+                "time": 3.6507498105366922
+              },
+              {
+                "player": "SS",
+                "time": 3.6507498105366922
+              }
+            ]
+          }
+        ]
+      },
+      "after": {
+        "id": "base-pop-pitcher-b1-o0",
+        "fielder": "SS",
+        "outs": 1,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 4.65075,
+          "secured": 4.77075,
+          "throws": []
+        },
+        "decisions": [
+          {
+            "target": "hold",
+            "force": false,
+            "reason": "@v2:targetHold:{}",
+            "override": false,
+            "alternatives": [
+              {
+                "target": 1,
+                "runner": "R1",
+                "force": false,
+                "appeal": true,
+                "runnerArrival": 0.5252062746703006,
+                "ballArrival": 1.4905898486658278,
+                "margin": -0.9653835739955272,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 0.03461642600447279,
+                "reason": "too-late",
+                "route": "direct"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": 2,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": 3,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": "home",
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              }
+            ],
+            "time": 4.77075,
+            "owner": "SS"
+          }
+        ],
+        "outsLedger": [
+          {
+            "id": "event-8",
+            "time": 4.77075,
+            "type": "RunnerOut",
+            "explanation": "@v2:catchOut:{\"runner\":\"BR\",\"base\":1}",
+            "player": "BR",
+            "base": 1,
+            "force": false
+          }
+        ],
+        "runnerTouches": [
+          {
+            "id": "event-10",
+            "time": 5.29597,
+            "type": "RunnerRetouched",
+            "explanation": "@v2:retouchCompleted:{}",
+            "player": "R1",
+            "base": 1
+          }
+        ],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "late-support-review",
+            "detail": "Allocator reports late or space-limited support; advisory, not an automatic tactical error.",
+            "evidence": [
+              {
+                "time": 1.35,
+                "kind": "late-backup",
+                "player": "LF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 1.7,
+                "kind": "late-backup",
+                "player": "LF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 2.05,
+                "kind": "late-backup",
+                "player": "LF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.77075,
+                "kind": "late-backup",
+                "player": "LF",
+                "base": 2,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "base-ground-left-center-b2-o2": {
+      "before": {
+        "id": "base-ground-left-center-b2-o2",
+        "fielder": "SS",
+        "outs": 1,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 2.747771,
+          "secured": 2.997771,
+          "throws": [
+            {
+              "from": "SS",
+              "to": "1B",
+              "target": 1,
+              "release": 3.347771,
+              "previousControl": 2.997771,
+              "preparation": 0.34999999999999964,
+              "glove": 4.923704,
+              "control": 5.043704,
+              "flight": 1.575933,
+              "distance": 31.98693668899588
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "target": 1,
+            "runner": "BR",
+            "force": true,
+            "margin": 0.6562934125093061,
+            "reason": "@v2:targetSure:{}",
+            "override": false,
+            "alternatives": [
+              {
+                "target": 3,
+                "runner": "R2",
+                "force": false,
+                "runnerArrival": 2.7070834872374987,
+                "ballArrival": 1.1497987206146325,
+                "margin": 1.3072847666228662,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 2.307284766622866,
+                "route": "direct",
+                "reason": "third-out"
+              },
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 2.702226780486058,
+                "ballArrival": 2.045933367976752,
+                "margin": 0.6562934125093061,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 3.656293412509306,
+                "route": "direct",
+                "reason": "third-out"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 2,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": 3,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": "home",
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              }
+            ],
+            "time": 2.997771,
+            "owner": "SS"
+          }
+        ],
+        "outsLedger": [
+          {
+            "id": "event-8",
+            "time": 5.043704,
+            "type": "RunnerOut",
+            "explanation": "@v2:forceOut:{\"runner\":\"BR\",\"base\":1}",
+            "player": "BR",
+            "base": 1,
+            "force": true
+          }
+        ],
+        "runnerTouches": [],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "late-coverage-review",
+            "detail": "Allocator reports base coverage arriving after an advancing runner; inspect whether a useful earlier rotation exists.",
+            "evidence": [
+              {
+                "time": 5.043704,
+                "kind": "late-coverage",
+                "base": 3,
+                "player": "SS",
+                "detail": "Receiving assignment is in progress but cannot reach the base before the advancing runner under current timing."
+              }
+            ]
+          },
+          {
+            "severity": "Medium",
+            "code": "late-support-review",
+            "detail": "Allocator reports late or space-limited support; advisory, not an automatic tactical error.",
+            "evidence": [
+              {
+                "time": 2.997771,
+                "kind": "late-backup",
+                "player": "P",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 2.997771,
+                "kind": "late-backup",
+                "player": "C",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 2.997771,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 2.997771,
+                "kind": "late-backup",
+                "player": "P",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 2.997771,
+                "kind": "late-backup",
+                "player": "C",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 2.997771,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 3.347771,
+                "kind": "late-backup",
+                "player": "P",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 3.347771,
+                "kind": "late-backup",
+                "player": "C",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              }
+            ]
+          }
+        ]
+      },
+      "after": {
+        "id": "base-ground-left-center-b2-o2",
+        "fielder": "SS",
+        "outs": 1,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 2.747771,
+          "secured": 2.997771,
+          "throws": [
+            {
+              "from": "SS",
+              "to": "1B",
+              "target": 1,
+              "release": 3.347771,
+              "previousControl": 2.997771,
+              "preparation": 0.34999999999999964,
+              "glove": 4.923704,
+              "control": 5.043704,
+              "flight": 1.575933,
+              "distance": 31.98693668899588
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "target": 1,
+            "runner": "BR",
+            "force": true,
+            "margin": 0.6562934125093061,
+            "reason": "@v2:targetSure:{}",
+            "override": false,
+            "alternatives": [
+              {
+                "target": 3,
+                "runner": "R2",
+                "force": false,
+                "runnerArrival": 2.7070834872374987,
+                "ballArrival": 1.1497987206146325,
+                "margin": 1.3072847666228662,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 2.307284766622866,
+                "route": "direct",
+                "reason": "third-out"
+              },
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 2.702226780486058,
+                "ballArrival": 2.045933367976752,
+                "margin": 0.6562934125093061,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 3.656293412509306,
+                "route": "direct",
+                "reason": "third-out"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 2,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": 3,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": "home",
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              }
+            ],
+            "time": 2.997771,
+            "owner": "SS"
+          }
+        ],
+        "outsLedger": [
+          {
+            "id": "event-8",
+            "time": 5.043704,
+            "type": "RunnerOut",
+            "explanation": "@v2:forceOut:{\"runner\":\"BR\",\"base\":1}",
+            "player": "BR",
+            "base": 1,
+            "force": true
+          }
+        ],
+        "runnerTouches": [],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "late-support-review",
+            "detail": "Allocator reports late or space-limited support; advisory, not an automatic tactical error.",
+            "evidence": [
+              {
+                "time": 2.997771,
+                "kind": "late-backup",
+                "player": "P",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 2.997771,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 2.997771,
+                "kind": "late-backup",
+                "player": "P",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 2.997771,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 3.347771,
+                "kind": "late-backup",
+                "player": "P",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 3.347771,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "focus-right-center-home": {
+      "before": {
+        "id": "focus-right-center-home",
+        "fielder": "CF",
+        "outs": 0,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 5.794402,
+          "secured": 6.044402,
+          "throws": [
+            {
+              "from": "CF",
+              "to": "2B",
+              "target": "home",
+              "release": 6.424402,
+              "previousControl": 6.044402,
+              "preparation": 0.3799999999999999,
+              "glove": 8.749495,
+              "control": 8.869495,
+              "flight": 2.325093,
+              "distance": 58.55738969185084
+            },
+            {
+              "from": "2B",
+              "to": "C",
+              "target": "home",
+              "release": 9.279495,
+              "previousControl": 8.869495,
+              "preparation": 0.41000000000000014,
+              "glove": 11.349441,
+              "control": 11.469441,
+              "flight": 2.069946,
+              "distance": 49.567411877200676
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "target": "home",
+            "force": false,
+            "reason": "@v2:targetOverride:{}",
+            "override": true,
+            "alternatives": [
+              {
+                "target": 3,
+                "runner": "R1",
+                "force": false,
+                "runnerArrival": 3.6370190127392568,
+                "ballArrival": 4.98616150214648,
+                "margin": -1.5991424894072233,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": -1.5991424894072233,
+                "route": "relay",
+                "reason": "too-late"
+              },
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 0.11338643427621498,
+                "ballArrival": 4.54379121927062,
+                "margin": -4.430404784994405,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": -4.430404784994405,
+                "route": "relay",
+                "reason": "too-late"
+              },
+              {
+                "target": 2,
+                "runner": "BR",
+                "force": false,
+                "runnerArrival": 4.713386434276215,
+                "ballArrival": 3.8496992020304357,
+                "margin": 0.6136872322457791,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 0.6136872322457791,
+                "route": "relay",
+                "reason": "tag-opportunity"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": 2,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 3,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": "home",
+                "reason": "Control return without an immediate out attempt"
+              }
+            ],
+            "time": 6.044402,
+            "owner": "CF"
+          }
+        ],
+        "outsLedger": [],
+        "runnerTouches": [
+          {
+            "id": "event-9",
+            "time": 5.536554,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":2}",
+            "player": "R1",
+            "base": 2
+          },
+          {
+            "id": "event-12",
+            "time": 6.157788,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":1}",
+            "player": "BR",
+            "base": 1
+          },
+          {
+            "id": "event-17",
+            "time": 9.681424,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":3}",
+            "player": "R1",
+            "base": 3
+          },
+          {
+            "id": "event-18",
+            "time": 10.757794,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":2}",
+            "player": "BR",
+            "base": 2
+          }
+        ],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "optional-support-review",
+            "detail": "No timely backup of an optional/intermediate reception; advisory, retaining base coverage can be sound.",
+            "evidence": [
+              {
+                "time": 1.35,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 1.7,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 2.05,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 2.6,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 2.908146,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 4.077601,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 5.536554,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 6.044402,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              }
+            ]
+          }
+        ]
+      },
+      "after": {
+        "id": "focus-right-center-home",
+        "fielder": "CF",
+        "outs": 0,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 5.794402,
+          "secured": 6.044402,
+          "throws": [
+            {
+              "from": "CF",
+              "to": "2B",
+              "target": "home",
+              "release": 6.424402,
+              "previousControl": 6.044402,
+              "preparation": 0.3799999999999999,
+              "glove": 8.749495,
+              "control": 8.869495,
+              "flight": 2.325093,
+              "distance": 58.55738969185084
+            },
+            {
+              "from": "2B",
+              "to": "C",
+              "target": "home",
+              "release": 9.279495,
+              "previousControl": 8.869495,
+              "preparation": 0.41000000000000014,
+              "glove": 11.349441,
+              "control": 11.469441,
+              "flight": 2.069946,
+              "distance": 49.567411877200676
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "target": "home",
+            "force": false,
+            "reason": "@v2:targetOverride:{}",
+            "override": true,
+            "alternatives": [
+              {
+                "target": 3,
+                "runner": "R1",
+                "force": false,
+                "runnerArrival": 3.6370190127392568,
+                "ballArrival": 4.98616150214648,
+                "margin": -1.5991424894072233,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": -1.5991424894072233,
+                "route": "relay",
+                "reason": "too-late"
+              },
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 0.11338643427621498,
+                "ballArrival": 4.54379121927062,
+                "margin": -4.430404784994405,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": -4.430404784994405,
+                "route": "relay",
+                "reason": "too-late"
+              },
+              {
+                "target": 2,
+                "runner": "BR",
+                "force": false,
+                "runnerArrival": 4.713386434276215,
+                "ballArrival": 3.8496992020304357,
+                "margin": 0.6136872322457791,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 0.6136872322457791,
+                "route": "relay",
+                "reason": "tag-opportunity"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": 2,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 3,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": "home",
+                "reason": "Control return without an immediate out attempt"
+              }
+            ],
+            "time": 6.044402,
+            "owner": "CF"
+          }
+        ],
+        "outsLedger": [],
+        "runnerTouches": [
+          {
+            "id": "event-9",
+            "time": 5.536554,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":2}",
+            "player": "R1",
+            "base": 2
+          },
+          {
+            "id": "event-12",
+            "time": 6.157788,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":1}",
+            "player": "BR",
+            "base": 1
+          },
+          {
+            "id": "event-17",
+            "time": 9.681424,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":3}",
+            "player": "R1",
+            "base": 3
+          },
+          {
+            "id": "event-18",
+            "time": 10.757794,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":2}",
+            "player": "BR",
+            "base": 2
+          }
+        ],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "optional-support-review",
+            "detail": "No timely backup of an optional/intermediate reception; advisory, retaining base coverage can be sound.",
+            "evidence": [
+              {
+                "time": 1.35,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 1.7,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 2.05,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 2.6,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 2.908146,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 4.077601,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 5.536554,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 6.044402,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "focus-left-center-home": {
+      "before": {
+        "id": "focus-left-center-home",
+        "fielder": "CF",
+        "outs": 0,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 5.794402,
+          "secured": 6.044402,
+          "throws": [
+            {
+              "from": "CF",
+              "to": "SS",
+              "target": "home",
+              "release": 6.424402,
+              "previousControl": 6.044402,
+              "preparation": 0.3799999999999999,
+              "glove": 8.749495,
+              "control": 8.869495,
+              "flight": 2.325093,
+              "distance": 58.55738969185096
+            },
+            {
+              "from": "SS",
+              "to": "C",
+              "target": "home",
+              "release": 9.279495,
+              "previousControl": 8.869495,
+              "preparation": 0.41000000000000014,
+              "glove": 11.349441,
+              "control": 11.469441,
+              "flight": 2.069946,
+              "distance": 49.56741187720065
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "target": "home",
+            "force": false,
+            "reason": "@v2:targetOverride:{}",
+            "override": true,
+            "alternatives": [
+              {
+                "target": 3,
+                "runner": "R1",
+                "force": false,
+                "runnerArrival": 3.6370190127392568,
+                "ballArrival": 4.543791219270622,
+                "margin": -1.156772206531365,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": -1.156772206531365,
+                "route": "relay",
+                "reason": "too-late"
+              },
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 0.11338643427621498,
+                "ballArrival": 4.986161502146481,
+                "margin": -4.872775067870266,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": -4.872775067870266,
+                "route": "relay",
+                "reason": "too-late"
+              },
+              {
+                "target": 2,
+                "runner": "BR",
+                "force": false,
+                "runnerArrival": 4.713386434276215,
+                "ballArrival": 3.849699202030437,
+                "margin": 0.6136872322457778,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 0.6136872322457778,
+                "route": "relay",
+                "reason": "tag-opportunity"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": 2,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 3,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": "home",
+                "reason": "Control return without an immediate out attempt"
+              }
+            ],
+            "time": 6.044402,
+            "owner": "CF"
+          }
+        ],
+        "outsLedger": [],
+        "runnerTouches": [
+          {
+            "id": "event-9",
+            "time": 5.536554,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":2}",
+            "player": "R1",
+            "base": 2
+          },
+          {
+            "id": "event-12",
+            "time": 6.157788,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":1}",
+            "player": "BR",
+            "base": 1
+          },
+          {
+            "id": "event-17",
+            "time": 9.681424,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":3}",
+            "player": "R1",
+            "base": 3
+          },
+          {
+            "id": "event-18",
+            "time": 10.757794,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":2}",
+            "player": "BR",
+            "base": 2
+          }
+        ],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "optional-support-review",
+            "detail": "No timely backup of an optional/intermediate reception; advisory, retaining base coverage can be sound.",
+            "evidence": [
+              {
+                "time": 1.35,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 1.7,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 2.05,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 2.6,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 2.908146,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 4.077601,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 5.536554,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 6.044402,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              }
+            ]
+          }
+        ]
+      },
+      "after": {
+        "id": "focus-left-center-home",
+        "fielder": "CF",
+        "outs": 0,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 5.794402,
+          "secured": 6.044402,
+          "throws": [
+            {
+              "from": "CF",
+              "to": "SS",
+              "target": "home",
+              "release": 6.424402,
+              "previousControl": 6.044402,
+              "preparation": 0.3799999999999999,
+              "glove": 8.749495,
+              "control": 8.869495,
+              "flight": 2.325093,
+              "distance": 58.55738969185096
+            },
+            {
+              "from": "SS",
+              "to": "C",
+              "target": "home",
+              "release": 9.279495,
+              "previousControl": 8.869495,
+              "preparation": 0.41000000000000014,
+              "glove": 11.349441,
+              "control": 11.469441,
+              "flight": 2.069946,
+              "distance": 49.56741187720065
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "target": "home",
+            "force": false,
+            "reason": "@v2:targetOverride:{}",
+            "override": true,
+            "alternatives": [
+              {
+                "target": 3,
+                "runner": "R1",
+                "force": false,
+                "runnerArrival": 3.6370190127392568,
+                "ballArrival": 4.543791219270622,
+                "margin": -1.156772206531365,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": -1.156772206531365,
+                "route": "relay",
+                "reason": "too-late"
+              },
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 0.11338643427621498,
+                "ballArrival": 4.986161502146481,
+                "margin": -4.872775067870266,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": -4.872775067870266,
+                "route": "relay",
+                "reason": "too-late"
+              },
+              {
+                "target": 2,
+                "runner": "BR",
+                "force": false,
+                "runnerArrival": 4.713386434276215,
+                "ballArrival": 3.849699202030437,
+                "margin": 0.6136872322457778,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 0.6136872322457778,
+                "route": "relay",
+                "reason": "tag-opportunity"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": 2,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 3,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": "home",
+                "reason": "Control return without an immediate out attempt"
+              }
+            ],
+            "time": 6.044402,
+            "owner": "CF"
+          }
+        ],
+        "outsLedger": [],
+        "runnerTouches": [
+          {
+            "id": "event-9",
+            "time": 5.536554,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":2}",
+            "player": "R1",
+            "base": 2
+          },
+          {
+            "id": "event-12",
+            "time": 6.157788,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":1}",
+            "player": "BR",
+            "base": 1
+          },
+          {
+            "id": "event-17",
+            "time": 9.681424,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":3}",
+            "player": "R1",
+            "base": 3
+          },
+          {
+            "id": "event-18",
+            "time": 10.757794,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":2}",
+            "player": "BR",
+            "base": 2
+          }
+        ],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "optional-support-review",
+            "detail": "No timely backup of an optional/intermediate reception; advisory, retaining base coverage can be sound.",
+            "evidence": [
+              {
+                "time": 1.35,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 1.7,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 2.05,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 2.6,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 2.908146,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 4.077601,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 5.536554,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              },
+              {
+                "time": 6.044402,
+                "kind": "unfulfilled",
+                "base": "home",
+                "detail": "No timely eligible defender can back the optional cutoff reception without abandoning base or outfield coverage."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "base-bunt-first-line-b4-o0": {
+      "before": null,
+      "after": {
+        "id": "base-bunt-first-line-b4-o0",
+        "fielder": "P",
+        "outs": 1,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 4.016014,
+          "secured": 4.266014,
+          "throws": [
+            {
+              "from": "P",
+              "to": "2B",
+              "target": 1,
+              "release": 4.710619,
+              "previousControl": 4.266014,
+              "preparation": 0.44460500000000014,
+              "glove": 5.457381,
+              "control": 5.577381,
+              "flight": 0.7467619999999995,
+              "distance": 16.45548101463557
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "target": 1,
+            "runner": "BR",
+            "force": true,
+            "margin": 0.12261756799842782,
+            "reason": "@v2:targetForce:{}",
+            "override": false,
+            "alternatives": [
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 1.4339841038882986,
+                "ballArrival": 1.3113665358898707,
+                "margin": 0.12261756799842782,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 0.12261756799842782,
+                "route": "direct",
+                "reason": "lead-force"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 2,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": 3,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": "home",
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              }
+            ],
+            "time": 4.266014,
+            "owner": "P"
+          }
+        ],
+        "outsLedger": [
+          {
+            "id": "event-9",
+            "time": 5.577381,
+            "type": "RunnerOut",
+            "explanation": "@v2:forceOut:{\"runner\":\"BR\",\"base\":1}",
+            "player": "BR",
+            "base": 1,
+            "force": true
+          }
+        ],
+        "runnerTouches": [
+          {
+            "id": "event-10",
+            "time": 5.699996,
+            "type": "RunnerBaseTouch",
+            "explanation": "@v2:runnerFinishOut:{}",
+            "player": "BR",
+            "base": 1
+          }
+        ],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "late-support-review",
+            "detail": "Allocator reports late or space-limited support; advisory, not an automatic tactical error.",
+            "evidence": [
+              {
+                "time": 2.513298,
+                "kind": "late-backup",
+                "player": "CF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.266014,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.266014,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.710619,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 5.577381,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 5.577381,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "base-bunt-third-line-b5-o0": {
+      "before": null,
+      "after": {
+        "id": "base-bunt-third-line-b5-o0",
+        "fielder": "P",
+        "outs": 0,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 4.016014,
+          "secured": 4.266014,
+          "throws": []
+        },
+        "decisions": [
+          {
+            "target": "hold",
+            "force": false,
+            "reason": "@v2:targetHold:{}",
+            "override": false,
+            "alternatives": [
+              {
+                "target": 2,
+                "runner": "R1",
+                "force": true,
+                "runnerArrival": 1.4388408046792762,
+                "ballArrival": 2.0309620586483326,
+                "margin": -0.5921212539690563,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 0.8078787460309436,
+                "route": "direct",
+                "reason": "too-late"
+              },
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 1.4339841038882986,
+                "ballArrival": 1.8850505086109348,
+                "margin": -0.45106640472263626,
+                "viable": false,
+                "competitive": false,
+                "preventsRun": false,
+                "score": -0.45106640472263626,
+                "route": "direct",
+                "reason": "too-late"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": 2,
+                "reason": "Runner arrival or required tag precedes a reliable out"
+              },
+              {
+                "target": 3,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": "home",
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              }
+            ],
+            "time": 4.266014,
+            "owner": "P"
+          }
+        ],
+        "outsLedger": [],
+        "runnerTouches": [
+          {
+            "id": "event-6",
+            "time": 5.699998,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":2}",
+            "player": "R1",
+            "base": 2
+          },
+          {
+            "id": "event-7",
+            "time": 5.699998,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":1}",
+            "player": "BR",
+            "base": 1
+          }
+        ],
+        "flags": []
+      }
+    },
+    "base-bunt-pitcher-b6-o0": {
+      "before": null,
+      "after": {
+        "id": "base-bunt-pitcher-b6-o0",
+        "fielder": "P",
+        "outs": 1,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 3.428349,
+          "secured": 3.678349,
+          "throws": [
+            {
+              "from": "P",
+              "to": "2B",
+              "target": 1,
+              "release": 4.453228,
+              "previousControl": 3.678349,
+              "preparation": 0.7748790000000003,
+              "glove": 5.457381,
+              "control": 5.577381,
+              "flight": 1.0041529999999996,
+              "distance": 21.663332124225647
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "target": 1,
+            "runner": "BR",
+            "force": true,
+            "margin": 0.12261665374184938,
+            "reason": "@v2:targetForce:{}",
+            "override": false,
+            "alternatives": [
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 2.0216481896317195,
+                "ballArrival": 1.8990315358898702,
+                "margin": 0.12261665374184938,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 0.12261665374184938,
+                "route": "direct",
+                "reason": "lead-force"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 2,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": 3,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": "home",
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              }
+            ],
+            "time": 3.678349,
+            "owner": "P"
+          }
+        ],
+        "outsLedger": [
+          {
+            "id": "event-10",
+            "time": 5.577381,
+            "type": "RunnerOut",
+            "explanation": "@v2:forceOut:{\"runner\":\"BR\",\"base\":1}",
+            "player": "BR",
+            "base": 1,
+            "force": true
+          }
+        ],
+        "runnerTouches": [
+          {
+            "id": "event-11",
+            "time": 5.699996,
+            "type": "RunnerBaseTouch",
+            "explanation": "@v2:runnerFinishOut:{}",
+            "player": "BR",
+            "base": 1
+          }
+        ],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "late-support-review",
+            "detail": "Allocator reports late or space-limited support; advisory, not an automatic tactical error.",
+            "evidence": [
+              {
+                "time": 2.513298,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 3.678349,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 3.678349,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.453228,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 5.577381,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 5.577381,
+                "kind": "late-backup",
+                "player": "RF",
+                "base": 1,
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "base-bunt-catcher-b7-o0": {
+      "before": null,
+      "after": {
+        "id": "base-bunt-catcher-b7-o0",
+        "fielder": "P",
+        "outs": 1,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 3.471256,
+          "secured": 3.721256,
+          "throws": [
+            {
+              "from": "P",
+              "to": "C",
+              "target": "home",
+              "release": 4.071257,
+              "previousControl": 3.721256,
+              "preparation": 0.35000100000000023,
+              "glove": 4.687937,
+              "control": 4.807937,
+              "flight": 0.6166799999999997,
+              "distance": 9.450940432490906
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "target": "home",
+            "runner": "R3",
+            "force": true,
+            "margin": 0.7242843135361676,
+            "reason": "@v2:targetHome:{}",
+            "override": false,
+            "alternatives": [
+              {
+                "target": "home",
+                "runner": "R3",
+                "force": true,
+                "runnerArrival": 1.8109649167242807,
+                "ballArrival": 1.086680603188113,
+                "margin": 0.7242843135361676,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": true,
+                "score": 5.124284313536167,
+                "route": "direct",
+                "reason": "timely-home"
+              },
+              {
+                "target": 3,
+                "runner": "R2",
+                "force": true,
+                "runnerArrival": 1.9836008004007657,
+                "ballArrival": 1.4809611753944605,
+                "margin": 0.5026396250063052,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 1.9026396250063051,
+                "route": "direct",
+                "reason": "lead-force"
+              },
+              {
+                "target": 2,
+                "runner": "R1",
+                "force": true,
+                "runnerArrival": 1.9836008004007646,
+                "ballArrival": 1.8885120041780357,
+                "margin": 0.09508879622272892,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 1.4950887962227288,
+                "route": "direct",
+                "reason": "lead-force",
+                "continuation": {
+                  "target": 1,
+                  "arrival": 3.5387914794467275,
+                  "runnerArrival": 1.9787440996097876,
+                  "margin": -1.5600473798369399,
+                  "pivot": 0.22
+                }
+              },
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 1.9787440996097876,
+                "ballArrival": 1.7184344032420622,
+                "margin": 0.2603096963677254,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": false,
+                "score": 0.2603096963677254,
+                "route": "direct",
+                "reason": "lead-force"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 2,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 3,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": "home",
+                "reason": "Available timing opportunity"
+              }
+            ],
+            "time": 3.721256,
+            "owner": "P"
+          }
+        ],
+        "outsLedger": [
+          {
+            "id": "event-8",
+            "time": 4.807937,
+            "type": "RunnerOut",
+            "explanation": "@v2:forceOut:{\"runner\":\"R3\",\"base\":\"home\"}",
+            "player": "R3",
+            "base": "home",
+            "force": true
+          }
+        ],
+        "runnerTouches": [
+          {
+            "id": "event-9",
+            "time": 5.699997,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":3}",
+            "player": "R2",
+            "base": 3
+          },
+          {
+            "id": "event-10",
+            "time": 5.699997,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":2}",
+            "player": "R1",
+            "base": 2
+          },
+          {
+            "id": "event-11",
+            "time": 5.699997,
+            "type": "RunnerAdvanced",
+            "explanation": "@v2:runnerAdvance:{\"base\":1}",
+            "player": "BR",
+            "base": 1
+          }
+        ],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "late-support-review",
+            "detail": "Allocator reports late or space-limited support; advisory, not an automatic tactical error.",
+            "evidence": [
+              {
+                "time": 3.721256,
+                "kind": "late-backup",
+                "player": "1B",
+                "base": "home",
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 3.721256,
+                "kind": "late-backup",
+                "player": "1B",
+                "base": "home",
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.071257,
+                "kind": "late-backup",
+                "player": "1B",
+                "base": "home",
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.807937,
+                "kind": "late-backup",
+                "player": "P",
+                "base": "home",
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.807937,
+                "kind": "late-backup",
+                "player": "P",
+                "base": "home",
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "base-bunt-pitcher-b4-o2": {
+      "before": null,
+      "after": {
+        "id": "base-bunt-pitcher-b4-o2",
+        "fielder": "P",
+        "outs": 1,
+        "runs": 0,
+        "timing": {
+          "contact": 1,
+          "touch": 3.428349,
+          "secured": 3.678349,
+          "throws": [
+            {
+              "from": "P",
+              "to": "C",
+              "target": "home",
+              "release": 4.028349,
+              "previousControl": 3.678349,
+              "preparation": 0.35000000000000053,
+              "glove": 4.665711,
+              "control": 4.785711,
+              "flight": 0.6373619999999995,
+              "distance": 9.747233979576814
+            }
+          ]
+        },
+        "decisions": [
+          {
+            "target": "home",
+            "runner": "R3",
+            "force": false,
+            "margin": 0.4965064376181154,
+            "reason": "@v2:targetSure:{}",
+            "override": false,
+            "alternatives": [
+              {
+                "target": "home",
+                "runner": "R3",
+                "force": false,
+                "runnerArrival": 1.853869006746212,
+                "ballArrival": 1.1073625691280966,
+                "margin": 0.4965064376181154,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": true,
+                "score": 2.496506437618115,
+                "route": "direct",
+                "reason": "third-out"
+              },
+              {
+                "target": 1,
+                "runner": "BR",
+                "force": true,
+                "runnerArrival": 2.021652161864848,
+                "ballArrival": 1.8990315358898702,
+                "margin": 0.12262062597497803,
+                "viable": true,
+                "competitive": false,
+                "preventsRun": true,
+                "score": 0.7357237558498682,
+                "route": "direct",
+                "reason": "third-out"
+              }
+            ],
+            "rejections": [
+              {
+                "target": 1,
+                "reason": "Available timing opportunity"
+              },
+              {
+                "target": 2,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": 3,
+                "reason": "No active runner is challenging this base or requiring a retouch appeal"
+              },
+              {
+                "target": "home",
+                "reason": "Available timing opportunity"
+              }
+            ],
+            "time": 3.678349,
+            "owner": "P"
+          }
+        ],
+        "outsLedger": [
+          {
+            "id": "event-8",
+            "time": 5.452217,
+            "type": "RunnerOut",
+            "explanation": "@v2:tagOut:{\"runner\":\"R3\",\"base\":\"home\"}",
+            "player": "R3",
+            "base": "home",
+            "force": false
+          }
+        ],
+        "runnerTouches": [],
+        "flags": [
+          {
+            "severity": "Medium",
+            "code": "late-support-review",
+            "detail": "Allocator reports late or space-limited support; advisory, not an automatic tactical error.",
+            "evidence": [
+              {
+                "time": 3.678349,
+                "kind": "late-backup",
+                "player": "1B",
+                "base": "home",
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 3.678349,
+                "kind": "late-backup",
+                "player": "1B",
+                "base": "home",
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              },
+              {
+                "time": 4.028349,
+                "kind": "late-backup",
+                "player": "1B",
+                "base": "home",
+                "detail": "Moving toward backup; estimated arrival is after reception. This is support in progress, not guaranteed overthrow protection."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

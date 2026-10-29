@@ -1,0 +1,27 @@
+GitHub Actions: https://github.com/Nakamashi/baseball/actions/runs/40957553034
+Tested source: 16fd1ebbc3586d92818bc1be9b5d15e97fa42d3b
+Browser job: 123741462280, success
+
+2026-10-29T21:25:08.2878583Z   CHROMIUM_PATH: /home/runner/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome
+2026-10-29T21:25:09.3349117Z ##[group]Run npm run test:browser
+2026-10-29T21:25:09.3349723Z npm run test:browser
+2026-10-29T21:25:09.3380081Z   CHROMIUM_PATH: /home/runner/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome
+2026-10-29T21:25:09.4451057Z > baseball-coach@2.0.0 test:browser
+2026-10-29T21:25:25.9651855Z Browser checks passed: guided choices, synchronized reading navigation, teaching auto-pause, full playback, 24 English/Japanese plays, saved language, and field/controls visible at six screen sizes.
+2026-10-29T21:25:26.0724112Z ##[group]Run npm run test:dynamic:browser
+2026-10-29T21:25:26.0724468Z npm run test:dynamic:browser
+2026-10-29T21:25:26.0746336Z   CHROMIUM_PATH: /home/runner/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome
+2026-10-29T21:25:26.1778216Z > baseball-coach@2.0.0 test:dynamic:browser
+2026-10-29T21:25:40.9188369Z Dynamic browser smoke passed: interception, double plays, home priority, runner reads, retouches, pop-ups, bunts, configurable fences/arms, wall caroms, boundaries, deterministic seeks, EN/JA and six layouts.
+2026-10-29T21:25:41.0167009Z ##[group]Run npm run test:mobile:browser
+2026-10-29T21:25:41.0167406Z npm run test:mobile:browser
+2026-10-29T21:25:41.0187506Z   CHROMIUM_PATH: /home/runner/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome
+2026-10-29T21:25:41.1190838Z > baseball-coach@2.0.0 test:mobile:browser
+2026-10-29T21:25:44.9188169Z Mobile Generate Play passed: one bottom CTA, portrait/narrow/landscape, scroll clearance, R3 bunt, disabled progress/repeat prevention, visible errors, EN/JA, desktop and encyclopedia.
+2026-10-29T21:25:45.0139290Z ##[group]Run npm run test:pages
+2026-10-29T21:25:45.0139697Z npm run test:pages
+2026-10-29T21:25:45.0162207Z   CHROMIUM_PATH: /home/runner/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome
+2026-10-29T21:25:45.1164045Z > baseball-coach@2.0.0 test:pages
+2026-10-29T21:25:46.3577324Z Static Pages check passed at /
+2026-10-29T21:25:46.9689331Z Static Pages check passed at /baseball/
+2026-10-29T21:25:47.0555975Z   CHROMIUM_PATH: /home/runner/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome

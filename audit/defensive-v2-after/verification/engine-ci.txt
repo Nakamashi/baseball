@@ -1,0 +1,58 @@
+GitHub Actions: https://github.com/Nakamashi/baseball/actions/runs/40957553034
+Tested source: 16fd1ebbc3586d92818bc1be9b5d15e97fa42d3b
+Engine job: 123741462460, success
+
+2026-10-29T21:25:13.4727956Z    ✓ generated-state invariants across base/out situations > validates every occupancy and out count at 350,450  2326ms
+2026-10-29T21:25:13.4730646Z    ✓ generated-state invariants across base/out situations > validates every occupancy and out count at 640,430  2058ms
+2026-10-29T21:25:13.4733104Z    ✓ generated-state invariants across base/out situations > validates every occupancy and out count at 650,550  1954ms
+2026-10-29T21:25:13.4735770Z    ✓ generated-state invariants across base/out situations > validates every occupancy and out count at 510,620  1233ms
+2026-10-29T21:25:13.4738478Z    ✓ generated-state invariants across base/out situations > validates every occupancy and out count at 240,300  1295ms
+2026-10-29T21:25:13.4741032Z    ✓ generated-state invariants across base/out situations > validates every occupancy and out count at 800,240  1177ms
+2026-10-29T21:25:13.4743673Z    ✓ generated-state invariants across base/out situations > validates every occupancy and out count at 400,130  2310ms
+2026-10-29T21:25:55.9331500Z  Test Files  13 passed (13)
+2026-10-29T21:25:55.9332485Z       Tests  364 passed (364)
+2026-10-29T21:26:00.7868610Z ✓ built in 1.35s
+2026-10-29T21:26:16.0175589Z Audited 250/2522
+2026-10-29T21:26:30.8096521Z Audited 500/2522
+2026-10-29T21:26:40.4340529Z Audited 750/2522
+2026-10-29T21:26:47.8393423Z Audited 1000/2522
+2026-10-29T21:26:57.1632716Z Audited 1250/2522
+2026-10-29T21:27:07.9978059Z Audited 1500/2522
+2026-10-29T21:27:19.9950335Z Audited 1750/2522
+2026-10-29T21:27:26.9165623Z Audited 2000/2522
+2026-10-29T21:27:35.0367331Z Audited 2250/2522
+2026-10-29T21:27:49.3224099Z Audited 2500/2522
+2026-10-29T21:27:51.6225662Z   "generatedAt": "2026-10-29T21:27:51.145Z",
+2026-10-29T21:27:51.6226083Z   "sourceCommit": "b5969d6e6e278fa107a5b21c39e75573c5c1549f",
+2026-10-29T21:27:51.6227003Z   "sourceFilesSha256": "3cd787f5356218af686021a5980ebfbacbaded88ea9f87ca19fcbacf362fb638",
+2026-10-29T21:27:51.6228448Z   "executed": 2522,
+2026-10-29T21:27:51.6228665Z   "generated": 2522,
+2026-10-29T21:27:51.6228918Z   "unflagged": 383,
+2026-10-29T21:27:51.6229298Z   "flagged": 2139,
+2026-10-29T21:27:51.6230090Z     "Critical": 0,
+2026-10-29T21:27:51.6230464Z     "High": 0,
+2026-10-29T21:27:51.6233707Z       "executed": 1104,
+2026-10-29T21:27:51.6233934Z       "flagged": 832
+2026-10-29T21:27:51.6234572Z       "executed": 868,
+2026-10-29T21:27:51.6234792Z       "flagged": 803
+2026-10-29T21:27:51.6238541Z       "executed": 208,
+2026-10-29T21:27:51.6238982Z       "flagged": 189
+2026-10-29T21:27:51.6240168Z       "executed": 270,
+2026-10-29T21:27:51.6240540Z       "flagged": 250
+2026-10-29T21:27:51.6241592Z       "executed": 60,
+2026-10-29T21:27:51.6241883Z       "flagged": 56
+2026-10-29T21:27:51.6242478Z       "executed": 12,
+2026-10-29T21:27:51.6242700Z       "flagged": 9
+2026-10-29T21:27:51.6243713Z       "executed": 1030,
+2026-10-29T21:27:51.6243945Z       "flagged": 967
+2026-10-29T21:27:51.6244742Z       "executed": 314,
+2026-10-29T21:27:51.6245020Z       "flagged": 313
+2026-10-29T21:27:51.6245642Z       "executed": 290,
+2026-10-29T21:27:51.6245862Z       "flagged": 221
+2026-10-29T21:27:51.6247187Z       "executed": 240,
+2026-10-29T21:27:51.6247545Z       "flagged": 40
+2026-10-29T21:27:51.6248258Z       "executed": 648,
+2026-10-29T21:27:51.6248499Z       "flagged": 598
+2026-10-29T21:27:51.6250059Z   "determinismReplays": 60,
+2026-10-29T21:27:51.6250853Z     "Flagged includes advisory reviews; unflagged means passed implemented checks, not certified correct baseball.",
+2026-10-29T21:28:06.4971968Z Analyzed 2522 scenarios, 21 detailed examples, and all nine defenders. Wrote analysis.json and player-audits.jsonl.gz.

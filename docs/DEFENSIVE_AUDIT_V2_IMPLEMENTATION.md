@@ -2,8 +2,9 @@
 
 This report supplements, and does not rewrite, the original
 [Defensive Audit V2](DEFENSIVE_AUDIT_V2.md) against production `8331a1c`.
-Implementation and regression verification are in progress. The final validation
-table below will be updated with completed local and GitHub Actions results.
+Implementation and regression verification are complete. Unit/build/strict-audit
+and all browser/mobile/production-page checks pass in GitHub Actions. Evidence and
+remaining calibration/device limits are recorded below.
 
 ## 1. Implemented fixes
 
@@ -64,7 +65,9 @@ and validation. A synchronous submission latch, disabled button, localized
 loading text and spinner prevent repeat generation. ResizeObserver measures bar
 height for content clearance; visualViewport supplies keyboard displacement;
 safe-area padding protects the gesture area. Long validation messages can scroll
-inside the bar. Desktop placement and encyclopedia mode remain unchanged.
+inside the bar. Explicit hover/loading colors avoid the shared pale hover style;
+actual rendered text contrast is tested at 4.5:1 or better in both states.
+Desktop placement and encyclopedia mode remain unchanged.
 
 ## 2. Exact reproductions
 
@@ -74,6 +77,8 @@ All times are playback seconds, including the one-second Ready interval.
 releases to 2B at 5.256450, glove 5.723862, secure 5.843862.
 Before, 2B decided before its pending read and released a futile throw to first
 at 6.293862, secure 7.624426; BR had touched first at 6.268920.
+At the old 5.843862 decision, the forecast incorrectly gave BR 2.180859 s,
+although physical first touch was only 0.425058 s away.
 After, the read ends at 5.993862 and 2B holds: BR needs only 0.275058 s to
 first, versus 1.630564 s for ball control. The runner still touches at 6.268920;
 the correction removes the throw rather than slowing the runner.
@@ -121,8 +126,8 @@ matrix is also audited but cannot produce two additional outs.
 | hard | average | 20 | 2 / 18 / 0 | 2 / 6 / 12 |
 | hard | fast | 20 | 6 / 14 / 0 | 6 / 14 / 0 |
 
-These are measured implementation-stage counts, to be reconfirmed on the final
-source. Faster/harder contact is not guaranteed to help: interception geometry
+These are measured final-engine counts. Faster/harder contact is not guaranteed
+to help: interception geometry
 changes. Soft and fast-runner cases remain sensitive to actual available time.
 
 ## 4. R3 bunt coverage
@@ -131,21 +136,63 @@ All 72 former baseline exclusions are exercised: four R3 occupancies × six bunt
 directions × three out counts. Expansion also adds 144 soft/hard variants and
 104 anticipated-bunt configurations, increasing total coverage by 320 to 2,522.
 Tests independently check home force versus tag, actual unique outs, all-nine
-jobs and Japanese explanations. Detailed decision examples are recorded in the
-final audit evidence. Ordinary holding/advancing follows existing runner reads;
-there is no dedicated squeeze strategy.
+jobs and Japanese explanations. Examples from the normal-contact baseline:
+
+| Occupancy / outs | Case | Decision and outcome |
+| --- | --- | --- |
+| R3 / 0 | `base-bunt-first-line-b4-o0` | P throws to first, BR forced out; R3 holds |
+| R1+R3 / 0 | `base-bunt-third-line-b5-o0` | P holds when no useful out is available; no run |
+| R2+R3 / 0 | `base-bunt-pitcher-b6-o0` | P retires BR at first; R3 holds |
+| Loaded / 0 | `base-bunt-catcher-b7-o0` | P fields the catcher-sector aim and forces R3 at home |
+| R3 / 2 | `base-bunt-pitcher-b4-o2` | R3 advances; home out is a tag, ending the inning |
+
+The expanded bunt cases actually include P, C, 1B and 3B fielders (396, 184, 40
+and 28 configurations respectively). These are contact geometries, not commands
+that force the named position to field. There is no dedicated squeeze strategy.
 
 ## 5. Full audit comparison
 
 The preserved baseline has 2,202 configurations and 60 deterministic replays,
-zero Critical findings, 51 H1 and 46 H2 flags (overlapping scenario sets), eight
+zero Critical findings, 51 H1 and 46 H2 flags (97 High scenarios), eight
 relay forecast drift flags, 12 late-coverage, 1,812 late/space-limited support,
 227 optional support and eight pop-priority review flags.
 
-The expanded implementation-stage 2,522-case run has zero Critical or High
-findings, zero H1/H2/drift/pop-priority flags. Final counts will be recorded after
-the last coverage correction. Advisories are not automatic baseball failures;
-counts must be compared on the 2,202 common IDs as well as the expanded scope.
+The final expanded run has zero Critical or High findings and no H1/H2/drift/
+pop-priority flags. Each input-seed case is replayed identically, for 60 successful
+determinism comparisons. The two original 576-case matrices also remain active.
+
+| Finding / scope | Before (2,202) | After, common IDs (2,202) | After, expanded (2,522) |
+| --- | ---: | ---: | ---: |
+| Critical | 0 | 0 | 0 |
+| High | 97 | 0 | 0 |
+| H1 first touch | 51 | 0 | 0 |
+| H2 stopped-receiver floor | 46 | 0 | 0 |
+| Relay forecast drift | 8 | 0 | 0 |
+| Pop-priority review | 8 | 0 | 0 |
+| Late base coverage | 12 | 60 | 60 |
+| Late/space-limited support | 1,812 | 1,774 | 2,074 |
+| Optional support unavailable | 227 | 227 | 227 |
+| Any flag, including advisories | 1,874 | 1,839 | 2,139 |
+
+Late base coverage is deliberately **not** claimed fixed everywhere: six old
+flagged cases clear, six remain, and 54 newly expose a timing gap. Earlier true
+runner deadlines and separating a throwing 1B from first-base coverage reveal
+late replacement receivers; early plate protection changes other rotations.
+The final warning set includes first, second and third (15, 35 and ten cases;
+some player counts overlap). RF emergency second coverage and P replacing a
+fielding 1B are recurring constrained roles. No out is granted solely because
+a role was assigned. The reviewed R1+R2 middle-infield example now keeps C home
+and third covered while completing two legal outs; its real late backups remain.
+
+Actual relevant base backups at glove contact were ready in 193/2,115 baseline
+release assignments versus 193/2,262 expanded release assignments. This is not
+a claimed support improvement or a population rate; routes/deadlines and scope
+differ. Short plays often finish before distant support can arrive. The support
+summarizer excludes optional intermediate and future-base jobs from this subset.
+It still records changed assignments separately. No speed increase or teleported
+backup was used to erase warnings.
+
+Advisories are not automatic baseball failures and their counts overlap.
 The old stopped-receiver lower bound applies only to stopped receptions; moving
 forces additionally require physical bag contact and an explicit controlled
 touch in the independent audit. Original hard integrity checks remain active.
@@ -153,21 +200,56 @@ Summary evidence includes a source-file SHA-256 in addition to checkout HEAD.
 
 ## 6. Verification
 
-Pending final verification on the complete source:
+Completed local commands and remaining browser status:
 
 | Check | Current evidence |
 | --- | --- |
-| Focused new V2 suite | 21 tests pass, including 72 R3 bunt configurations |
+| Focused new V2 suite | 25 tests pass, including 72 R3 bunt configurations and near-home C/P claims |
 | Existing baserunning + defensive audit suites | 83 tests pass after stationary-touch correction |
-| Production build | passes; repeat after final source changes |
-| Full unit suite | final rerun in progress |
-| Expanded strict audit + summary | final rerun in progress |
-| Existing browser, dynamic browser, mobile and production pages suites | GitHub Actions verification pending |
+| `npm run build` | passes, TypeScript and Vite production output |
+| `npm test` | 364 tests pass across 13 files, including localization and both original matrices |
+| `npm run audit:defense:v2 -- --strict` | 2,522 generated, zero Critical/High, 60 matching replays |
+| `npm run audit:defense:v2:summary` | all nine defenders analyzed across 2,522, 21 detailed examples |
+| `npm run audit:defense -- --case double-play` | completed, all-nine routes/diagnostics inspected |
+| `npm run test:browser` | passes in Chromium: 24 EN/JA plays, navigation, playback and six layouts |
+| `npm run test:dynamic:browser` | passes: generated physical/rules scenarios, deterministic seeks, EN/JA and six layouts |
+| `npm run test:mobile:browser` | passes: four phone viewports, persistent CTA, validation/loading/repeats, rendered text contrast, EN/JA and desktop |
+| `npm run test:pages` | passes against production artifact at `/` and `/baseball/` |
 
 Local server binding fails with `listen EPERM` and Chromium cannot start under
 this sandbox. No browser pass is claimed from those attempts. The added
 `Defensive V2 regression` workflow runs the same checks with Chromium in Actions
 and retains browser screenshots plus audit summaries as artifacts.
+
+The first Actions run passed unit/build/strict-audit/summary and the general
+browser suite, then exposed a stale dynamic-browser assertion expecting
+CF→1B→C at (558,284). Reproducing the same settings against untouched `8331a1c`
+confirmed that both versions use CF→2B→C, with 1B as the separate inner cutoff,
+and identical releases/receipts/tag timing. The assertion now matches that
+production convention. This required no gameplay change. Browser suites run as
+separate steps so one failure does not hide the remaining mobile/pages checks.
+The next run caught an optional diagnostic field lacking a TypeScript assertion
+in the additional pop-up test; that test-only annotation is corrected. Engine
+and browser jobs now run independently, each retaining its own artifacts.
+Another legacy browser assertion demanded a throw for an anticipated normal
+bunt at (380,650). The original and corrected engines both hold after 3B secures
+at 4.102247: first-base ball control needs 1.895249 s versus BR's remaining
+1.597751 s. The browser now explicitly checks no throw/zero outs there, and the
+mirrored (620,650) feed/one out, rather than weakening it to accept either result.
+Screenshot inspection exposed pale hover/disabled Generate text; explicit colors
+and an independent rendered-contrast check fix it. No gameplay changed for these
+browser corrections.
+
+Browser evidence: [Actions run 40957553034](https://github.com/Nakamashi/baseball/actions/runs/40957553034),
+browser job 123741462280, tested source `16fd1ebbc3586d92818bc1be9b5d15e97fa42d3b`.
+The `defensive-v2-browser` artifact contains inspected phone/desktop screenshots;
+`audit/defensive-v2-after/verification/browser-ci.txt` retains the pass statements.
+Both jobs in this final run completed successfully. Engine job 123741462460
+independently confirms 364 tests, build, 2,522 scenarios, zero Critical/High,
+60 matching replays and the all-nine summary; its pass statements are retained in
+`verification/engine-ci.txt`. The final publication adds only documentation and
+compact evidence to this tested source. Original report and raw baseline traces
+remain intact; raw traces are not committed.
 
 ## 7. Mobile validation scope
 
@@ -177,6 +259,10 @@ disabled/loading/repeat prevention, visible validation error, EN/JA switching,
 desktop placement at 1366×768 and removal in encyclopedia mode. It captures
 phone and desktop screenshots. Real iOS keyboard/gesture behavior remains a
 device-testing limitation even after Chromium passes.
+The 390×844 Japanese phone and 1366×768 English desktop captures were downloaded
+and visually inspected; the corrected action text is readable and the desktop
+field/transport layout remains intact. Safe-area and visualViewport code were
+reviewed; physical iOS/Android keyboards were not available for device testing.
 
 ## 8. Files, commits and limitations
 
@@ -189,8 +275,20 @@ mobile-generate-browser}.mjs`, `package.json`, `.github/workflows/defensive-v2.y
 Documentation includes this report plus current defensive, physics and running
 notes. Compact baseline/after evidence is versioned; bulky raw traces stay local.
 
-Local evidence preservation commit: `157411d`. Implementation commit and final
-remote main SHA will be recorded at publication. Existing point-marker limits,
+Local evidence preservation commit: `157411d`; local implementation `a1239dd`.
+The exact published implementation tree is `a7783a9e75a78a695debf205acb7184fe11d0e88`,
+also verified locally with `git write-tree`. GitHub implementation commit
+`9181e4c2090518cbd2ddda2af9804fdf67045a35` includes that identical tree with the
+preserved baseline evidence. The final evidence commit is identified in repository
+history and the completion response. Further published test/CI/UI commits:
+`505cda7`, `c272f70`, `fb9ac27`, `16fd1eb`. The unchanged final
+production engine (`src/dynamic` and `src/simulation`, sorted tracked paths plus
+NUL and file bytes) has SHA-256
+`6f334eafcfaf1379fdd42b44b4439252793f1a2b17c8ae80cb3d7d0b25d0f19a`.
+The local audit summary identifies the worktree snapshot used during testing,
+before the subsequent test-only additions; the Actions artifact identifies its
+exact tested merge commit. Both produce the same audit counts.
+Existing point-marker limits,
 provisional athlete/receiver calibration, no errors/full rundowns, no squeeze,
 and finite relay bounds remain. Passing these checks does not certify every
 continuous baseball situation or the empirically correct youth success rate.
