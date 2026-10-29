@@ -118,6 +118,7 @@ export type AssignmentReason =
   | "braking"
   | "boundaryTrack";
 export interface AssignmentContext {
+  opportunitiesClosed?: boolean;
   ballDead?: boolean;
   fixedCutoff?: Position;
   fixedReceiver?: Position;
@@ -150,6 +151,7 @@ export interface DefensiveLayout {
   issues: CoverageIssue[];
 }
 export interface ThrowCandidate {
+  continuation?: ThrowDecision["continuation"];
   appeal?: boolean;
   target: Base;
   runner: Runner;
@@ -247,6 +249,8 @@ export interface SimulationEvent {
   explanation: string;
 }
 export interface ThrowDecision {
+  rejections?: { target: Base; reason: string }[];
+  continuation?: { target: Base; arrival: number; runnerArrival: number; margin: number; pivot: number };
   appeal?: boolean;
   target: Base | "hold";
   runner?: Runner;
@@ -259,6 +263,7 @@ export interface ThrowDecision {
   owner?: Position;
 }
 export interface SimulationMetadata {
+  terminationReason?: string;
   modelVersion: string;
   contactTime: number;
   settings: DynamicSettings;

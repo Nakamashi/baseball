@@ -215,6 +215,7 @@ export class DynamicPlayProvider implements PlayProvider {
     let activeBall = ball;
     let lockedCutoff: Position | undefined,
       lockedReceiver: Position | undefined;
+    let opportunitiesClosed = false;
     let deadlines: Partial<Record<Position, number>> = {};
     let stage: "contact" | "fielded" | "received" | "complete" = "contact";
     let layout = defense.assign(
@@ -252,6 +253,7 @@ export class DynamicPlayProvider implements PlayProvider {
           ballInFlight: inFlight,
           ballDead: !!ball.boundary,
           fixedCutoff: lockedCutoff,
+          opportunitiesClosed,
           fixedReceiver: lockedReceiver,
           receptionTimes: Object.fromEntries(
             Object.entries(deadlines).map(([p, t]) => [
@@ -741,10 +743,6 @@ export class DynamicPlayProvider implements PlayProvider {
           return;
         }
       }
-      builder.interval("Receive", m("received", { player: owner }), 0.18, {
-        kind: "held",
-        owner,
-      });
     };
     performThrow(decision);
     const br = runners.find((r) => r.id === "BR")!;
@@ -793,11 +791,22 @@ export class DynamicPlayProvider implements PlayProvider {
       }
     }
     if (builder.state.outs < 3) {
+      opportunitiesClosed = true;
       activeTarget = "hold";
       deadlines = {};
       activeBall = { ...ball, fieldingPoint: builder.locations[owner] };
       stage = "received";
       reassess("Runners finishing / no further throw");
+      // A live runner can still need coverage, but a throw that has already
+      // arrived no longer needs a defender to finish a distant backup route.
+      builder.assignments = builder.assignments.map(a => {
+        if (!["BackupThrow", "BackupFielder", "SupportBase", "TrailRunner", "RecoverPosition"].includes(a.type)) return a;
+        const speed = Math.hypot(builder.velocities[a.player].x, builder.velocities[a.player].y);
+        return {...a, type: speed > 1e-8 ? "Decelerate" as const : "HoldPosition" as const,
+          reason: speed > 1e-8 ? "braking" as const : "guardSpace" as const,
+          target: speed > 1e-8 ? defense.release(a.player, builder.locations[a.player]).point : builder.locations[a.player],
+          base: undefined, teammate: undefined, throwOrigin: undefined, receivingPoint: undefined, neededBy: undefined};
+      });
       const held = () =>
         ball.boundary
           ? {

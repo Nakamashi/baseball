@@ -5,7 +5,7 @@ import {
   type Position,
   type Responsibility,
 } from "../simulation/types";
-import { runningTime } from "./runningGeometry";
+import { runningTime, runningAdvance } from "./runningGeometry";
 import {
   arrivalTime,
   planMotion,
@@ -406,9 +406,35 @@ export class DefensiveDecisionEngine {
         route: layout?.route.kind ?? "direct",
       });
     }
+    // Assess the force and pivot as one possible sequence. This is a forecast;
+    // the receiver still reevaluates the actual remaining time after the force.
+    const br = runners.find(r => r.id === "BR" && active(r));
+    if (outs < 2 && br && locations && !isOutfieldHit(ball) && !ball.caught) {
+      for (const c of candidates.filter(c => c.target === 2 && c.force && c.viable)) {
+        const first = this.assign(settings, ball, owner, 2, locations, stage, context);
+        if (!first.receiver) continue;
+        const projected = {...locations};
+        for (const a of first.assignments) projected[a.player] = fromWorld(sampleMotion(planMotion({position:toWorld(locations[a.player]),velocity:this.motion?.(a.player)?.velocity ?? zeroVelocity()},toWorld(a.target),assumptions.defenderSpeed,assumptions.defenderAcceleration),c.ballArrival).position);
+        projected[first.receiver] = bases[2];
+        const nextRunners = structuredClone(runners);
+        for (const r of nextRunners) {
+          const next = runningAdvance(r,r.goal,c.ballArrival);r.progress=next.progress;r.runVelocity=next.velocity;r.startDelay=next.delay;
+          if(r.id===c.runner)r.status="out";
+        }
+        const nextBall={...ball,fieldingPoint:bases[2]};
+        const second=this.assign(settings,nextBall,first.receiver,1,projected,"received",{runners:nextRunners,outs:outs+1});
+        const arrival=c.ballArrival+this.arrival(second,projected,first.receiver),runnerArrival=runningTime(br,1),margin=runnerArrival-arrival;
+        c.continuation={target:1,arrival,runnerArrival,margin,pivot:assumptions.transfer};
+        if(margin>=-0.25)c.score+=2;
+      }
+    }
     const wrap = (decision: ThrowDecision): ThrowDecision => ({
       ...decision,
       alternatives: candidates,
+      rejections: ([1, 2, 3, "home"] as Base[]).map(target => ({target, reason:
+        candidates.some(c => c.target === target && (c.viable || c.competitive)) ? "Available timing opportunity" :
+        candidates.some(c => c.target === target) ? "Runner arrival or required tag precedes a reliable out" :
+        "No active runner is challenging this base or requiring a retouch appeal"})),
     });
     if (settings.throwTarget === "hold")
       return wrap({
@@ -459,6 +485,7 @@ export class DefensiveDecisionEngine {
       return wrap({
         target: best.target,
         runner: best.runner,
+        continuation: best.continuation,
         appeal: best.appeal,
         force: best.force,
         margin: best.margin,
@@ -477,7 +504,7 @@ export class DefensiveDecisionEngine {
         ),
         override: false,
       });
-    if (isOutfieldHit(ball))
+    if (isOutfieldHit(ball) && (!locations || metres(locations[owner], bases[2]) > 2))
       return wrap({
         target: 2,
         force: false,
@@ -810,6 +837,10 @@ export class DefensiveDecisionEngine {
       if (base !== target && liveAt(base)) cover(base, 80);
     // Control second on all outfield returns, even while BR is headed to first.
     if ((outfield || liveAt(1)) && target !== 2) cover(2, 78);
+    if (context?.opportunitiesClosed) {
+      for (const p of positions) if (!map.has(p)) put(p,"HoldPosition",locations[p],20,"guardSpace");
+      return {assignments:[...map.values()],issues,route:{kind:"hold",from:source,target:"hold",legs:[]}};
+    }
     const fieldBackup =
       stage === "contact"
         ? positions
@@ -939,7 +970,7 @@ export class DefensiveDecisionEngine {
     if ((target === "home" || target === 3) && !map.has("P"))
       backup(target, ["P"], 74);
     const firstPlay =
-      !outfield && route.kind !== "carry" && (target === 1 || liveAt(1));
+      !outfield && route.kind !== "carry" && target !== "hold" && (target === 1 || liveAt(1));
     if (firstPlay && !map.has("P")) backup(1, ["P"], 73);
     // Allocate the actual throw's backup before speculative secondary support.
     // On outfield returns the available outfielders get first call at second;
