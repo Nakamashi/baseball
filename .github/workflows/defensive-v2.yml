@@ -25,17 +25,24 @@ jobs:
         run: |
           npx playwright-core install --with-deps chromium
           node --input-type=module -e 'import {chromium} from "playwright-core"; console.log("CHROMIUM_PATH=" + chromium.executablePath())' >> "$GITHUB_ENV"
-      - name: Browser and mobile regressions
+      - name: Start browser test server
         run: |
           npm run dev -- --host 127.0.0.1 > /tmp/baseball-vite.log 2>&1 &
           for attempt in $(seq 1 30); do
             curl --fail --silent http://127.0.0.1:5173 > /dev/null && break
             sleep 1
           done
-          npm run test:browser
-          npm run test:dynamic:browser
-          npm run test:mobile:browser
-          npm run test:pages
+      - name: Encyclopedia browser regression
+        run: npm run test:browser
+      - name: Dynamic browser regression
+        if: ${{ !cancelled() }}
+        run: npm run test:dynamic:browser
+      - name: Mobile Generate Play regression
+        if: ${{ !cancelled() }}
+        run: npm run test:mobile:browser
+      - name: Production pages regression
+        if: ${{ !cancelled() }}
+        run: npm run test:pages
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -44,3 +51,4 @@ jobs:
             .browser-tests/
             audit/defensive-v2-after/summary.json
             audit/defensive-v2-after/analysis.json
+          include-hidden-files: true

@@ -137,8 +137,10 @@ try {
   await generate();
   await end();
   let text = await eventText();
-  assert.match(text, /CF throws to 1B/);
-  assert.match(text, /1B throws to C/);
+  // Production 8331a1c already uses 2B as the deep relay, with 1B
+  // available as the separate inner cutoff rather than mandatory recipient.
+  assert.match(text, /CF throws to 2B/);
+  assert.match(text, /2B throws to C/);
   assert.match(
     await page.locator(".objective p").first().textContent(),
     /home|scoring|run/,

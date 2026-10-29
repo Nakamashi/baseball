@@ -134,6 +134,21 @@ describe("V2 moving receivers, forces and pivots", () => {
 });
 
 describe("V2 ordinary R3 bunts and cooperative pop-ups", () => {
+  it.each([[430, 650, "C"], [470, 650, "C"], [500, 640, "P"], [500, 620, "P"]] as const)(
+    "uses reachable C/P priority without delaying a clearly earlier pitcher catch at %s,%s", (x, y, owner) => {
+      const c = settings(x, y, "Pop-up"); c.ball.strength = "soft"; c.state.runners = {};
+      const s = provider.generate(c);
+      expect(s.dynamic.ball.caught).toBe(true);
+      expect(s.dynamic.ball.fielder).toBe(owner);
+      if (owner === "C") {
+        const candidates = s.dynamic.ball.candidates.filter(a => a.caught);
+        const pitcher = candidates.find(a => a.player === "P")!;
+        const catcher = candidates.find(a => a.player === "C")!;
+        expect(catcher.time - pitcher.time).toBeLessThanOrEqual(0.08);
+        expect(s.dynamic.ball.catchPriority?.yielded).toContain("P");
+      }
+      integrity(s);
+    });
   it.each([4, 5, 6, 7])("executes all 18 formerly excluded base/out/bunt combinations for mask %s", mask => {
     for (const [angle, depth] of [[-42, 10], [-25, 22], [0, 14], [25, 22], [42, 10], [0, 3]])
       for (const outs of [0, 1, 2]) {
