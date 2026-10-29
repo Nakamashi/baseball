@@ -7,6 +7,19 @@ const errors = []; page.on('pageerror', e => errors.push(e.message));
 await mkdir('.browser-tests', { recursive: true });
 const button = page.locator('.generate-button');
 const complete = () => page.waitForFunction(() => !document.querySelector('.generate-button')?.disabled);
+const readable = async () => {
+  const ratio = await button.evaluate(b => {
+    const style = getComputedStyle(b), panel = getComputedStyle(b.parentElement);
+    const rgb = s => s.match(/[\d.]+/g).slice(0, 3).map(Number);
+    const over = rgb(panel.backgroundColor), opacity = Number(style.opacity);
+    const composite = c => c.map((v, i) => (v * opacity + over[i] * (1 - opacity)) / 255);
+    const light = c => c.map(v => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4)
+      .reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
+    const a = light(composite(rgb(style.color))), z = light(composite(rgb(style.backgroundColor)));
+    return (Math.max(a, z) + .05) / (Math.min(a, z) + .05);
+  });
+  assert.ok(ratio >= 4.5, `Generate text contrast ${ratio.toFixed(2)} is too low`);
+};
 const visibleAtBottom = async () => {
   const b = await button.boundingBox(), v = page.viewportSize();
   assert.ok(b && b.y >= 0 && b.y + b.height <= v.height + 1);
@@ -31,6 +44,7 @@ try {
     await button.click(); await complete();
     assert.equal(await page.getByRole('alert').count(), 0);
     await visibleAtBottom();
+    await readable(); // Includes the pointer's retained hover after clicking.
     await page.evaluate(() => {
       const request = window.requestAnimationFrame.bind(window);
       window.requestAnimationFrame = callback => {
@@ -42,6 +56,7 @@ try {
     await button.click();
     assert.equal(await button.isDisabled(), true);
     assert.match(await button.innerText(), /Generating/);
+    await readable();
     await button.evaluate(b => b.click()); // Native disabled submission is inert.
     await page.evaluate(() => window.releaseGenerationFrame()); await complete();
     await page.getByRole('spinbutton', { name: 'Ball aim / landing point X', exact: true }).fill('900');
