@@ -278,6 +278,32 @@ try {
     await end();
     assert.match(await eventText(), /throws/);
   }
+  await configure({
+    type: "Bunt",
+    x: 637,
+    y: 620,
+    strength: "normal",
+    aggression: "normal",
+    runners: [1],
+  });
+  await generate();
+  await slider.fill("4.3");
+  await page.locator('[data-player="3B"]').click();
+  assert.match(await page.locator(".focus-action").innerText(), /third/);
+  await language("ja");
+  assert.match(await page.locator(".focus-action").innerText(), /三塁/);
+  await language("en");
+  await end();
+  const recoveredThird = await page
+    .locator('[data-player="3B"]')
+    .getAttribute("transform");
+  const recovered = recoveredThird.match(/translate\(([-\d.]+)\s+([-\d.]+)\)/);
+  assert.ok(recovered, "Third baseman has a rendered field position");
+  assert.ok(
+    Math.hypot(Number(recovered[1]) - 300, Number(recovered[2]) - 570) < 0.1,
+    "Third baseman reaches third rather than finishing in the bunt charging lane",
+  );
+  await page.screenshot({ path: "/tmp/bunt-third-recovery.png" });
   await configure({ x: 425, y: 425, speed: "slow", runners: [1] });
   await generate();
   await page

@@ -114,6 +114,7 @@ const reasonKeys: Record<AssignmentReason, DynamicMessageKey> = {
   braking: "brakingWhy",
   boundaryTrack: "boundaryTrackWhy",
   buntCharge: "buntChargeWhy",
+  buntRecoverThird: "buntRecoverThirdWhy",
 };
 export function assignmentText(a: DefensiveAssignment): Responsibility {
   const vars = {
@@ -884,6 +885,27 @@ export class DefensiveDecisionEngine {
           a.base === base && ["CoverBase", "PrepareForThrow"].includes(a.type),
       );
       if (existing) return existing.player;
+      const deadline = Math.min(
+        ...runners
+          .filter(
+            (r) =>
+              active(r) &&
+              r.decision !== "retreat" &&
+              r.progress < baseNumber(base) &&
+              (r.goal >= baseNumber(base) ||
+                (reason === "buntRecoverThird" &&
+                  r.originBase === 1 &&
+                  r.goal >= 2)),
+          )
+          .map((r) =>
+            runningTime(
+              reason === "buntRecoverThird" && r.goal < 3
+                ? { ...r, goal: 3 }
+                : r,
+              baseNumber(base),
+            ),
+          ),
+      );
       const carry =
         stage !== "contact" &&
         (metres(locations[owner], bases[base]) < 0.1 ||
@@ -931,6 +953,16 @@ export class DefensiveDecisionEngine {
           this.travel(b, locations[b], bases[base]) -
           preferences.indexOf(b) * 0.12,
       );
+      // The nonfielding third baseman returns to the bag. Use a replacement
+      // only when a prior job reserves 3B, or another receiver can beat an
+      // imminent round of second that 3B cannot reach in time.
+      if (
+        reason === "buntRecoverThird" &&
+        pool.includes("3B") &&
+        (this.travel("3B", locations["3B"], bases[3]) <= deadline ||
+          this.travel(pool[0], locations[pool[0]], bases[3]) > deadline)
+      )
+        (pool.splice(pool.indexOf("3B"), 1), pool.unshift("3B"));
       // Conventional pivot: SS takes P/2B feeds; 2B takes SS/3B feeds.
       // Readiness still overrides a nominal position on an emergency play.
       const pivot: Position =
@@ -972,17 +1004,6 @@ export class DefensiveDecisionEngine {
       if (player) {
         if (carry) map.delete(owner);
         put(player, "CoverBase", bases[base], priority, reason, base);
-        const deadline = Math.min(
-          ...runners
-            .filter(
-              (r) =>
-                active(r) &&
-                r.decision !== "retreat" &&
-                r.progress < baseNumber(base) &&
-                r.goal >= baseNumber(base),
-            )
-            .map((r) => runningTime(r, baseNumber(base))),
-        );
         if (map.get(player)!.arrivalTime! > deadline)
           issues.push({
             kind: "late-coverage",
@@ -1025,6 +1046,18 @@ export class DefensiveDecisionEngine {
       if (base !== target && liveAt(base)) cover(base, 80);
     // Control second on all outfield returns, even while BR is headed to first.
     if ((outfield || liveAt(1)) && target !== 2) cover(2, 78);
+    // A sacrifice runner's current goal of second does not make third safe to
+    // abandon. Once the bunt is secured, recover its receiver ahead of backups
+    // and keep that job live while R1 can round second. The ball owner and any
+    // committed receiver remain reserved; a fielding 3B needs a replacement.
+    if (
+      settings.ball.type === "Bunt" &&
+      stage !== "contact" &&
+      runners.some(
+        (r) => active(r) && r.originBase === 1 && r.goal >= 2 && r.progress < 3,
+      )
+    )
+      cover(3, 80, "buntRecoverThird");
     if (context?.opportunitiesClosed) {
       for (const p of positions)
         if (!map.has(p)) put(p, "HoldPosition", locations[p], 20, "guardSpace");

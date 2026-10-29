@@ -56,6 +56,10 @@ Coverage now receives earlier runner intentions from the developing flight. Test
 
 The broader audit also reproduced an actual receiver-reservation failure at 640,430 / 650,550 with R1+R2: a new home threat could pull the committed first-base receiver away during flight. Committed receivers are now excluded from other base/cutoff allocations until reception.
 
+Post-release follow-up: a normal sacrifice bunt at 637,620 with only R1 reproduced an additional failure. 3B charged, but after P secured the ball the allocator saw R1's goal of second and assigned no return to third. It braked/held in the charging lane; play completion would also cancel an unfinished receiving recovery once runners stopped. The earlier R2 regression did not cover this case. Securing a bunt now creates a third-base recovery while R1 can advance through second, without requiring an authored attempt at third. A free, timely 3B is preferred, with a reserved/late player's replacement chosen under the coverage timing rules. The already-live recovery finishes before completion; obsolete backups still stop, and retirement/third-out rules remain intact. Six added tactical regressions cover nearby aims, anticipated positioning, empty bases and third-out cancellation, alongside an EN/JA rendered-position browser regression.
+
+Follow-up validation: **307 tests pass across 11 files, including 51 tactical tests**; production build, dynamic browser suite and both static-hosting paths pass. The exact rendered final frame was reviewed with 3B at third, R1 at second and the batter retired at first. The fix is isolated on `fix/bunt-third-base-recovery` for review; it is not automatically published.
+
 ### E. Obsolete movement after the defensive opportunity ends
 
 Reproduced: P and supporting outfielders could continue a distant first-base backup while an already-retired BR finished a permitted sprint.

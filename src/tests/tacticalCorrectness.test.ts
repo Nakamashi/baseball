@@ -16,6 +16,7 @@ import { throwingProfile } from "../dynamic/throwing";
 import { metres, bases } from "../dynamic/geometry";
 import { planMotion, sampleMotion } from "../dynamic/locomotion";
 import { message } from "../dynamic/messages";
+import { runningTime } from "../dynamic/runningGeometry";
 const provider = new DynamicPlayProvider();
 afterEach(() => new Promise<void>((r) => setTimeout(r, 0)));
 function make(
@@ -200,6 +201,102 @@ describe("baseball tactical correctness: developing reads, profiles and new cont
     expect(a.some((a) => a.type === "ChargeBunt")).toBe(true);
     expect(throws(s).length).toBeGreaterThan(0);
     audit(s);
+  });
+  it.each([636, 637, 638])(
+    "recovers third behind an R1 sacrifice bunt toward %s,620",
+    (x) => {
+      const c = make(x, 620, "Bunt");
+      c.ball.strength = "normal";
+      c.aggression = "normal";
+      const s = provider.generate(c);
+      expect(s.dynamic.ball.fielder).toBe("P");
+      expect(throws(s).map((e) => e.base)).toEqual([1]);
+      const secured = s.dynamic.events.find((e) => e.type === "BallFielded")!;
+      const recover = s.dynamic.diagnostics.find(
+        (f) => f.trigger === "Ball secured / throwing target selected",
+      )!;
+      expect(recover.assignments.find((a) => a.player === "3B")).toMatchObject({
+        type: "CoverBase",
+        base: 3,
+        target: bases[3],
+      });
+      expect(recover.runners.find((r) => r.id === "R1")!.goal).toBe(2);
+      expect(
+        recover.assignments.find((a) => a.player === "3B")!.arrivalTime,
+      ).toBeLessThan(
+        runningTime(
+          { ...recover.runners.find((r) => r.id === "R1")!, goal: 3 },
+          3,
+        ),
+      );
+      expect(recover.assignments.find((a) => a.player === "2B")).toMatchObject({
+        type: "CoverBase",
+        base: 1,
+      });
+      expect(recover.assignments.find((a) => a.player === "SS")).toMatchObject({
+        type: "CoverBase",
+        base: 2,
+      });
+      const start = sample(s, secured.time).players.find((p) => p.id === "3B")!;
+      const end = sample(s, duration(s));
+      expect(metres(start.position, bases[3])).toBeGreaterThan(5);
+      expect(
+        metres(end.players.find((p) => p.id === "3B")!.position, bases[3]),
+      ).toBeLessThan(0.1);
+      expect(end.state.outs).toBe(1);
+      expect(end.state.runners.R1).toBe(2);
+      audit(s);
+    },
+  );
+  it.each([0, 1] as const)(
+    "retains third-base recovery with anticipated bunt positioning and %s outs",
+    (outs) => {
+      const c = make(637, 620, "Bunt");
+      c.ball.strength = "normal";
+      c.aggression = "normal";
+      c.anticipateBunt = true;
+      c.state.outs = outs;
+      c.throwTarget = 1;
+      const s = provider.generate(c);
+      const recovery = s.dynamic.diagnostics.find(
+        (f) => f.trigger === "Ball secured / throwing target selected",
+      )!;
+      expect(
+        recovery.assignments.some(
+          (a) => a.base === 3 && a.type === "CoverBase",
+        ),
+      ).toBe(true);
+      const end = sample(s, duration(s));
+      expect(
+        metres(end.players.find((p) => p.id === "3B")!.position, bases[3]),
+      ).toBeLessThan(0.1);
+      expect(end.state.outs).toBe(outs + 1);
+      audit(s);
+    },
+  );
+  it("does not invent a third-base recovery for an empty-base bunt or continue it after the third out", () => {
+    const c = make(637, 620, "Bunt");
+    c.ball.strength = "normal";
+    c.state.runners = {};
+    const empty = provider.generate(c);
+    expect(
+      empty.phases
+        .flatMap((p) => p.assignments!)
+        .some((a) => a.reason === "buntRecoverThird"),
+    ).toBe(false);
+    audit(empty);
+    c.state.runners = { R1: 1 };
+    c.state.outs = 2;
+    const thirdOut = provider.generate(c);
+    const out = thirdOut.dynamic.events.find((e) => e.type === "RunnerOut")!;
+    expect(sample(thirdOut, duration(thirdOut)).state.outs).toBe(3);
+    expect(
+      thirdOut.phases
+        .filter((p) => p.start >= out.time)
+        .flatMap((p) => p.assignments!)
+        .some((a) => a.reason === "buntRecoverThird"),
+    ).toBe(false);
+    audit(thirdOut);
   });
   it("releases a forced runner on an uncatchable line drive before the first landing", () => {
     const c = make(700, 150, "Line drive"),

@@ -1061,6 +1061,14 @@ export class DynamicPlayProvider implements PlayProvider {
           ...runners
             .filter((r) => r.status === "active" || r.retiredRunThrough)
             .map(remainingRunningTime),
+          // Completing R1's advance to second must not cancel an already-live
+          // recovery of third. Finish that receiving route, not obsolete
+          // backups, before declaring the sacrifice play complete.
+          ...builder.assignments
+            .filter((a) => a.reason === "buntRecoverThird")
+            .map((a) =>
+              defense.travel(a.player, builder.locations[a.player], a.target),
+            ),
         );
         if (remaining < 0.00001) break;
         builder.interval(

@@ -121,7 +121,8 @@ export type AssignmentReason =
   | "complete"
   | "braking"
   | "boundaryTrack"
-  | "buntCharge";
+  | "buntCharge"
+  | "buntRecoverThird";
 export interface AssignmentContext {
   opportunitiesClosed?: boolean;
   ballDead?: boolean;
