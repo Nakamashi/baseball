@@ -280,7 +280,16 @@ try {
     assert.match(await page.locator(".focus-action").innerText(), /一塁/);
     await language("en");
     await end();
-    assert.match(await eventText(), /throws/);
+    const buntEvents = await eventText();
+    if (x === 380) {
+      // Verified against 8331a1c: this late 3B pickup cannot beat either
+      // runner. Holding is the sound play; do not demand a futile throw.
+      assert.doesNotMatch(buntEvents, /throws/);
+      assert.match(await page.locator(".scoreboard").innerText(), /Outs\s*0/);
+    } else {
+      assert.match(buntEvents, /1B throws to 2B/);
+      assert.match(await page.locator(".scoreboard").innerText(), /Outs\s*1/);
+    }
   }
   await configure({
     type: "Bunt",
