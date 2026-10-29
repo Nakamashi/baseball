@@ -200,7 +200,15 @@ describe("fundamental baseball decisions", () => {
     expect(a.dynamic.events.filter((e) => e.type === "RunnerOut")).toHaveLength(
       0,
     );
-    expect(sample(b, duration(b)).state.runs).toBe(1);
+    expect(
+      b.dynamic.events.some(
+        (e) =>
+          e.type === "RunnerOut" &&
+          e.player === "R1" &&
+          e.base === "home" &&
+          !e.force,
+      ),
+    ).toBe(true);
     expect(sample(a, duration(a)).state.runners.R1).toBe(3);
     expect(sample(a, duration(a)).state.runs).toBe(0);
     expect(a).not.toEqual(b);
@@ -251,6 +259,12 @@ describe("fundamental baseball decisions", () => {
       c = outfield();
     c.throwTarget = "home";
     c.aggression = "aggressive";
+    c.state.runners = {};
+    c.ball = {
+      type: "Line drive",
+      destination: { x: 374, y: 291 },
+      strength: "hard",
+    };
     const b = provider.generate(c);
     expect(
       b.dynamic.events
@@ -581,11 +595,12 @@ describe("coverage and tag positioning regressions", () => {
     c.state.runners = {};
     c.ball = {
       type: "Line drive",
-      destination: { x: 830, y: 430 },
+      destination: { x: 170, y: 350 },
       strength: "hard",
     };
     c.aggression = "aggressive";
-    c.runnerSpeed = "average";
+    c.runnerSpeed = "fast";
+    c.armStrength = "strong";
     c.throwTarget = 2;
     const s = provider.generate(c);
     const tags = s.dynamic.events.filter(

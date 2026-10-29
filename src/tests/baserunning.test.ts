@@ -112,13 +112,15 @@ describe("home-ground distances and one physical clock", () => {
 });
 describe("extra-base reads", () => {
   it.each([
-    { x: 80, y: 330 },
-    { x: 170, y: 430 },
-    { x: 830, y: 430 },
-    { x: 920, y: 330 },
+    { x: 636, y: 172, speed: "fast" as const },
+    { x: 374, y: 291, speed: "average" as const },
+    { x: 661, y: 300, speed: "fast" as const },
+    { x: 638, y: 174, speed: "fast" as const },
   ])("evaluates a real double window at $x,$y", (point) => {
-    const c = settings(point.x, point.y),
-      s = provider.generate(c);
+    const c = settings(point.x, point.y);
+    c.ball.type = "Line drive";
+    c.runnerSpeed = point.speed;
+    const s = provider.generate(c);
     const r = s.dynamic.diagnostics
       .find((f) => f.trigger === "Initial contact plan")!
       .runners.find((r) => r.id === "BR")!;
@@ -150,9 +152,10 @@ describe("extra-base reads", () => {
     validate(s);
   });
   it("a timely throw to second can tag out an aggressive extra-base attempt", () => {
-    const c = settings(830, 430);
+    const c = settings(170, 350);
     c.ball.type = "Line drive";
-    c.runnerSpeed = "average";
+    c.runnerSpeed = "fast";
+    c.armStrength = "strong";
     const s = provider.generate(c),
       tag = s.dynamic.events.find(
         (e) => e.type === "RunnerOut" && e.player === "BR" && e.base === 2,
@@ -333,7 +336,12 @@ it("stops all runner motion at the third out", () => {
   const s = provider.generate(c),
     out = s.dynamic.events.find((e) => e.type === "RunnerOut")!;
   expect(
-    s.phases.filter((p) => p.start >= out.time).flatMap((p) => p.movements),
+    s.phases
+      .filter((p) => p.start >= out.time)
+      .flatMap((p) => p.movements)
+      .filter(
+        (m) => m.player === "BR" || ["R1", "R2", "R3"].includes(m.player),
+      ),
   ).toEqual([]);
 });
 

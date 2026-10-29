@@ -41,8 +41,10 @@ export class BaserunningDecisionEngine {
     elapsed: number,
     upgrade: boolean,
   ) {
-    const hit = settings.ball.type !== "Ground ball" || isOutfieldHit(ball),
-      throwing = new ThrowingEngine();
+    const hit =
+        !["Ground ball", "Bunt"].includes(settings.ball.type) ||
+        isOutfieldHit(ball),
+      throwing = new ThrowingEngine(settings);
     let leadGoal = 5;
     const hint =
       settings.throwTarget === "auto" || settings.throwTarget === "cutoff"
@@ -159,7 +161,8 @@ export class BaserunningDecisionEngine {
       const last = Math.floor(r.progress),
         fraction = r.progress - last;
       const throwTime =
-        new ThrowingEngine().arrival(from, bases[target]) + assumptions.tagTime;
+        new ThrowingEngine(settings).arrival(from, bases[target]) +
+        assumptions.tagTime;
       if (
         last > r.originBase &&
         fraction < 0.45 &&

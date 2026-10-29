@@ -2,6 +2,29 @@ import type { Locale } from "../i18n/ui";
 // Generated plays carry typed message references. Formatting belongs to the display
 // boundary, so changing languages never changes paths, decisions or timestamps.
 const english = {
+  wallCaromWhy:
+    "The ball strikes the wall or training net and rebounds into play. A catch after wall contact is not an airborne out; runners and all nine defenders reassess the carom.",
+  targetDoublePlay:
+    "Take the available force at second, then reassess the pivot to first for a possible double play. The second out depends on the actual remaining time.",
+  retouchCompleted:
+    "Retouch the original base and hold. Returning to the bag does not itself mean attempting a tag-up advance.",
+  phaseDecelerate: "Slow down after the third out",
+  postPlayBrakingWhy:
+    "The third out ends live play. Runners stop; moving defenders only finish braking. No coverage, pursuit or throwing opportunity is started.",
+  buntScope:
+    "Ordinary fair bunts are supported within 25 m of home, with no runner on third. Squeezes, bunt pop-ups and foul-bunt strike rules are outside this model.",
+  trainingFenceWhy:
+    "Keep-in-play training mode uses a virtual high net. The displayed fence height is provisional, not a measurement of the home ground; this mode deliberately keeps boundary flights playable.",
+  buntChargeWhy:
+    "Read the bunt and charge under control. The nearest fielder takes the ball; middle infielders cover the vacated bases. With R2 present, third-base coverage takes priority.",
+  buntChargeAction:
+    "Charge the bunt under control, yield to the primary fielder, and be ready to cover or support.",
+  readCatchableWhy:
+    "A controllable catch remains plausible. Keep enough time to return; prepare to retouch before a tag-up.",
+  readUncertainWhy:
+    "Read the developing flight. Take a direction- and depth-dependent lead while keeping a safe return available.",
+  readUncatchableWhy:
+    "Successive flight observations leave no reachable airborne catch. Commit to the next legal bases before landing; this read did not assume the final outcome at contact.",
   generationUnavailable:
     "This situation could not be resolved under the current model. Adjust the ball aim or type and try again; the previous generated play is preserved.",
   boundaryTrackAction:
@@ -207,7 +230,7 @@ const english = {
   alternative:
     "Change the throwing target, aggression, strength, or hit location and generate again to compare a different tactical response.",
   unsupported:
-    "Choose Ground ball, Line drive or Fly ball for the dynamic simulator. Bunts, errors and full rundowns are not generated; authored encyclopedia plays remain available.",
+    "Choose Ground ball, Line drive, Fly ball, Pop-up or an ordinary fair Bunt. Errors, squeezes and full rundowns are not generated; authored encyclopedia plays remain available.",
   invalid:
     "Choose a fair-ball location inside the field and valid outs, runners, count and game context.",
   infieldHit:
@@ -215,6 +238,29 @@ const english = {
 };
 export type DynamicMessageKey = keyof typeof english;
 const japanese: Record<DynamicMessageKey, string> = {
+  wallCaromWhy:
+    "打球がフェンスまたは練習ネットに当たり、場内へ跳ね返りました。その後に捕ってもフライアウトにはなりません。走者と野手全員が跳ね返りに対応します。",
+  targetDoublePlay:
+    "まず二塁のフォースアウトを取り、残り時間を確認して一塁への併殺送球を判断します。第2のアウトは実際のタイミング次第です。",
+  retouchCompleted:
+    "元の塁を踏み直して待機します。帰塁しただけではタッチアップで進塁したことにはなりません。",
+  phaseDecelerate: "第3アウト後に減速する",
+  postPlayBrakingWhy:
+    "第3アウトでプレーは終了です。走者は停止し、動いていた野手だけが減速を終えます。新しいカバー、追球、送球は始めません。",
+  buntScope:
+    "本塁から25m以内の通常のフェアバントに対応します。三塁走者がいるスクイズ、バントフライ、ファウルバントのストライク判定は対象外です。",
+  trainingFenceWhy:
+    "場内に残す練習モードでは仮想の高いネットを使います。表示した高さは仮設定で、本拠地の実測値ではありません。境界に届く打球も意図的に場内へ戻します。",
+  buntChargeWhy:
+    "バントを読み、制御して前進します。最も近い野手が処理し、二遊間が空いた塁をカバーします。二塁走者がいれば三塁のカバーを優先します。",
+  buntChargeAction:
+    "バントに向かって制御して前進し、処理する野手に譲り、カバーやサポートに備えます。",
+  readCatchableWhy:
+    "捕球される可能性があります。帰塁できる距離を保ち、タッチアップの前に元の塁を踏み直します。",
+  readUncertainWhy:
+    "打球の飛び方を読みます。方向と深さに応じてリードし、捕球されても安全に戻れる距離を保ちます。",
+  readUncatchableWhy:
+    "打球を続けて観察した結果、空中での捕球は間に合わないと判断しました。落下を待たず次の塁へ進みます。打球直後から結果を知っていた判断ではありません。",
   generationUnavailable:
     "現在のモデルではこの状況を解決できませんでした。打球の狙いか種類を変えて再生成してください。前の生成済みプレーは保持されています。",
   boundaryTrackAction: "フェンスへ向かう打球を追い、跳ね返りに備えます。",
@@ -409,7 +455,7 @@ const japanese: Record<DynamicMessageKey, string> = {
   alternative:
     "送球先、走者の積極性、打球の強さ、位置を変えて再生成し、別の守備対応を比べましょう。",
   unsupported:
-    "動的シミュレーターではゴロ・ライナー・フライを選んでください。バント、エラー、完全な挟殺は生成しません。プレー図鑑の例も利用できます。",
+    "動的シミュレーターではゴロ・ライナー・フライ・ポップフライ・通常のフェアバントを選べます。エラー、スクイズ、完全な挟殺は生成しません。プレー図鑑の例も利用できます。",
   invalid:
     "グラウンド内のフェアの位置と、正しいアウト数・走者・カウント・試合状況を選んでください。",
   infieldHit:
@@ -461,7 +507,11 @@ export function formatDynamic(
             ? "フライ"
             : value === "Line drive"
               ? "ライナー"
-              : "外野へのヒット"
+              : value === "Pop-up"
+                ? "ポップフライ"
+                : value === "Bunt"
+                  ? "バント"
+                  : "外野へのヒット"
         : String(value);
     return String(value);
   });

@@ -29,8 +29,12 @@ export type AssignmentType =
   | "TrailRunner"
   | "Communicate"
   | "Decelerate"
-  | "TrackBall";
+  | "TrackBall"
+  | "ChargeBunt";
 export interface DynamicSettings {
+  field?: { fenceHeight: number; fenceMode: "standard" | "keep-in-play" };
+  anticipateBunt?: boolean;
+  armStrength?: "developing" | "standard" | "strong";
   state: GameState & {
     inning: number;
     half: "top" | "bottom";
@@ -40,7 +44,7 @@ export interface DynamicSettings {
     strategy: Strategy;
   };
   ball: {
-    type: "Ground ball" | "Fly ball" | "Line drive";
+    type: "Ground ball" | "Fly ball" | "Line drive" | "Pop-up" | "Bunt";
     destination: Point;
     strength: Strength;
   };
@@ -116,7 +120,8 @@ export type AssignmentReason =
   | "guardSpace"
   | "complete"
   | "braking"
-  | "boundaryTrack";
+  | "boundaryTrack"
+  | "buntCharge";
 export interface AssignmentContext {
   opportunitiesClosed?: boolean;
   ballDead?: boolean;
@@ -128,7 +133,13 @@ export interface AssignmentContext {
   outs: number;
 }
 export interface CoverageIssue {
-  kind: "unfulfilled" | "late-backup" | "conflict" | "space-limited";
+  kind:
+    | "unfulfilled"
+    | "late-backup"
+    | "late-cutoff"
+    | "late-coverage"
+    | "conflict"
+    | "space-limited";
   base?: Base;
   player?: Position;
   detail: string;
@@ -228,9 +239,12 @@ export interface SimulationEvent {
     | "BallCaught"
     | "InfieldFly"
     | "RunnerTaggedUp"
+    | "RunnerRetouched"
     | "BallPassedInfield"
     | "BallBoundary"
     | "BallBounce"
+    | "BallWallContact"
+    | "AirborneRead"
     | "RunnerAdvanced"
     | "RunnerBaseTouch"
     | "RunnerRetreated"
@@ -250,7 +264,13 @@ export interface SimulationEvent {
 }
 export interface ThrowDecision {
   rejections?: { target: Base; reason: string }[];
-  continuation?: { target: Base; arrival: number; runnerArrival: number; margin: number; pivot: number };
+  continuation?: {
+    target: Base;
+    arrival: number;
+    runnerArrival: number;
+    margin: number;
+    pivot: number;
+  };
   appeal?: boolean;
   target: Base | "hold";
   runner?: Runner;
@@ -263,6 +283,8 @@ export interface ThrowDecision {
   owner?: Position;
 }
 export interface SimulationMetadata {
+  holdingDecisions?: ThrowDecision[];
+  airborneReads?: import("./airborne").AirborneRead[];
   terminationReason?: string;
   modelVersion: string;
   contactTime: number;

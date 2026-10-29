@@ -42,7 +42,7 @@ export interface GameState {
   strategy?: "standard" | "prevent" | "conservative";
 }
 export type BallType =
-  "Ground ball" | "Fly ball" | "Line drive" | "Base hit" | "Bunt";
+  "Ground ball" | "Fly ball" | "Line drive" | "Base hit" | "Bunt" | "Pop-up";
 export const directions = [
   "Left field",
   "Left-centre",

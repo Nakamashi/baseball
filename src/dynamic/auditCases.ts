@@ -24,26 +24,32 @@ export function defensiveAuditCases(): Record<string, DynamicSettings> {
     "third-ground-second": make(640, 430, { R3: 3 }, true),
     "single-left": make(235, 280),
     "first-single-left": make(235, 280, { R1: 1 }),
-    "second-single-right": make(765, 280, { R2: 2 }),
-    "extra-base-trail": make(80, 340),
+    "second-single-right": make(814, 219, { R2: 2 }),
+    "extra-base-trail": make(374, 291),
     "deep-left-centre": make(170, 200, { R1: 1, R2: 2 }),
-    "home-to-second": make(765, 280, { R2: 2 }),
-    "aggressive-home": make(765, 280, { R2: 2 }),
+    "home-to-second": make(814, 219, { R2: 2 }),
+    "aggressive-home": make(814, 219, { R2: 2 }),
     "infield-in": make(640, 430, { R3: 3 }, true),
-    "center-home-close": make(550, 125, { R2: 2 }),
+    "center-home-close": make(558, 284, { R2: 2 }),
   };
   cases["first-single-left"].throwTarget = 2;
 
   cases["double-play"].runnerSpeed = "slow";
   cases["double-play"].ball.strength = "hard";
   cases["extra-base-trail"].ball.strength = "hard";
+  cases["extra-base-trail"].ball.type = "Line drive";
   cases["deep-left-centre"].ball.strength = "hard";
+  cases["deep-left-centre"].ball.type = "Fly ball";
   cases["extra-base-trail"].aggression = "aggressive";
   cases["extra-base-trail"].throwTarget = 3;
   cases["deep-left-centre"].throwTarget = "home";
   cases["home-to-second"].throwTarget = "home";
   cases["aggressive-home"].aggression = "aggressive";
+  cases["aggressive-home"].ball.strength = "hard";
+  cases["aggressive-home"].runnerSpeed = "fast";
   cases["second-single-right"].aggression = "aggressive";
+  cases["second-single-right"].ball.strength = "hard";
+  cases["second-single-right"].runnerSpeed = "fast";
   cases["infield-in"].state.strategy = "prevent";
   cases["infield-in"].state.inning = 7;
   cases["center-home-close"].aggression = "aggressive";

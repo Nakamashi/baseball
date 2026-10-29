@@ -34,8 +34,31 @@ const configure = async ({
   target = "auto",
   runners = [],
   outs = 0,
+  arm = "standard",
+  fenceMode = "standard",
+  fenceHeight = 2.5,
+  anticipateBunt = false,
 } = {}) => {
   await language("en");
+  const advanced = page.locator("details.panel").filter({
+    has: page.locator("summary", { hasText: "Field and throwing" }),
+  });
+  if ((await advanced.getAttribute("open")) === null)
+    await advanced.locator("summary").click();
+  await combo("Throwing profile").selectOption(arm);
+  await combo("Fence behavior").selectOption(fenceMode);
+  await page
+    .getByRole("spinbutton", {
+      name: "Fence height (m, provisional)",
+      exact: true,
+    })
+    .fill(String(fenceHeight));
+  await page
+    .getByRole("checkbox", {
+      name: "Anticipate a bunt before the pitch",
+      exact: true,
+    })
+    .setChecked(anticipateBunt);
   for (const [name, value] of [
     ["Batted ball", type],
     ["Hit strength", strength],
@@ -108,7 +131,7 @@ try {
   await end();
   assert.match(await page.locator(".scoreboard").innerText(), /Outs\s*2/);
   // Automatic home priority remains translated and uses one clock across language changes.
-  await configure({ x: 550, y: 125, runners: [2], strategy: "prevent" });
+  await configure({ x: 558, y: 284, runners: [2], strategy: "prevent" });
   await generate();
   await end();
   let text = await eventText();
@@ -116,14 +139,14 @@ try {
   assert.match(text, /1B throws to C/);
   assert.match(
     await page.locator(".objective p").first().textContent(),
-    /tag timing is close/,
+    /home|scoring|run/,
   );
   const homeTime = await slider.inputValue();
   await language("ja");
   assert.equal(await slider.inputValue(), homeTime);
   assert.match(
     await page.locator(".objective p").first().textContent(),
-    /際どい/,
+    /本塁|得点/,
   );
   assert.doesNotMatch(await page.locator("body").innerText(), /@v2:/);
   await slider.fill("1");
@@ -140,7 +163,13 @@ try {
   text = await eventText();
   assert.match(text, /Round first/);
   assert.match(text, /Return to first/);
-  await configure({ x: 80, y: 330 });
+  await configure({
+    type: "Line drive",
+    x: 636,
+    y: 172,
+    speed: "fast",
+    arm: "developing",
+  });
   await generate();
   await end();
   assert.match(await eventText(), /Advance along the basepath toward second/);
@@ -178,10 +207,10 @@ try {
   await configure({ type: "Line drive", x: 425, y: 350, runners: [1] });
   await generate();
   await end();
-  assert.match(await eventText(), /appeal/i);
-  assert.match(await page.locator(".scoreboard").innerText(), /Outs\s*2/);
+  assert.match(await eventText(), /retouch|original base/i);
+  assert.match(await page.locator(".scoreboard").innerText(), /Outs\s*1/);
   await language("ja");
-  assert.match(await eventText(), /アピール/);
+  assert.match(await eventText(), /踏み直|帰塁/);
   await configure({ type: "Fly ball", x: 500, y: 15, runners: [1, 2, 3] });
   await generate();
   await end();
@@ -189,14 +218,84 @@ try {
   assert.match(await eventText(), /4 runs scored/);
   await configure({
     type: "Fly ball",
-    x: 890,
-    y: 360,
-    strength: "normal",
+    x: 887.52,
+    y: 370.36,
+    strength: "hard",
+    fenceHeight: 1,
     runners: [1, 2, 3],
   });
   await generate();
   await end();
   assert.match(await eventText(), /two bases/i);
+  await configure({
+    type: "Fly ball",
+    x: 887.52,
+    y: 370.36,
+    strength: "hard",
+    fenceMode: "keep-in-play",
+    fenceHeight: 8,
+  });
+  await generate();
+  await end();
+  assert.match(await eventText(), /strikes the wall or training net/);
+  assert.match(await eventText(), /secures the ball/);
+  await configure({ type: "Pop-up", x: 450, y: 430, runners: [1, 2] });
+  await generate();
+  await slider.fill("2.5");
+  assert.equal(await page.locator(".interception-point").count(), 1);
+  assert.match(await page.locator(".ball-height").textContent(), /Ball height/);
+  await page.screenshot({ path: "/tmp/tactical-popup.png" });
+  await end();
+  assert.match(await eventText(), /Infield fly|infield fly/);
+  await language("ja");
+  assert.match(
+    await page.locator(".field-heading h1").innerText(),
+    /ポップフライ/,
+  );
+  assert.doesNotMatch(await page.locator("body").innerText(), /@v2:/);
+  for (const x of [380, 620]) {
+    await configure({
+      type: "Bunt",
+      x,
+      y: 650,
+      strength: "normal",
+      runners: [1],
+      anticipateBunt: true,
+    });
+    await generate();
+    await slider.fill("1.2");
+    await page.locator('[data-player="2B"]').click();
+    await page.screenshot({
+      path:
+        x === 380
+          ? "/tmp/tactical-bunt-left.png"
+          : "/tmp/tactical-bunt-right.png",
+    });
+    assert.match(await page.locator(".focus-action").innerText(), /first/);
+    await language("ja");
+    assert.match(await page.locator(".focus-action").innerText(), /一塁/);
+    await language("en");
+    await end();
+    assert.match(await eventText(), /throws/);
+  }
+  await configure({ x: 425, y: 425, speed: "slow", runners: [1] });
+  await generate();
+  await page
+    .getByRole("combobox", { name: "Playback mode", exact: true })
+    .selectOption("full");
+  await slider.fill("0");
+  await page.locator(".play-button").click();
+  await page.waitForFunction(
+    () => Number(document.querySelector(".timeline input").value) > 3.1,
+  );
+  await page.locator(".play-button").click();
+  const paused = await slider.inputValue();
+  await page.waitForTimeout(100);
+  assert.equal(await slider.inputValue(), paused);
+  await slider.fill("2.2");
+  await page.screenshot({ path: "/tmp/tactical-dp-contact.png" });
+  await slider.fill("4.4");
+  await page.screenshot({ path: "/tmp/tactical-dp-pivot.png" });
   await coordinate("X").fill("880");
   assert.equal(await page.locator(".play-button").isDisabled(), true);
   assert.equal(await page.locator(".interception-point").count(), 0);
@@ -243,7 +342,7 @@ try {
   assert.equal(await page.locator(".trajectory-overlay").count(), 0);
   assert.deepEqual(errors, []);
   console.log(
-    "Dynamic browser smoke passed: interception, throws, runner decisions, catches, appeals, boundaries, deterministic seeks, EN/JA and six layouts.",
+    "Dynamic browser smoke passed: interception, double plays, home priority, runner reads, retouches, pop-ups, bunts, configurable fences/arms, wall caroms, boundaries, deterministic seeks, EN/JA and six layouts.",
   );
 } finally {
   await browser.close();

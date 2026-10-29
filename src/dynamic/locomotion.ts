@@ -173,7 +173,7 @@ export function planMotion(
     !aligned &&
     distance > (2 * speed * speed) / acceleration &&
     speed > 1e-8 &&
-    (v.x * delta.x + v.y * delta.y) / (speed * distance) > Math.cos(0.12)
+    (v.x * delta.x + v.y * delta.y) / (speed * distance) > Math.cos(Math.PI / 6)
   ) {
     for (let i = 0; i < 20; i++) {
       const u = { x: delta.x / distance, y: delta.y / distance },

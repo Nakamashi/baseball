@@ -9,7 +9,14 @@ import {
 export const assumptions = {
   baseMetres: 27.43,
   field: { cornerMetres: 90, centreMetres: 120, infieldMetres: 39 },
-  defenderSpeed: 6,
+  // Same provisional average athlete as the running model; fielding still
+  // requires a controlled <=3 m/s approach. This is not a measured age norm.
+  defenderSpeed: calibratedMaximum(
+    27.43,
+    homeToFirst.average,
+    runnerAcceleration,
+    batterStart,
+  ),
   defenderAcceleration: 5,
   fieldingReach: 0.6,
   secondaryLeadMetres: 27.43 * 0.08,
@@ -23,7 +30,6 @@ export const assumptions = {
     returnSpeed: 3,
     readTime: 0.35,
   },
-  throwSpeed: 20,
   fieldDelay: 0.25,
   transfer: 0.3,
   catchTime: 0.12,

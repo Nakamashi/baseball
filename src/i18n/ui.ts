@@ -1,5 +1,23 @@
 // English keys define the UI contract. Japanese must implement every key.
 export const en = {
+  flightTime: "Untouched flight to landing/boundary",
+  maximumHeight: "Maximum height",
+  popUp: "Pop-up",
+  bunt: "Bunt",
+  buntAimHint:
+    "Aim an ordinary fair bunt within 25 m of home. Squeezes and foul-bunt rules are not generated.",
+  fieldConfiguration: "Field and throwing",
+  armStrength: "Throwing profile",
+  developingArm: "Developing arm",
+  standardArm: "Standard arm",
+  strongArm: "Strong arm",
+  fenceMode: "Fence behavior",
+  keepInPlay: "Keep in play — training net",
+  standardFence: "Apply boundary rules at configured height",
+  fenceHeight: "Fence height (m, provisional)",
+  fieldAssumption:
+    "90 m corners · 120 m centre. Default height 8 m is provisional, not measured. Height applies in boundary-rule mode; the training net keeps boundary flights in play at every height.",
+  anticipateBunt: "Anticipate a bunt before the pitch",
   encyclopedia: "Play encyclopedia",
   simulator: "Dynamic simulator",
   configure: "Configure play",
@@ -162,6 +180,24 @@ export const en = {
 } as const;
 export type MessageKey = keyof typeof en;
 export const ja: Record<MessageKey, string> = {
+  flightTime: "落下・境界までの未捕球時の飛行時間",
+  maximumHeight: "最高到達点",
+  popUp: "ポップフライ",
+  bunt: "バント",
+  buntAimHint:
+    "本塁から25m以内の通常のフェアバントを狙います。スクイズやファウルバントの判定は生成しません。",
+  fieldConfiguration: "グラウンドと送球",
+  armStrength: "送球の設定",
+  developingArm: "発展段階の肩",
+  standardArm: "標準の肩",
+  strongArm: "強い肩",
+  fenceMode: "フェンスの扱い",
+  keepInPlay: "場内に残す練習ネット",
+  standardFence: "設定した高さで境界を判定",
+  fenceHeight: "フェンスの高さ（m・仮設定）",
+  fieldAssumption:
+    "両翼90m・中堅120m。初期値8mは実測ではなく仮設定です。高さは境界判定モードで適用し、練習ネットは高さによらず打球を場内へ戻します。",
+  anticipateBunt: "投球前からバントを警戒する",
   encyclopedia: "プレー図鑑",
   simulator: "動的シミュレーター",
   configure: "状況を設定",

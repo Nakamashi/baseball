@@ -216,6 +216,12 @@ export class MovementEngine {
         result.SS = { x: 425, y: 425 };
       }
     }
+    if (settings.anticipateBunt) {
+      result["1B"] = { x: 670, y: 600 };
+      result["3B"] = s.runners.R2 ? { x: 310, y: 555 } : { x: 330, y: 600 };
+      result["2B"] = { x: 625, y: 450 };
+      result.SS = { x: 425, y: 425 };
+    }
     if (settings.state.strategy === "conservative") {
       for (const id of ["LF", "CF", "RF"] as const)
         result[id] = mixPhysical(bases.home, result[id], 1.08);

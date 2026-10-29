@@ -153,6 +153,8 @@ export class TimelineBuilder {
     duration: number,
     ball: BallAction,
     run = true,
+    deadDeceleration = false,
+    stopOnRunnerEvent = false,
   ) {
     let remaining = Math.max(0.001, round(duration)),
       elapsed = 0;
@@ -177,9 +179,9 @@ export class TimelineBuilder {
       dt = Math.max(0.000001, Math.min(remaining, round(dt)));
       for (const a of this.assignments) a.explanation = assignmentText(a).why;
       const movements: PlayPhase["movements"] = [];
-      for (const assignment of !run ||
+      for (const assignment of (!run && !deadDeceleration) ||
       title === "Ready" ||
-      this.state.outs === 3
+      (this.state.outs === 3 && !deadDeceleration)
         ? []
         : this.assignments) {
         const from = this.locations[assignment.player];
@@ -445,7 +447,12 @@ export class TimelineBuilder {
             r.goal = r.afterRetouchGoal ?? r.progress;
             r.afterRetouchGoal = undefined;
             r.decision = r.goal > r.progress ? "advance" : "hold";
-            this.event("RunnerTaggedUp", m("tagUpWhy"), r.id, base);
+            this.event(
+              r.goal > r.progress ? "RunnerTaggedUp" : "RunnerRetouched",
+              m(r.goal > r.progress ? "tagUpWhy" : "retouchCompleted"),
+              r.id,
+              base,
+            );
           } else if (r.progress < before) {
             r.decision = "hold";
             this.event(
@@ -512,6 +519,7 @@ export class TimelineBuilder {
             ? "RunnerAdvanced or RunnerRetreated"
             : "First-base read/return",
         );
+      if (stopOnRunnerEvent && (crossedBase || readChanged)) break;
     }
   }
   retire(

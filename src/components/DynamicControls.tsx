@@ -2,7 +2,8 @@ import type { Dispatch, SetStateAction } from "react";
 import type { DynamicSettings } from "../dynamic/types";
 import { recommendStrategy } from "../dynamic/conventions";
 import { ui, type Locale } from "../i18n";
-import type { BallTrajectory } from "../dynamic/trajectory";
+import { isAirborneType, type BallTrajectory } from "../dynamic/trajectory";
+import { fieldConfiguration } from "../dynamic/fieldConfiguration";
 interface Props {
   settings: DynamicSettings;
   setSettings: Dispatch<SetStateAction<DynamicSettings>>;
@@ -205,13 +206,19 @@ export function DynamicControls({
               aria-label={t("ballType")}
               value={settings.ball.type}
               onChange={(e) =>
-                ball({ type: e.target.value as typeof settings.ball.type })
+                ball({
+                  type: e.target.value as typeof settings.ball.type,
+                  ...(e.target.value === "Bunt"
+                    ? { destination: { x: 620, y: 650 } }
+                    : {}),
+                })
               }
             >
               <option value="Ground ball">{t("groundBall")}</option>
               <option value="Line drive">{t("lineDrive")}</option>
               <option value="Fly ball">{t("flyBall")}</option>
-              <option disabled>{t("buntLater")}</option>
+              <option value="Pop-up">{t("popUp")}</option>
+              <option value="Bunt">{t("bunt")}</option>
             </select>
           </label>
           <label className="select-label">
@@ -242,14 +249,28 @@ export function DynamicControls({
           <p className="hint">{t("locationHint")}</p>
           <p className="hint">
             {t(
-              settings.ball.type === "Ground ball"
-                ? "groundAimHint"
-                : "airLandingHint",
+              settings.ball.type === "Bunt"
+                ? "buntAimHint"
+                : settings.ball.type === "Ground ball"
+                  ? "groundAimHint"
+                  : "airLandingHint",
             )}
           </p>
           {preview?.launch.adjusted && (
             <p role="status" className="hint">
               {t("landingConstrained")}
+            </p>
+          )}
+          {preview && isAirborneType(settings.ball.type) && (
+            <p className="hint">
+              {t("flightTime")}:{" "}
+              {(
+                preview.events.find((e) => e.type === "landing")?.t ??
+                preview.duration
+              ).toFixed(1)}{" "}
+              s · {t("maximumHeight")}:{" "}
+              {Math.max(...preview.frames.map((f) => f.height ?? 0)).toFixed(1)}{" "}
+              m
             </p>
           )}
           <div className="count-row">
@@ -274,6 +295,78 @@ export function DynamicControls({
               </label>
             ))}
           </div>
+        </div>
+      </details>
+      <details className="panel">
+        <summary>{t("fieldConfiguration")}</summary>
+        <div className="panel-content">
+          <label className="select-label">
+            {t("armStrength")}
+            <select
+              aria-label={t("armStrength")}
+              value={settings.armStrength ?? "standard"}
+              onChange={(e) =>
+                setSettings((c) => ({
+                  ...c,
+                  armStrength: e.target.value as DynamicSettings["armStrength"],
+                }))
+              }
+            >
+              <option value="developing">{t("developingArm")}</option>
+              <option value="standard">{t("standardArm")}</option>
+              <option value="strong">{t("strongArm")}</option>
+            </select>
+          </label>
+          <label className="select-label">
+            {t("fenceMode")}
+            <select
+              aria-label={t("fenceMode")}
+              value={fieldConfiguration(settings).fenceMode}
+              onChange={(e) =>
+                setSettings((c) => ({
+                  ...c,
+                  field: {
+                    ...fieldConfiguration(c),
+                    fenceMode: e.target.value as "standard" | "keep-in-play",
+                  },
+                }))
+              }
+            >
+              <option value="keep-in-play">{t("keepInPlay")}</option>
+              <option value="standard">{t("standardFence")}</option>
+            </select>
+          </label>
+          <label className="select-label">
+            {t("fenceHeight")}
+            <input
+              type="number"
+              min="1"
+              max="30"
+              step="0.5"
+              aria-label={t("fenceHeight")}
+              value={fieldConfiguration(settings).fenceHeight}
+              onChange={(e) =>
+                setSettings((c) => ({
+                  ...c,
+                  field: {
+                    ...fieldConfiguration(c),
+                    fenceHeight: +e.target.value,
+                  },
+                }))
+              }
+            />
+          </label>
+          <p className="hint">{t("fieldAssumption")}</p>
+          <label>
+            <input
+              type="checkbox"
+              checked={!!settings.anticipateBunt}
+              onChange={(e) =>
+                setSettings((c) => ({ ...c, anticipateBunt: e.target.checked }))
+              }
+            />
+            {t("anticipateBunt")}
+          </label>
         </div>
       </details>
       <details open className="panel">

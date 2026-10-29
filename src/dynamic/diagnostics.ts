@@ -7,6 +7,8 @@ import { formatDynamic } from "./messages";
 import type { DynamicScenario } from "./types";
 import { ballPhysics } from "./trajectory";
 import { sampleTimed } from "../simulation/timedPath";
+import { throwProfiles, throwingProfile } from "./throwing";
+import { fieldConfiguration } from "./fieldConfiguration";
 /** Developer API: pure JSON, no production UI or browser global. Times include
  * the one-second Ready phase, just like playback and recorded events. */
 export function inspectDefense(scenario: DynamicScenario, requestedTime = 0) {
@@ -18,8 +20,32 @@ export function inspectDefense(scenario: DynamicScenario, requestedTime = 0) {
   const decision = scenario.dynamic.decisions
     .filter((d) => (d.time ?? 0) <= time)
     .at(-1);
+  const holdingDecision = scenario.dynamic.holdingDecisions
+    ?.filter((d) => (d.time ?? 0) <= time)
+    .at(-1);
   const translate = (text: string) => formatDynamic(text, "en") ?? text;
+  const baseCoverage = ([1, 2, 3, "home"] as const).map((base) => ({
+    base,
+    receiver: snapshot.phase.assignments!.find(
+      (a) => a.base === base && a.type === "CoverBase",
+    )?.player,
+    threats: frame.runners
+      .filter(
+        (r) =>
+          r.status === "active" &&
+          ((r.goal >= (base === "home" ? 4 : base) &&
+            r.progress < (base === "home" ? 4 : base)) ||
+            r.retouchBase === (base === "home" ? 4 : base)),
+      )
+      .map((r) => ({ runner: r.id, progress: r.progress, goal: r.goal })),
+    predictionTime: frame.time,
+  }));
   return {
+    holdingDecision: holdingDecision
+      ? { ...holdingDecision, reason: translate(holdingDecision.reason) }
+      : undefined,
+    terminationReason: scenario.dynamic.terminationReason,
+    airborneReads: scenario.dynamic.airborneReads,
     time,
     contactTime:
       scenario.dynamic.events.find((e) => e.type === "BallContact")?.time ?? 1,
@@ -33,6 +59,8 @@ export function inspectDefense(scenario: DynamicScenario, requestedTime = 0) {
       version: ballPhysics.version,
       parameters: assumptions,
       ballPhysics,
+      throwProfiles,
+      configuredField: fieldConfiguration(scenario.dynamic.settings),
       calibration:
         "Provisional coaching profiles; no published population-average claim.",
     },
@@ -63,7 +91,33 @@ export function inspectDefense(scenario: DynamicScenario, requestedTime = 0) {
           const secured = scenario.dynamic.events.find(
             (v) => v.type === "ThrowReceived" && v.time >= e.time,
           );
+          const phase = scenario.phases.find(
+            (p) =>
+              p.start >= e.time &&
+              p.ball.kind === "travel" &&
+              p.ball.style === "throw",
+          );
+          const previousControl = scenario.dynamic.events
+            .filter(
+              (v) =>
+                v.time <= e.time &&
+                (v.type === "BallFielded" || v.type === "ThrowReceived") &&
+                v.player === e.player,
+            )
+            .at(-1);
           return {
+            preparation: previousControl
+              ? e.time - previousControl.time
+              : undefined,
+            profile:
+              phase && phase.ball.kind === "travel"
+                ? throwingProfile(
+                    phase.ball.path[0],
+                    phase.ball.path.at(-1)!,
+                    e.player as import("../simulation/types").Position,
+                    scenario.dynamic.settings.armStrength,
+                  )
+                : undefined,
             release: e.time,
             glove: glove?.time,
             secured: secured?.time,
@@ -80,6 +134,7 @@ export function inspectDefense(scenario: DynamicScenario, requestedTime = 0) {
             e.type === "RunnerAdvanced" ||
             e.type === "RunnerBaseTouch" ||
             e.type === "RunnerTaggedUp" ||
+            e.type === "RunnerRetouched" ||
             e.type === "RunnerOut",
         )
         .map((e) => ({
@@ -151,6 +206,10 @@ export function inspectDefense(scenario: DynamicScenario, requestedTime = 0) {
       };
     }),
     coverageIssues: frame.issues,
+    baseCoverage,
+    uncoveredThreatenedBases: baseCoverage.filter(
+      (b) => b.threats.length && !b.receiver,
+    ),
     // Review all events and assignment transitions without stepping the UI.
     reassessments: scenario.dynamic.diagnostics,
     events: scenario.dynamic.events.map((e) => ({

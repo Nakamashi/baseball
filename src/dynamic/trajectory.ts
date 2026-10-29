@@ -1,9 +1,10 @@
 import type { Point, TimedPoint } from "../simulation/types";
 import type { DynamicSettings } from "./types";
 import { bases, toWorld, fromWorld, fieldRadius } from "./geometry";
+import { fieldConfiguration } from "./fieldConfiguration";
 
 export const ballPhysics = {
-  version: "trajectory-1",
+  version: "trajectory-2-tactics",
   gravity: 9.81,
   step: 1 / 120,
   wallHeight: 2.5,
@@ -48,7 +49,8 @@ export interface BallTrajectory {
   };
 }
 const hypot = (p: Point) => Math.hypot(p.x, p.y);
-const airborne = (type: string) => type === "Fly ball" || type === "Line drive";
+const airborne = (type: string) =>
+  type === "Fly ball" || type === "Line drive" || type === "Pop-up";
 export function isAirborneType(type: string) {
   return airborne(type);
 }
@@ -65,13 +67,17 @@ export function predictTrajectory(settings: DynamicSettings): BallTrajectory {
     strength = settings.ball.strength,
     air = airborne(type);
   const theta =
-    ((type === "Fly ball"
-      ? { soft: 55, normal: 45, hard: 35 }
-      : { soft: 28, normal: 20, hard: 12 })[strength] *
+    ((type === "Pop-up"
+      ? { soft: 78, normal: 75, hard: 72 }
+      : type === "Fly ball"
+        ? { soft: 55, normal: 45, hard: 35 }
+        : { soft: 28, normal: 20, hard: 12 })[strength] *
       Math.PI) /
     180;
   let speed =
-    { soft: 11, normal: 23, hard: 32 }[strength] *
+    (type === "Bunt"
+      ? { soft: 5, normal: 7, hard: 9 }
+      : { soft: 11, normal: 23, hard: 32 })[strength] *
     Math.max(0.92, Math.min(1.12, 0.92 + range / 350));
   let adjusted = false;
   if (air) {
@@ -183,7 +189,10 @@ export function predictTrajectory(settings: DynamicSettings): BallTrajectory {
       p = { x: old.x + (p.x - old.x) * u, y: old.y + (p.y - old.y) * u };
       z = oldZ + (z - oldZ) * u;
       t -= dt * (1 - u);
-      if (z > ballPhysics.wallHeight) {
+      if (
+        fieldConfiguration(settings).fenceMode === "standard" &&
+        z > fieldConfiguration(settings).fenceHeight
+      ) {
         event(impacts === 0 ? "home-run" : "ground-rule-double");
         stopped = true;
         v = { x: 0, y: 0, z: 0 };

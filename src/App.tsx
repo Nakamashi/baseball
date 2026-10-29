@@ -72,7 +72,7 @@ export default function App() {
     } catch {
       return undefined;
     }
-  }, [settings.ball]);
+  }, [settings.ball, settings.field]);
   const playback = usePlayback(scenario);
   const displayedCount = viewMode === "dynamic" ? frameCount() : count;
   function frameCount() {
