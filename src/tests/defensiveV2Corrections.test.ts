@@ -141,7 +141,8 @@ describe("V2 ordinary R3 bunts and cooperative pop-ups", () => {
       expect(s.dynamic.ball.caught).toBe(true);
       expect(s.dynamic.ball.fielder).toBe(owner);
       if (owner === "C") {
-        const candidates = s.dynamic.ball.candidates.filter(a => a.caught);
+        expect(s.dynamic.ball.candidates).toBeDefined();
+        const candidates = s.dynamic.ball.candidates!.filter(a => a.caught);
         const pitcher = candidates.find(a => a.player === "P")!;
         const catcher = candidates.find(a => a.player === "C")!;
         expect(catcher.time - pitcher.time).toBeLessThanOrEqual(0.08);

@@ -8,7 +8,7 @@ on:
 permissions:
   contents: read
 jobs:
-  regression:
+  engine:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,11 +21,30 @@ jobs:
       - run: npm run build
       - run: npm run audit:defense:v2 -- --strict
       - run: npm run audit:defense:v2:summary
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: defensive-v2-engine
+          path: |
+            audit/defensive-v2-after/summary.json
+            audit/defensive-v2-after/analysis.json
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
       - name: Install browser
+        id: browser_install
         run: |
           npx playwright-core install --with-deps chromium
           node --input-type=module -e 'import {chromium} from "playwright-core"; console.log("CHROMIUM_PATH=" + chromium.executablePath())' >> "$GITHUB_ENV"
       - name: Start browser test server
+        id: browser_server
         run: |
           npm run dev -- --host 127.0.0.1 > /tmp/baseball-vite.log 2>&1 &
           for attempt in $(seq 1 30); do
@@ -33,22 +52,20 @@ jobs:
             sleep 1
           done
       - name: Encyclopedia browser regression
+        if: ${{ !cancelled() && steps.browser_install.outcome == 'success' && steps.browser_server.outcome == 'success' }}
         run: npm run test:browser
       - name: Dynamic browser regression
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.browser_install.outcome == 'success' && steps.browser_server.outcome == 'success' }}
         run: npm run test:dynamic:browser
       - name: Mobile Generate Play regression
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.browser_install.outcome == 'success' && steps.browser_server.outcome == 'success' }}
         run: npm run test:mobile:browser
       - name: Production pages regression
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.browser_install.outcome == 'success' && steps.browser_server.outcome == 'success' }}
         run: npm run test:pages
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: defensive-v2-verification
-          path: |
-            .browser-tests/
-            audit/defensive-v2-after/summary.json
-            audit/defensive-v2-after/analysis.json
+          name: defensive-v2-browser
+          path: .browser-tests/
           include-hidden-files: true
