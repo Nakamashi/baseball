@@ -15,6 +15,14 @@ third-base area. The primary middle infielder reverses on a left-center return.
 These jobs begin from the anticipated play and update with the ball and runners.
 The landing aim is not assumed to be the retrieval point; wall caroms matter.
 
+P is excluded from backing an intermediate relay reception. On a return to
+second, P backs the actual second-base receiver; when that return offers no
+timely out and a runner is advancing to third, P can anticipate third instead.
+An actual third/home target establishes backup there. These are base overthrow
+jobs, distinct from a middle-infielder trailer. Fielding and required base
+coverage still take priority. An unavailable relay backup remains explicitly
+unfulfilled rather than becoming an outfield pursuit for the pitcher.
+
 The system distinguishes an actual relay receiver, an optional cutoff and a
 trailer. A sufficiently deep return can use both the primary relay and the inner
 cutoff as actual receivers. Shorter returns may go through an optional cutoff.

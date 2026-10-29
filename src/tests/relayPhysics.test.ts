@@ -58,6 +58,77 @@ describe("thrown-ball flight", () => {
 });
 
 describe("manual-based gap returns and all-nine movement", () => {
+  it.each(["Fly ball", "Line drive"] as const)(
+    "keeps P on base backup throughout left/right outfield %s returns", type => {
+      for (const x of [365, 635])
+        for (const runners of [{}, { R1: 1 as const }, { R2: 2 as const }])
+          for (const throwTarget of ["auto", 2, 3, "home"] as const) {
+            const c = gap(x);
+            c.ball.type = type;
+            c.state.runners = runners;
+            c.throwTarget = throwTarget;
+            const s = provider.generate(c);
+            expect(["LF", "CF", "RF"]).toContain(s.dynamic.ball.fielder);
+            for (const phase of s.phases) {
+              expect(new Set(phase.assignments!.map(a => a.player))).toEqual(new Set(positions));
+              const p = phase.assignments!.find(a => a.player === "P")!;
+              if (p.type === "BackupThrow") {
+                expect(p.base).toBeDefined();
+                expect(p.receivingPoint).toBeDefined();
+                expect(metres(p.receivingPoint!, bases[p.base!])).toBeLessThan(0.001);
+                const baseReceiver = phase.assignments!.find(a => a.type === "CoverBase" && a.base === p.base);
+                expect(p.teammate).toBe(baseReceiver?.player);
+              }
+            }
+            expect(validateScenario(s)).toEqual([]);
+          }
+    },
+  );
+  it("backs the final second-base receiver, not the deep relay, on an empty-base return", () => {
+    const c = gap(); c.state.runners = {};
+    const movement = new MovementEngine(), loc = movement.starting(c), ball = movement.field(c, loc);
+    const runners = new BaserunningDecisionEngine().create(c);
+    runners[0].goal = 1;
+    const layout = new DefensiveDecisionEngine().assign(c, ball, ball.fielder, 2, loc, "contact", { runners, outs: 0 });
+    expect(layout.route.cutoff).toBe("2B");
+    const p = layout.assignments.find(a => a.player === "P")!;
+    expect(p).toMatchObject({ type: "BackupThrow", base: 2, teammate: "SS", receivingPoint: bases[2] });
+    expect(metres(p.target, bases.home)).toBeLessThan(metres(bases[2], bases.home));
+    expect(layout.assignments.find(a => a.player === "2B")).toMatchObject({ type: "Relay" });
+  });
+  it("anticipates third on a control return, then changes to home when the target changes", () => {
+    const c = gap(), movement = new MovementEngine(), loc = movement.starting(c), ball = movement.field(c, loc);
+    const runners = new BaserunningDecisionEngine().create(c);
+    const lead = runners.find(r => r.id === "R1")!;
+    Object.assign(lead, { progress: 2.25, goal: 3, decision: "advance" });
+    Object.assign(runners.find(r => r.id === "BR")!, { progress: 1, goal: 1, decision: "hold" });
+    const engine = new DefensiveDecisionEngine();
+    const control = engine.assign(c, ball, ball.fielder, 2, loc, "fielded", { runners, outs: 0 });
+    expect(control.assignments.find(a => a.player === "P")).toMatchObject({
+      type: "BackupThrow", base: 3, reason: "anticipatedBackup", receivingPoint: bases[3],
+    });
+    lead.progress = 1.85;
+    const flying = engine.assign(c, ball, ball.fielder, 2, loc, "fielded", {
+      runners, outs: 0, ballInFlight: true, receptionTimes: { SS: 3 }, fixedReceiver: "SS",
+    });
+    expect(flying.assignments.find(a => a.player === "P")).toMatchObject({ base: 3, reason: "anticipatedBackup" });
+    lead.goal = 4;
+    const plate = engine.assign(c, ball, ball.fielder, "home", loc, "fielded", { runners, outs: 0 });
+    expect(plate.assignments.find(a => a.player === "P")).toMatchObject({
+      type: "BackupThrow", base: "home", receivingPoint: bases.home,
+    });
+  });
+  it("does not send the pitcher into the outfield during the reported empty-base fly", () => {
+    const c = gap(); c.state.runners = {};
+    const s = provider.generate(c);
+    // This previously ended with P 66.8 m from home behind 2B's deep relay.
+    let maximumDepth = 0;
+    for (let time = 0; time <= duration(s); time += 0.2) {
+      const p = sample(s, time).players.find(p => p.id === "P")!;
+      maximumDepth = Math.max(maximumDepth, metres(p.position, bases.home));
+    }
+    expect(maximumDepth).toBeLessThan(39);
+  });
   it.each([635, 365])("uses the ball-side middle infielder on the deep gap at x=%s", x => {
     const c = gap(x); c.throwTarget = "home";
     const s = provider.generate(c);

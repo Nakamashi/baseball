@@ -567,15 +567,16 @@ describe("varied deterministic inputs", () => {
   }, 30000);
 });
 describe("coverage and tag positioning regressions", () => {
-  it("uses CF for the batted ball and LF for the throw toward second", () => {
+  it("uses CF for ball backup, P for second-base backup and LF for second support", () => {
     const s = make(),
       contact = s.phases.find((p) => p.title === "Contact")!;
     expect(contact.assignments!.find((a) => a.player === "CF")?.type).toBe(
       "BackupFielder",
     );
     expect(contact.assignments!.find((a) => a.player === "LF")?.type).toBe(
-      "BackupThrow",
+      "SupportBase",
     );
+    expect(contact.assignments!.find(a => a.player === "P")).toMatchObject({ type: "BackupThrow", base: 2 });
   });
   it("never replaces 1B fielding with base coverage before the ball is secured", () => {
     const c = ground({ x: 650, y: 550 });

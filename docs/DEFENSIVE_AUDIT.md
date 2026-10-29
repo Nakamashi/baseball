@@ -2,6 +2,19 @@
 
 ## October 29: Inside Baseball gap-relay update
 
+Follow-up: fly/line-drive returns to second could still consume a free P as a
+backup behind the deep middle-infielder relay. The empty-base hard fly at
+635,209 reproduced a final pitcher depth of 66.8 m. P is now reserved for the
+receiving base's overthrow lane and excluded from intermediate-relay backup
+allocation. A control return to second with no timely out there can instead
+anticipate an advancing runner at third, as in Inside Baseball pp. 6–8 and
+12–18; an actual home/third target takes priority. Anticipation has a distinct
+EN/JA explanation. Fielding, possession and required receiving coverage remain
+higher-priority jobs, and missing relay backup is reported rather than filled
+by pulling P into the outfield. All-nine regressions cover fly/line drives in
+both gaps, empty bases/R1/R2, automatic/second/third/home returns, changing
+destinations, and the pitcher's actual compiled movement.
+
 The current deep-return system supersedes the historical single-intermediate and
 fixed-55%-cutoff descriptions below. See [THROWING_RELAYS.md](THROWING_RELAYS.md)
 for the attached Inside Baseball manual references, adopted all-nine patterns,

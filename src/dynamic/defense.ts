@@ -112,6 +112,7 @@ const reasonKeys: Record<AssignmentReason, DynamicMessageKey> = {
   innerCutoff: "innerCutoffWhy",
   fieldBackup: "backupFieldWhy",
   throwBackup: "backupThrowWhy",
+  anticipatedBackup: "anticipatedBackupWhy",
   catcherSupport: "catcherBackupWhy",
   homeGuard: "homeGuardWhy",
   secondSupport: "secondSupportWhy",
@@ -1271,6 +1272,7 @@ export class DefensiveDecisionEngine {
       depth = conventions.backupDepth,
       receivingPoint = bases[base],
       receivingPlayer?: Position,
+      reason: AssignmentReason = "throwBackup",
     ) => {
       let from =
         base === target
@@ -1317,7 +1319,7 @@ export class DefensiveDecisionEngine {
           "BackupThrow",
           point,
           priority,
-          "throwBackup",
+          reason,
           base,
           receivingPlayer ?? receiving?.player,
         );
@@ -1327,10 +1329,28 @@ export class DefensiveDecisionEngine {
       }
       return player;
     };
-    // Pitcher backs first on routine grounders unless needed as its receiver.
-    // Home/third throws have first call on the pitcher's backup responsibility.
-    if ((target === "home" || target === 3) && !map.has("P"))
-      backup(target, ["P"], 74);
+    // Outfield returns reserve P for a base overthrow, never for the deep
+    // middle-infielder's relay reception. A control return to second can leave
+    // a developing third-base play as P's more useful anticipated backup.
+    const outfieldReturn = isOutfieldHit(ball);
+    if (target !== "hold" && !map.has("P") &&
+        (outfieldReturn || target === "home" || target === 3)) {
+      let pitcherBase: Base = target;
+      if (outfieldReturn && target === 2) {
+        // A committed flight already has an arrival deadline. Reuse it instead
+        // of charging a new complete return and changing P's read at release.
+        const returnTime = (receiver ? context?.receptionTimes?.[receiver] : undefined) ??
+          ((stage === "contact" ? ball.fieldingTime : 0) +
+            this.arrival({ assignments: [...map.values()], route, receiver, cutoff, issues }, locations, owner));
+        const secondOut = runners.some(r => active(r) && r.decision === "advance" &&
+          r.progress < 2 && r.goal >= 2 &&
+          runningTime(r, 2) - returnTime - (isForced(r, runners, 2) ? 0 : assumptions.tagTime) > 0.05);
+        if (!secondOut && runners.some(r => active(r) && r.decision === "advance" && r.progress < 3 && r.goal >= 3))
+          pitcherBase = 3;
+      }
+      backup(pitcherBase, ["P"], 74, conventions.backupDepth, bases[pitcherBase], undefined,
+        pitcherBase === target ? "throwBackup" : "anticipatedBackup");
+    }
     const firstPlay =
       !outfield &&
       route.kind !== "carry" &&
@@ -1361,13 +1381,10 @@ export class DefensiveDecisionEngine {
     if (cutoff && (route.kind === "relay" || route.kind === "cutoff-hold")) {
       const free = (
         stage === "contact"
-          ? ["3B", "2B", "SS", "1B", "P"]
-          : ["CF", "RF", "LF", "3B", "2B", "SS", "1B", "P"]
+          ? ["3B", "2B", "SS", "1B"]
+          : ["CF", "RF", "LF", "3B", "2B", "SS", "1B"]
       ).filter((p) => !map.has(p as Position)) as Position[];
-      if (
-        (free.length || stage !== "contact") &&
-        !backup(target as Base, free, 66, 6, route.cutoffPoint!, cutoff)
-      )
+      if (!backup(target as Base, free, 66, 6, route.cutoffPoint!, cutoff))
         issues.push({
           kind: "unfulfilled",
           base: target as Base,

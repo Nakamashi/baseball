@@ -190,7 +190,8 @@ describe("defensive fundamentals review situations", () => {
       type: "BackupFielder",
       teammate: "LF",
     });
-    expect(assignment(s, "RF")).toMatchObject({ type: "BackupThrow", base: 2 });
+    expect(assignment(s, "RF")).toMatchObject({ type: "SupportBase", base: 2 });
+    expect(assignment(s, "P")).toMatchObject({ type: "BackupThrow", base: 2, receivingPoint: bases[2] });
     expect(
       s.phases
         .find((p) => p.title === "Contact")!

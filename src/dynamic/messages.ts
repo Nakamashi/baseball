@@ -192,6 +192,8 @@ const english = {
   backupThrowAction: "Back up the throw toward {base}.",
   backupThrowWhy:
     "Stand beyond the receiving player on the throwing line. An inaccurate throw must not allow extra bases.",
+  anticipatedBackupWhy:
+    "The current return has no timely out at second. Anticipate the advancing runner at third and prepare behind that base for a possible overthrow.",
   backupNext:
     "Stay clear of the receiver and runner. Recover a missed ball and stop further advancement.",
   holdAction: "Hold a useful supporting position and watch the runners.",
@@ -424,6 +426,8 @@ const japanese: Record<DynamicMessageKey, string> = {
   backupThrowAction: "{base}への送球をバックアップします。",
   backupThrowWhy:
     "受け手の後方で送球の延長線に入ります。悪送球による余分な進塁を防ぎます。",
+  anticipatedBackupWhy:
+    "現在の返球では二塁のアウトが間に合いません。三塁へ進む走者を読み、三塁への送球が抜けた場合に備えて塁の後方に入ります。",
   backupNext: "受け手や走者の進路を避け、抜けたボールを止めます。",
   holdAction: "有効な守備位置を保ち、走者を確認します。",
   holdWhy:

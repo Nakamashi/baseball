@@ -115,6 +115,7 @@ export type AssignmentReason =
   | "fieldBackup"
   | "wallSupport"
   | "throwBackup"
+  | "anticipatedBackup"
   | "catcherSupport"
   | "homeGuard"
   | "secondSupport"
