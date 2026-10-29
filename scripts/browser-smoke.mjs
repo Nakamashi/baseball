@@ -36,6 +36,11 @@ async function fits(width, height) {
 try {
   await page.goto(process.env.APP_URL || "http://127.0.0.1:5173");
   await page.locator(".field").waitFor();
+  const playbackMode = page.getByRole("combobox", {
+    name: "Playback mode",
+    exact: true,
+  });
+  assert.equal(await playbackMode.inputValue(), "full");
   assert.equal(await page.locator(".scenario-card").count(), 24);
   assert.equal(await page.locator(".intro,.topbar").count(), 0);
   assert.equal(
@@ -58,6 +63,7 @@ try {
   await page
     .getByRole("combobox", { name: "Speed", exact: true })
     .selectOption("2");
+  await playbackMode.selectOption("step");
   await play().click();
   await page.waitForFunction(
     () => document.querySelector(".play-button")?.textContent === "Play",

@@ -786,6 +786,12 @@ export class DefensiveDecisionEngine {
     if (stage === "contact")
       map.get(owner)!.notBefore =
         assumptions.reaction + (ball.pursuitDelay ?? 0);
+    // Read the bunt's side at contact. A nonfielding 3B has no useful pursuit
+    // of a right-side bunt and must stay available for third immediately.
+    const rightSideBunt =
+      settings.ball.type === "Bunt" &&
+      source.x > bases.home.x &&
+      owner !== "3B";
     if (settings.ball.type === "Bunt" && stage === "contact") {
       for (const p of ["P", "1B", "3B"] as Position[]) {
         if (
@@ -796,7 +802,9 @@ export class DefensiveDecisionEngine {
             runners.some(
               (r) => active(r) && r.originBase >= 2 && r.goal >= 3,
             )) ||
-          (p === "3B" && runners.some((r) => active(r) && r.originBase >= 2))
+          (p === "3B" &&
+            (rightSideBunt ||
+              runners.some((r) => active(r) && r.originBase >= 2)))
         )
           continue;
         put(p, "ChargeBunt", toward(source, locations[p], 3), 82, "buntCharge");
@@ -1047,12 +1055,12 @@ export class DefensiveDecisionEngine {
     // Control second on all outfield returns, even while BR is headed to first.
     if ((outfield || liveAt(1)) && target !== 2) cover(2, 78);
     // A sacrifice runner's current goal of second does not make third safe to
-    // abandon. Once the bunt is secured, recover its receiver ahead of backups
-    // and keep that job live while R1 can round second. The ball owner and any
-    // committed receiver remain reserved; a fielding 3B needs a replacement.
+    // abandon. Read a right-side bunt immediately; otherwise recover once the
+    // ball is secured. Keep the receiver ahead of backups while R1 can round
+    // second. The owner and committed receivers retain their reserved jobs.
     if (
       settings.ball.type === "Bunt" &&
-      stage !== "contact" &&
+      (stage !== "contact" || rightSideBunt) &&
       runners.some(
         (r) => active(r) && r.originBase === 1 && r.goal >= 2 && r.progress < 3,
       )

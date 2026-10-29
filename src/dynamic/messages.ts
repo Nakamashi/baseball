@@ -20,7 +20,7 @@ const english = {
   buntChargeAction:
     "Charge the bunt under control, yield to the primary fielder, and be ready to cover or support.",
   buntRecoverThirdWhy:
-    "The bunt has been fielded. Cover third while the lead runner advances through second; do not wait for the runner to attempt the extra base.",
+    "Another fielder is handling the bunt. Cover third while the lead runner advances through second; do not wait for the runner to attempt the extra base.",
   readCatchableWhy:
     "A controllable catch remains plausible. Keep enough time to return; prepare to retouch before a tag-up.",
   readUncertainWhy:
@@ -258,7 +258,7 @@ const japanese: Record<DynamicMessageKey, string> = {
   buntChargeAction:
     "バントに向かって制御して前進し、処理する野手に譲り、カバーやサポートに備えます。",
   buntRecoverThirdWhy:
-    "バントは処理されました。先行走者が二塁へ進む間に三塁をカバーします。走者が三塁を狙い始めるまで待ちません。",
+    "別の野手がバントを処理します。先行走者が二塁へ進む間に三塁をカバーします。走者が三塁を狙い始めるまで待ちません。",
   readCatchableWhy:
     "捕球される可能性があります。帰塁できる距離を保ち、タッチアップの前に元の塁を踏み直します。",
   readUncertainWhy:

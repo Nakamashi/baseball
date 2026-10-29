@@ -22,7 +22,7 @@ export function usePlayback(scenario: PlayScenario) {
   const [time, setTime] = useState(0),
     [playing, setPlaying] = useState(false),
     [speed, setSpeed] = useState(1),
-    [mode, setMode] = useState<PlaybackMode>("step");
+    [mode, setMode] = useState<PlaybackMode>("full");
   const total = duration(scenario);
   const previous = useRef<number | null>(null);
   const clock = useRef(0);

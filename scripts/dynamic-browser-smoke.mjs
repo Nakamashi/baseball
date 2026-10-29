@@ -100,6 +100,7 @@ try {
   await page.locator(".field").waitFor();
   assert.equal(await page.locator(".scenario-card").count(), 24);
   await page.locator(".app-modes button").last().click();
+  assert.equal(await combo("Playback mode").inputValue(), "full");
   assert.equal(await page.locator(".player").count(), 11);
   assert.equal(await page.locator(".hit-destination").count(), 1);
   await page
@@ -287,12 +288,21 @@ try {
     runners: [1],
   });
   await generate();
-  await slider.fill("4.3");
+  await slider.fill("1.2");
   await page.locator('[data-player="3B"]').click();
   assert.match(await page.locator(".focus-action").innerText(), /third/);
   await language("ja");
   assert.match(await page.locator(".focus-action").innerText(), /三塁/);
   await language("en");
+  await slider.fill("4");
+  assert.equal(
+    await page.locator('[data-player="3B"]').evaluate((node) => {
+      const matrix = node.transform.baseVal.consolidate().matrix;
+      return Math.hypot(matrix.e - 300, matrix.f - 570) < 0.1;
+    }),
+    true,
+    "Third is already covered before P secures the bunt",
+  );
   await end();
   const recoveredThird = await page
     .locator('[data-player="3B"]')

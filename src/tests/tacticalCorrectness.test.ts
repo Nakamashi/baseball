@@ -203,7 +203,7 @@ describe("baseball tactical correctness: developing reads, profiles and new cont
     audit(s);
   });
   it.each([636, 637, 638])(
-    "recovers third behind an R1 sacrifice bunt toward %s,620",
+    "covers third from contact behind an R1 sacrifice bunt toward %s,620",
     (x) => {
       const c = make(x, 620, "Bunt");
       c.ball.strength = "normal";
@@ -212,6 +212,12 @@ describe("baseball tactical correctness: developing reads, profiles and new cont
       expect(s.dynamic.ball.fielder).toBe("P");
       expect(throws(s).map((e) => e.base)).toEqual([1]);
       const secured = s.dynamic.events.find((e) => e.type === "BallFielded")!;
+      for (const p of s.phases.filter((p) => p.start < secured.time))
+        expect(p.assignments!.find((a) => a.player === "3B")).toMatchObject({
+          type: "CoverBase",
+          base: 3,
+          target: bases[3],
+        });
       const recover = s.dynamic.diagnostics.find(
         (f) => f.trigger === "Ball secured / throwing target selected",
       )!;
@@ -239,7 +245,7 @@ describe("baseball tactical correctness: developing reads, profiles and new cont
       });
       const start = sample(s, secured.time).players.find((p) => p.id === "3B")!;
       const end = sample(s, duration(s));
-      expect(metres(start.position, bases[3])).toBeGreaterThan(5);
+      expect(metres(start.position, bases[3])).toBeLessThan(0.1);
       expect(
         metres(end.players.find((p) => p.id === "3B")!.position, bases[3]),
       ).toBeLessThan(0.1);
