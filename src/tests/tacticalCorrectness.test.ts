@@ -12,7 +12,7 @@ import { DefensiveDecisionEngine } from "../dynamic/defense";
 import { MovementEngine } from "../dynamic/movement";
 import { BaserunningDecisionEngine } from "../dynamic/baserunning";
 import type { DynamicSettings, DynamicScenario } from "../dynamic/types";
-import { throwingProfile } from "../dynamic/throwing";
+import { throwingProfile, throwFlight } from "../dynamic/throwing";
 import { metres, bases } from "../dynamic/geometry";
 import { planMotion, sampleMotion } from "../dynamic/locomotion";
 import { message } from "../dynamic/messages";
@@ -186,6 +186,7 @@ describe("baseball tactical correctness: developing reads, profiles and new cont
   ] as const)("coordinates a fair sacrifice bunt at %s,%s", (x, y, fielder) => {
     const c = make(x, y, "Bunt");
     c.ball.strength = "normal";
+    c.runnerSpeed = "slow";
     c.anticipateBunt = true;
     const s = provider.generate(c),
       a = s.phases.find((p) => p.title === "Contact")!.assignments!;
@@ -446,7 +447,7 @@ describe("baseball tactical correctness: run prevention and calibration", () => 
   });
   it("makes a shallow caught-fly tag attempt a timing-based risk against a strong return", () => {
     const c = make(500, 212, "Fly ball");
-    c.runnerSpeed = "fast";
+    c.runnerSpeed = "average";
     c.armStrength = "strong";
     c.state.runners = { R3: 3 };
     const s = provider.generate(c);
@@ -555,8 +556,7 @@ describe("shared tactical timing and live-play reevaluation", () => {
             phases.at(-1)!.ball as { path: { x: number; y: number }[] }
           ).path.at(-1)!;
         expect(glove.time - e.time).toBeCloseTo(
-          metres(from, to) /
-            throwingProfile(from, to, e.player as Position, strength).speed,
+          throwFlight(from, to, e.player as Position, strength).duration,
           4,
         );
       }
@@ -582,7 +582,7 @@ describe("shared tactical timing and live-play reevaluation", () => {
   it("reconsiders a live home opportunity after an initial hold instead of ending the play", () => {
     const c = make(500, 212, "Fly ball");
     c.state.runners = { R3: 3 };
-    c.runnerSpeed = "fast";
+    c.runnerSpeed = "average";
     c.armStrength = "strong";
     const original = DefensiveDecisionEngine.prototype.choose,
       spy = vi
@@ -693,6 +693,7 @@ describe("independent coaching cases across feeds and runner profiles", () => {
 
 it("weighs an attainable inning-ending double-play sequence against a scoring threat", () => {
   const c = make(575, 425);
+  c.runnerSpeed = "slow";
   c.state.runners = { R1: 1, R3: 3 };
   c.state.outs = 1;
   const s = provider.generate(c),
@@ -712,6 +713,7 @@ it("weighs an attainable inning-ending double-play sequence against a scoring th
 
 it("holds on a shallower caught fly when the strong return makes a tag-up unjustified", () => {
   const c = make(500, 231, "Fly ball");
+  c.ball.strength = "soft";
   c.state.runners = { R3: 3 };
   c.runnerSpeed = "fast";
   c.armStrength = "strong";

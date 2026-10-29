@@ -1,5 +1,12 @@
 # Tactical correctness and baseball accuracy corrections
 
+> October 29 update: [THROWING_RELAYS.md](THROWING_RELAYS.md) supersedes the
+> constant effective-flight-speed and one-intermediate-relay limitations in this
+> historical report. Deep returns now distinguish a ball-side primary relay, an
+> inner home cutoff, and a conditional trailer. Predictions and compiled throws
+> share a gravity/linear-drag flight model. The reference is the newly supplied
+> Inside Baseball Cut-Off & Relay Manual; no additional web sources were fetched.
+
 Baseline: `75896bf`. Development branch: `feature/tactical-correctness-improvements`. This is a review release; main and the published site are not changed by this work.
 
 ## Evidence and the defensive system

@@ -7,7 +7,7 @@ import { formatDynamic } from "./messages";
 import type { DynamicScenario } from "./types";
 import { ballPhysics } from "./trajectory";
 import { sampleTimed } from "../simulation/timedPath";
-import { throwProfiles, throwingProfile } from "./throwing";
+import { throwProfiles, throwingProfile, throwPhysics } from "./throwing";
 import { fieldConfiguration } from "./fieldConfiguration";
 /** Developer API: pure JSON, no production UI or browser global. Times include
  * the one-second Ready phase, just like playback and recorded events. */
@@ -60,6 +60,7 @@ export function inspectDefense(scenario: DynamicScenario, requestedTime = 0) {
       parameters: assumptions,
       ballPhysics,
       throwProfiles,
+      throwPhysics,
       configuredField: fieldConfiguration(scenario.dynamic.settings),
       calibration:
         "Provisional coaching profiles; no published population-average claim.",

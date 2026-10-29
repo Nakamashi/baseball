@@ -180,6 +180,10 @@ const english = {
   relayAction: "Move into the relay lane from {from} toward {base}.",
   relayWhy:
     "This throw is long for a youth player. Receiving and throwing again divides the distance into manageable legs.",
+  trailerAction: "Trail {from} on the relay line toward {base}.",
+  cutoffIntercepted: "{player} cuts a reachable throw to reconsider the play.",
+  trailerWhy: "Second has replacement coverage. Trail the primary relay with receiving room; a high or short-hop return can come through to you.",
+  innerCutoffWhy: "Anticipate the play at home from the infield cutoff line. Stay ready to receive, hold or redirect while the middle infielder leads the deep relay.",
   relayNext:
     "Receive with your body directed toward the target. Relay only after finding the next receiver.",
   backupFieldAction: "Back up {player} behind the fielding point.",
@@ -228,7 +232,7 @@ const english = {
   model:
     "Timing uses {baseMetres} m basepaths, a schematic {cornerMetres} m corner / {centreMetres} m centre-field fence, and youth running and throwing assumptions. This is a teaching model, not an outcome prediction.",
   convention:
-    "Team convention: prefer 1B cutting home, SS cutting third, and the ball-side middle infielder cutting second. Use a timely available infielder when the preferred cutoff cannot reach the lane, and cover the vacated bases. Reassess coverage and backups after each event.",
+    "Deep returns use the ball-side middle infielder as primary relay, with an infield home cutoff and at most two intermediate receivers. A trailer leaves second only with replacement coverage. Reassess the target and all nine responsibilities at each reception.",
   alternative:
     "Change the throwing target, aggression, strength, or hit location and generate again to compare a different tactical response.",
   unsupported:
@@ -409,6 +413,10 @@ const japanese: Record<DynamicMessageKey, string> = {
     "送球路に目標を作り、返球を安定させます。カット役は保持や送球先の変更もできます。",
   relayAction: "{from}から{base}への中継位置に入ります。",
   relayWhy: "少年野球では長い送球になるため、中継して距離を分けます。",
+  trailerAction: "{from}の後方で、{base}への中継線に入ります。",
+  cutoffIntercepted: "{player}が捕球できる高さの送球をカットし、次のプレーを判断します。",
+  trailerWhy: "二塁には代わりのカバー役がいます。主な中継役の後方に間隔を取り、高い送球やショートバウンドの送球が抜けたときに備えます。",
+  innerCutoffWhy: "内野のカット位置で本塁のプレーに早く備えます。二遊間の選手が深い位置の中継を担当する間、捕球、保持、送球先の変更に備えます。",
   relayNext: "送球先に体を向けて捕球し、次の受け手を確認してから送ります。",
   backupFieldAction: "{player}の捕球地点の後ろをカバーします。",
   backupFieldWhy:
@@ -455,7 +463,7 @@ const japanese: Record<DynamicMessageKey, string> = {
   model:
     "塁間{baseMetres}m、両翼{cornerMetres}m・中堅{centreMetres}mの模式図と、少年野球向けの走力・送球の仮定で時間を計算します。学習用のモデルであり、試合結果の予測ではありません。",
   convention:
-    "基本の分担：本塁へは1B、三塁へはSS、二塁へは打球側の二遊間をカット役に優先します。間に合わない場合は送球線へ入れる内野手に任せ、空いた塁をカバーします。状況の変化ごとにカバーとバックアップを判断し直します。",
+    "深い打球では打球側の二遊間が主な中継役となり、内野の本塁カット役と連携します。途中の受け手は最大2人です。二塁の代わりのカバー役がいる場合だけ後方の中継役を置きます。捕球のたびに送球先と9人全員の役割を判断し直します。",
   alternative:
     "送球先、走者の積極性、打球の強さ、位置を変えて再生成し、別の守備対応を比べましょう。",
   unsupported:

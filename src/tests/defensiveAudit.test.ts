@@ -461,7 +461,7 @@ describe("reusable tactical rules and diagnostics", () => {
         s.dynamic.events
           .filter((e) => e.type === "ThrowReceived")
           .map((e) => e.player),
-      ).toEqual(["1B", "SS"]);
+      ).toEqual(["2B", "SS"]);
       const before = s.dynamic.diagnostics.find(
         (f) => f.route.kind === "relay",
       )!;
@@ -705,7 +705,8 @@ describe("center-field run-prevention regression", () => {
     ).toBe("home");
     expect(starting).toEqual(original);
     const s = provider.generate(c);
-    expect(assignment(s, "1B")).toMatchObject({ type: "Relay", base: "home" });
+    expect(assignment(s, "1B")).toMatchObject({ type: "Cutoff", base: "home", reason: "innerCutoff" });
+    expect(assignment(s, "2B")).toMatchObject({ type: "Relay", base: "home" });
     const atFielding = sample(s, fieldedTime(s)).players.find(
       (p) => p.id === "1B",
     )!;
@@ -747,7 +748,7 @@ describe("center-field run-prevention regression", () => {
           ).toBe(true);
           expect(
             s.dynamic.events.some(
-              (e) => e.type === "ThrowReceived" && e.player === "1B",
+                (e) => e.type === "ThrowReceived" && e.player === "2B",
             ),
           ).toBe(true);
           expect(assignment(s, "P")).toMatchObject({
@@ -758,10 +759,7 @@ describe("center-field run-prevention regression", () => {
             type: "CoverBase",
             base: "home",
           });
-          expect(assignment(s, "2B")).toMatchObject({
-            type: "CoverBase",
-            base: 1,
-          });
+          expect(assignment(s, "1B")).toMatchObject({ type: "Cutoff", base: "home" });
           expect(assignment(s, "SS")).toMatchObject({
             type: "CoverBase",
             base: 2,
@@ -791,6 +789,7 @@ describe("center-field run-prevention regression", () => {
     r.decision = "advance";
     r.runVelocity = 0;
     r.startDelay = 0.1;
+    r.speed = 2; // Synthetic timing fixture: bracket the full aerodynamic relay time.
     const layout = e.assign(c, ball, "RF", "home", loc, "received", {
         runners: rs,
         outs: 0,

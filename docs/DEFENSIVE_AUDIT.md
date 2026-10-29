@@ -1,5 +1,14 @@
 # Defensive fundamentals audit
 
+## October 29: Inside Baseball gap-relay update
+
+The current deep-return system supersedes the historical single-intermediate and
+fixed-55%-cutoff descriptions below. See [THROWING_RELAYS.md](THROWING_RELAYS.md)
+for the attached Inside Baseball manual references, adopted all-nine patterns,
+conditional trailer coverage, two-intermediate limit, flight model and regression
+coverage. Routine through-cutoff and infield coverage conventions remain, with
+the new shared throwing flight used for their timing too.
+
 Branch baseline: `55bf325` on `main`. This is a correction to the existing Phase 2A generator; the SVG, timeline sampler, playback controls, runner path system, and 24-play encyclopedia remain shared and intact.
 
 ## Convention basis and scope

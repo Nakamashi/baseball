@@ -144,6 +144,7 @@ describe("extra-base reads", () => {
   it("does not award a double for an ordinary clean hit at a waiting outfielder", () => {
     const c = settings(765, 280);
     c.ball.strength = "normal";
+    c.runnerSpeed = "fast"; // Reach first before the physically timed RF return.
     const s = provider.generate(c);
     expect(sample(s, duration(s)).state.runners.BR).toBe(1);
     expect(s.dynamic.events.some((e) => e.type === "FirstBaseRounded")).toBe(
@@ -213,6 +214,7 @@ describe("first-base footwork and legal base progress", () => {
   it("rounds on an outfield single and returns on the same clock instead of stopping at first", () => {
     const c = settings(765, 280);
     c.ball.strength = "normal";
+    c.runnerSpeed = "fast";
     const s = provider.generate(c),
       event = s.dynamic.events.find((e) => e.type === "FirstBaseRounded")!;
     expect(event).toBeDefined();

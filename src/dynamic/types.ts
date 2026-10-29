@@ -18,6 +18,7 @@ export type AssignmentType =
   | "CoverBase"
   | "Cutoff"
   | "Relay"
+  | "RelayTrailer"
   | "BackupFielder"
   | "BackupThrow"
   | "HoldPosition"
@@ -109,6 +110,8 @@ export type AssignmentReason =
   | "homeThreat"
   | "cutoffLane"
   | "relayLane"
+  | "relayTrailer"
+  | "innerCutoff"
   | "fieldBackup"
   | "wallSupport"
   | "throwBackup"
@@ -128,6 +131,8 @@ export interface AssignmentContext {
   ballDead?: boolean;
   fixedCutoff?: Position;
   fixedReceiver?: Position;
+  fixedRelays?: RelayStop[];
+  incomingFrom?: Point;
   ballInFlight?: boolean;
   receptionTimes?: Partial<Record<Position, number>>;
   runners: OffensiveRunner[];
@@ -153,7 +158,16 @@ export interface ThrowRoute {
   receiver?: Position;
   cutoff?: Position;
   cutoffPoint?: Point;
+  /** Actual intermediate receivers, in order. Never more than two. */
+  relays?: RelayStop[];
+  relaysUsed?: number;
+  innerCutoff?: Position;
+  trailer?: Position;
   legs: Position[];
+}
+export interface RelayStop {
+  player: Position;
+  point: Point;
 }
 export interface DefensiveLayout {
   assignments: DefensiveAssignment[];
@@ -236,6 +250,7 @@ export interface SimulationEvent {
     | "ThrowStarted"
     | "ThrowReceived"
     | "ThrowGloveContact"
+    | "CutoffIntercepted"
     | "BallTouched"
     | "BallCaught"
     | "InfieldFly"

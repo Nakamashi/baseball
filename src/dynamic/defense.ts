@@ -13,7 +13,7 @@ import {
   zeroVelocity,
 } from "./locomotion";
 import { assumptions, conventions } from "./conventions";
-import { throwingProfile, directThrowRange } from "./throwing";
+import { throwingProfile, directThrowRange, throwFlight, throwPhysics } from "./throwing";
 import {
   bases,
   defaults,
@@ -43,6 +43,7 @@ import type {
   ThrowCandidate,
   ThrowDecision,
   ThrowRoute,
+  RelayStop,
 } from "./types";
 export function isForced(
   r: OffensiveRunner,
@@ -69,26 +70,31 @@ export class ThrowingEngine {
       owner,
       this.settings?.armStrength,
     );
-    return (
-      profile.prepare + metres(from, to) / profile.speed + assumptions.catchTime
-    );
+    const flight = throwFlight(from, to, owner, this.settings?.armStrength);
+    return flight.reachable ? profile.prepare + flight.duration + assumptions.catchTime
+      : metres(from, to) / assumptions.defenderSpeed + profile.prepare;
   }
   returnTime(ball: BattedBall, base: number, targetHint: Base | "hold" = 2) {
     const point = bases[base === 4 ? "home" : (base as 1 | 2 | 3)];
-    const direct =
-      this.arrival(ball.fieldingPoint, point, ball.fielder) +
-      (metres(ball.fieldingPoint, point) >
-      directThrowRange(ball.fielder, this.settings?.armStrength)
-        ? assumptions.transfer
-        : 0);
+    const estimate = (from: Point, to: Point, owner: Position = ball.fielder) => {
+      const distance = metres(from, to);
+      const legs = Math.min(3, Math.max(1, Math.ceil(distance / directThrowRange(owner, this.settings?.armStrength))));
+      let total = 0;
+      for (let i = 0; i < legs; i++) {
+        total += this.arrival(mixPhysical(from, to, i / legs), mixPhysical(from, to, (i + 1) / legs), i === 0 ? owner : "2B");
+        if (i < legs - 1) total += throwPhysics.relayRead;
+      }
+      return total;
+    };
+    const direct = estimate(ball.fieldingPoint, point);
     if (targetHint === "hold") return direct + 1.6;
     const hint = targetHint === "home" ? 4 : targetHint;
     return hint === base
       ? direct
       : Math.max(
           direct,
-          this.arrival(ball.fieldingPoint, bases[targetHint], ball.fielder) +
-            this.arrival(bases[targetHint], point),
+          estimate(ball.fieldingPoint, bases[targetHint]) +
+            estimate(bases[targetHint], point, "SS"),
         );
   }
 }
@@ -102,6 +108,8 @@ const reasonKeys: Record<AssignmentReason, DynamicMessageKey> = {
   cutoffLane: "cutoffWhy",
   wallSupport: "wallBackupWhy",
   relayLane: "relayWhy",
+  relayTrailer: "trailerWhy",
+  innerCutoff: "innerCutoffWhy",
   fieldBackup: "backupFieldWhy",
   throwBackup: "backupThrowWhy",
   catcherSupport: "catcherBackupWhy",
@@ -131,6 +139,7 @@ export function assignmentText(a: DefensiveAssignment): Responsibility {
     CoverBase: ["coverAction", "coverNext"],
     Cutoff: ["cutoffAction", "relayNext"],
     Relay: ["relayAction", "relayNext"],
+    RelayTrailer: ["trailerAction", "relayNext"],
     BackupFielder: ["backupFieldAction", "backupNext"],
     BackupThrow: ["backupThrowAction", "backupNext"],
     HoldPosition: ["holdAction", "holdNext"],
@@ -187,6 +196,8 @@ export function trailingPoint(runner: OffensiveRunner): Point {
 }
 export class DefensiveDecisionEngine {
   settings?: DynamicSettings;
+  relayBudget = throwPhysics.maximumRelays;
+  continuation?: { target: Base; stops: RelayStop[] };
   motion?: (player: Position) => {
     position: Point;
     velocity: Point;
@@ -655,13 +666,14 @@ export class DefensiveDecisionEngine {
                 ).prepare,
                 point: from,
               };
-        const flightSpeed = throwingProfile(
+        const trajectory = throwFlight(
           release.point,
           point,
           owner,
           this.settings?.armStrength,
-        ).speed;
-        const flight = metres(release.point, point) / flightSpeed;
+        );
+        if (!trajectory.reachable) return Infinity;
+        const flight = trajectory.duration;
         const receiverTime = Math.max(
           0,
           this.travel(player, locations[player], point) - elapsed,
@@ -674,8 +686,8 @@ export class DefensiveDecisionEngine {
           flight +
           assumptions.catchTime;
       }
-      if (player === layout.cutoff && layout.route.kind === "relay")
-        elapsed += 0.15;
+      if (legIndex < layout.route.legs.length - 1 && player !== layout.receiver)
+        elapsed += throwPhysics.relayRead;
       from = point;
       owner = player;
     }
@@ -815,6 +827,7 @@ export class DefensiveDecisionEngine {
       return runners.some(
         (r) =>
           active(r) &&
+          !(base === 1 && target === "home" && outfield && r.decision === "advance" && !r.firstTurn) &&
           ((base === 1 &&
             r.firstTurn?.kind === "round" &&
             r.firstTurn.stage !== "complete" &&
@@ -828,16 +841,27 @@ export class DefensiveDecisionEngine {
       (r) =>
         active(r) && (r.goal === 4 || r.progress >= 2.8 || r.originBase === 3),
     );
+    const distanceToTarget = target === "hold" ? 0 : metres(source, bases[target]);
+    const deepReturn = outfield && distanceToTarget > directThrowRange(owner, settings.armStrength);
+    const ballSide: Position = source.x < 500 ? "SS" : "2B";
+    const pending = target !== "hold" && this.continuation?.target === target
+      ? this.continuation.stops : undefined;
+    // The ball-side middle infielder leads a deep return in every sector.
+    // A home cutoff is a separate, shallower job, not a substitute deep relay.
+    const initialRelayPoint = target === "hold" ? source : toward(
+      source, bases[target], Math.min(distanceToTarget * 0.55,
+        directThrowRange(owner, settings.armStrength) * 0.95));
     // Choose the lane from the selected target, then reserve that specialist.
     // For second: ball-side middle infielder relays, opposite infielder receives.
     const needsCutoff =
       target !== "hold" &&
-      stage !== "received" &&
+      this.relayBudget > 0 &&
+      (stage !== "received" || deepReturn || !!pending?.length) &&
       outfield &&
       (metres(source, bases[target]) > assumptions.cutoffDistance ||
         settings.throwTarget === "cutoff");
     const preferredCutoff: Position =
-      target === 2
+      deepReturn ? ballSide : target === 2
         ? source.x < 500
           ? "SS"
           : "2B"
@@ -855,12 +879,11 @@ export class DefensiveDecisionEngine {
       : [];
     let cutoff: Position | undefined;
     if (needsCutoff) {
-      const lane = mixPhysical(source, bases[target as Base], 0.55);
+      const lane = pending?.[0]?.point ?? (deepReturn ? initialRelayPoint : mixPhysical(source, bases[target as Base], 0.55));
       const available =
         (stage === "contact" ? ball.fieldingTime : 0) +
         assumptions.transfer +
-        metres(source, lane) /
-          throwingProfile(source, lane, owner, settings.armStrength).speed;
+        throwFlight(source, lane, owner, settings.armStrength).duration;
       const candidates = [...new Set(cutoffCandidates)];
       candidates.sort(
         (a, b) =>
@@ -872,7 +895,9 @@ export class DefensiveDecisionEngine {
             this.travel(b, locations[b], lane),
       );
       cutoff =
-        context?.fixedCutoff && candidates.includes(context.fixedCutoff)
+        pending?.[0] && candidates.includes(pending[0].player)
+          ? pending[0].player
+          : context?.fixedCutoff && candidates.includes(context.fixedCutoff)
           ? context.fixedCutoff
           : cutoffCandidates[0] &&
               this.travel(
@@ -883,6 +908,38 @@ export class DefensiveDecisionEngine {
             ? cutoffCandidates[0]
             : candidates[0];
     }
+    const relayPoint = cutoff ? (context?.fixedRelays?.find(s => s.player === cutoff)?.point ??
+      pending?.[0]?.point ?? (deepReturn ? initialRelayPoint : mixPhysical(source, bases[target as Base], 0.55))) : undefined;
+    const actualRelay = !!cutoff && (deepReturn || !!pending?.length);
+    const relayStops: RelayStop[] = actualRelay ? [{ player: cutoff!, point: relayPoint! }] : [];
+    const excluded = new Set<Position>([owner, ...(cutoff ? [cutoff] : [])]);
+    if (actualRelay && this.relayBudget > 1 && target !== "hold") {
+      const remainder = metres(relayPoint!, bases[target]);
+      const secondary = pending?.[1] ?? context?.fixedRelays?.[1];
+      const needsSecond = !!secondary || remainder > directThrowRange(cutoff!, settings.armStrength);
+      if (needsSecond) {
+        const candidates: Position[] = target === "home" ? ["1B", "SS", "2B"] : ["1B", "2B", "SS"];
+        const player = secondary?.player ?? candidates.find(p => !excluded.has(p) && p !== context?.fixedReceiver &&
+          !(target === 2 && p === (cutoff === "2B" ? "SS" : "2B")));
+        if (player) {
+          const point = secondary?.point ?? mixPhysical(relayPoint!, bases[target], 0.5);
+          relayStops.push({ player, point });
+          excluded.add(player);
+        }
+      }
+    }
+    // Page 17: 1B anticipates the home cutoff while a middle infielder relays.
+    // First need not consume P when BR is committed beyond it on a deep hit.
+    const innerCutoff = target === "home" && actualRelay && !excluded.has("1B") &&
+      context?.fixedReceiver !== "1B" ? "1B" as const : undefined;
+    if (innerCutoff) excluded.add(innerCutoff);
+    // A trailer may leave second only when a replacement is already there.
+    // Keep this conditional rather than silently leaving second unprotected.
+    const otherMiddle: Position = ballSide === "2B" ? "SS" : "2B";
+    const replacement = (["LF", "RF", "CF"] as Position[]).find(p => p !== owner && metres(locations[p], bases[2]) < 1);
+    const trailer = actualRelay && metres(bases.home, source) > 90 && replacement &&
+      !excluded.has(otherMiddle) && target !== 2 ? otherMiddle : undefined;
+    if (trailer) excluded.add(trailer);
     const cover = (
       base: Base,
       priority: number,
@@ -921,7 +978,9 @@ export class DefensiveDecisionEngine {
             base === 1 &&
             metres(locations[owner], bases[1]) < 4));
       const preferences =
-        settings.ball.type === "Bunt" && base === 1 && map.has("1B")
+        base === 2 && trailer && replacement
+          ? [replacement, ...conventions.coverage[2]]
+          : settings.ball.type === "Bunt" && base === 1 && map.has("1B")
           ? (["2B", "P", "SS", "1B", "C", "3B"] as Position[])
           : settings.ball.type === "Bunt" && base === 3 && owner === "3B"
             ? (["C", "P", "SS", "1B", "2B"] as Position[])
@@ -931,7 +990,7 @@ export class DefensiveDecisionEngine {
       const eligible = preferences.filter(
         (p) =>
           !map.has(p) &&
-          p !== cutoff &&
+          !excluded.has(p) &&
           !(p === context?.fixedReceiver && base !== target) &&
           !(p === "C" && homeThreat && base !== "home"),
       );
@@ -939,11 +998,11 @@ export class DefensiveDecisionEngine {
       // base instead of recalling a more distant nominal position after a relay.
       const infield = eligible.filter((p) => !["LF", "CF", "RF"].includes(p));
       const middle = eligible.filter((p) => p === "2B" || p === "SS");
-      const outfieldReceivers = eligible.filter(
-        (p) => p === "RF" || p === "CF",
-      );
+      const outfieldReceivers = eligible.filter(p => ["LF", "RF", "CF"].includes(p));
       const pool =
-        base === 2
+        base === 2 && trailer && replacement && eligible.includes(replacement)
+          ? [replacement]
+          : base === 2
           ? middle.length
             ? middle
             : outfieldReceivers.length
@@ -982,9 +1041,7 @@ export class DefensiveDecisionEngine {
           (stage === "contact" ? ball.fieldingTime : 0) +
           throwingProfile(source, bases[2], owner, settings.armStrength)
             .prepare +
-          metres(source, bases[2]) /
-            throwingProfile(source, bases[2], owner, settings.armStrength)
-              .speed;
+          throwFlight(source, bases[2], owner, settings.armStrength).duration;
         if (
           this.travel(pivot, locations[pivot], bases[2]) <=
           Math.max(
@@ -1034,26 +1091,39 @@ export class DefensiveDecisionEngine {
     if (homeThreat) cover("home", 94, "homeThreat");
     if (target !== "hold") receiver = cover(target, 95, "receiver");
     if (cutoff) {
-      const point = mixPhysical(source, bases[target as Base], 0.55);
-      const relay =
-        metres(source, bases[target as Base]) >
-        directThrowRange(owner, settings.armStrength);
       put(
         cutoff,
-        relay ? "Relay" : "Cutoff",
-        point,
+        actualRelay ? "Relay" : "Cutoff",
+        relayPoint!,
         85,
-        relay ? "relayLane" : "cutoffLane",
+        actualRelay ? "relayLane" : "cutoffLane",
         target as Base,
         owner,
       );
     }
+    for (const stop of relayStops.slice(1))
+      put(stop.player, "Relay", stop.point, 85, "relayLane", target as Base, cutoff);
+    if (innerCutoff)
+      put(innerCutoff, "Cutoff", toward(bases.home, relayPoint!, Math.min(18, metres(bases.home, relayPoint!) * 0.6)),
+        84, "innerCutoff", "home", cutoff);
+    if (trailer)
+      put(trailer, "RelayTrailer", backupPoint(source, relayPoint!, 7.62), 83, "relayTrailer", target as Base, cutoff);
+    if (deepReturn && (target === "home" || target === 3) && !map.has("P") && context?.fixedReceiver !== "P") {
+      const incoming = relayStops.at(-1)?.point ?? context?.incomingFrom ?? source;
+      put("P", "BackupThrow", backupPoint(incoming, bases[target]), 82, "throwBackup", target, receiver);
+      map.get("P")!.throwOrigin = incoming;
+      map.get("P")!.receivingPoint = bases[target];
+    }
     // Occupancy/advancement creates a coverage need. An empty, passed base does
     // not consume a defender simply because it exists on the diamond.
-    for (const base of [1, 2, 3] as const)
+    for (const base of (outfield && target === "home" ? [2, 3, 1] : [1, 2, 3]) as (1 | 2 | 3)[])
       if (base !== target && liveAt(base)) cover(base, 80);
     // Control second on all outfield returns, even while BR is headed to first.
     if ((outfield || liveAt(1)) && target !== 2) cover(2, 78);
+    if (deepReturn && source.x >= 500 && (target === "home" || target === 3) && !map.has("LF")) {
+      put("LF", "SupportBase", backupPoint(relayPoint ?? source, bases[3]), 77, "throwBackup", 3);
+      map.get("LF")!.throwOrigin = relayPoint ?? source;
+    }
     // A sacrifice runner's current goal of second does not make third safe to
     // abandon. Read a right-side bunt immediately; otherwise recover once the
     // ball is secured. Keep the receiver ahead of backups while R1 can round
@@ -1126,6 +1196,10 @@ export class DefensiveDecisionEngine {
       receiver,
       cutoff,
       cutoffPoint: cutoff ? map.get(cutoff)?.target : undefined,
+      relays: relayStops,
+      relaysUsed: throwPhysics.maximumRelays - this.relayBudget,
+      innerCutoff,
+      trailer,
       legs: [],
     };
     route.legs =
@@ -1134,8 +1208,42 @@ export class DefensiveDecisionEngine {
         : route.kind === "cutoff-hold"
           ? [cutoff!]
           : route.kind === "relay"
-            ? [cutoff!, receiver]
+            ? [...relayStops.map(s => s.player), receiver]
             : [receiver];
+    // A ready inner cutoff can turn a return into a second actual relay. The
+    // full sequence, including its transfer cost, is what choose() evaluates.
+    if (innerCutoff && target !== "hold" && receiver && route.kind === "relay" && relayStops.length < this.relayBudget) {
+      const first = relayStops.at(-1)!;
+      const direct = throwFlight(first.point, bases[target], first.player, settings.armStrength);
+      const inner = map.get(innerCutoff)!;
+      const through = throwFlight(first.point, inner.target, first.player, settings.armStrength);
+      const final = throwFlight(inner.target, bases[target], innerCutoff, settings.armStrength);
+      if ((!direct.reachable || direct.angle > throwPhysics.accurateAngle) && through.reachable && final.reachable) {
+        relayStops.push({ player: innerCutoff, point: inner.target });
+        inner.type = "Relay";
+        route.legs = [...relayStops.map(s => s.player), receiver];
+      }
+    }
+    // A compulsory override still cannot make an impossible airborne throw.
+    // Carry instead of inventing a third relay or teleporting the ball.
+    if (target !== "hold" && route.legs.length) {
+      let previous = source, thrower = owner;
+      const possible = route.legs.every(player => {
+        const point = map.get(player)!.target;
+        const ok = player === thrower || throwFlight(previous, point, thrower, settings.armStrength).reachable;
+        previous = point; thrower = player; return ok;
+      });
+      if (!possible) {
+        map.delete(owner);
+        if (receiver && receiver !== owner) map.delete(receiver);
+        put(owner, "CoverBase", bases[target], 95, "receiver", target);
+        receiver = owner;
+        route.kind = "carry";
+        route.receiver = owner;
+        route.legs = [owner];
+        route.relays = [];
+      }
+    }
     if (route.kind === "through-cutoff" && cutoff) {
       const deadline =
         (stage === "contact" ? ball.fieldingTime : 0) +
@@ -1145,13 +1253,7 @@ export class DefensiveDecisionEngine {
           owner,
           settings.armStrength,
         ).prepare +
-        metres(source, route.cutoffPoint!) /
-          throwingProfile(
-            source,
-            bases[target as Base],
-            owner,
-            settings.armStrength,
-          ).speed;
+        throwFlight(source, route.cutoffPoint!, owner, settings.armStrength).duration;
       if (this.travel(cutoff, locations[cutoff], route.cutoffPoint!) > deadline)
         issues.push({
           kind: "late-cutoff",
@@ -1161,7 +1263,7 @@ export class DefensiveDecisionEngine {
             "The direct throw can reach its base without waiting for this optional cutoff; alignment may be late.",
         });
     }
-    const backed = new Set<Base>();
+    const backed = new Set<Base>([...map.values()].filter(a => a.type === "BackupThrow" && a.base).map(a => a.base!));
     const backup = (
       base: Base,
       preferred: Position[],
@@ -1170,23 +1272,24 @@ export class DefensiveDecisionEngine {
       receivingPoint = bases[base],
       receivingPlayer?: Position,
     ) => {
-      const from =
+      let from =
         base === target
           ? source
           : stage === "contact"
             ? ball.fieldingPoint
             : locations[owner];
+      if (metres(from, receivingPoint) < 0.1 && context?.incomingFrom)
+        from = context.incomingFrom;
       const point = backupPoint(from, receivingPoint, depth);
       const receiving = [...map.values()].find(
         (a) => a.base === base && a.type === "CoverBase",
       );
       const receivingId = receivingPlayer ?? receiving?.player;
-      const firstLeg =
-        receivingId === cutoff &&
-        (route.kind === "relay" || route.kind === "cutoff-hold");
+      const intermediateIndex = route.legs.findIndex(p => p === receivingId);
+      const firstLeg = intermediateIndex >= 0 && receivingId !== receiver;
       const estimateLayout = {
         assignments: [...map.values()],
-        route: firstLeg ? { ...route, legs: route.legs.slice(0, 1) } : route,
+        route: firstLeg ? { ...route, legs: route.legs.slice(0, intermediateIndex + 1) } : route,
         receiver,
         cutoff,
         issues,

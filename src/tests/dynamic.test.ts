@@ -184,9 +184,9 @@ describe("fundamental baseball decisions", () => {
     expect(
       s.phases
         .find((p) => p.title === "Contact")!
-        .assignments!.find((a) => a.base === 1 && a.type === "CoverBase")
+        .assignments!.find((a) => a.base === 2 && a.type === "CoverBase")
         ?.player,
-    ).toBe("1B");
+    ).toBe("2B");
   });
   it("changes runner behavior for a marginal deep hit under different aggression", () => {
     const conservative = defaultSettings();
@@ -270,8 +270,8 @@ describe("fundamental baseball decisions", () => {
       b.dynamic.events
         .filter((e) => e.type === "ThrowReceived")
         .map((e) => e.player),
-    ).toEqual(["1B", "C"]);
-    expect(sample(b, duration(b)).state.runners.BR).toBe(2);
+    ).toEqual(["SS", "C"]);
+    expect(sample(b, duration(b)).state.runners.BR).toBe(3);
     expect(sample(a, duration(a)).state.runners.BR).toBe(1);
     expect(
       b.phases.find((p) => p.title === "Field & decide")!.assignments,
