@@ -1,5 +1,19 @@
 // English keys define the UI contract. Japanese must implement every key.
 export const en = {
+  fieldFirstHint: "Tap the field to choose where the ball goes",
+  quickHit: "Quick hit editor",
+  aimDirection: "Aim direction",
+  locationHelp: "Location help",
+  requestedLanding: "Requested landing",
+  moveHitHint: "Tap the field again, drag the marker, or use its arrow keys to move it.",
+  done: "Done",
+  advancedSettings: "Advanced Settings",
+  startingSituation: "Starting situation · draft",
+  playbackSituation: "Generated play",
+  currentJob: "Current job",
+  previewLabel: "Draft trajectory preview",
+  markerHelp: "Drag to move. Arrow keys move 10 units; Shift moves 1. Enter opens the hit editor.",
+
   flightTime: "Untouched flight to landing/boundary",
   maximumHeight: "Maximum height",
   popUp: "Pop-up",
@@ -88,7 +102,7 @@ export const en = {
   third: "Third",
   homePlate: "Home plate",
   phase2Scope:
-    "Phase 2A: fair ground balls and outfield hits. Fly balls, bunts and errors are not generated yet.",
+    "Fair ground balls, line drives, fly balls, pop-ups and ordinary bunts. Squeezes, errors and full rundowns are not supported.",
   assignmentField: "Field ball",
   assignmentCover: "Base coverage",
   assignmentRelay: "Cutoff / relay",
@@ -181,6 +195,20 @@ export const en = {
 } as const;
 export type MessageKey = keyof typeof en;
 export const ja: Record<MessageKey, string> = {
+  fieldFirstHint: "フィールドをタップして打球の方向・落下地点を選ぶ",
+  quickHit: "打球のかんたん設定",
+  aimDirection: "打球の方向",
+  locationHelp: "打球位置の説明",
+  requestedLanding: "希望する落下地点",
+  moveHitHint: "再びフィールドをタップするか、目印をドラッグ・矢印キーで動かせます。",
+  done: "完了",
+  advancedSettings: "詳細設定",
+  startingSituation: "開始状況（未生成の設定）",
+  playbackSituation: "生成済みのプレー",
+  currentJob: "今の役割",
+  previewLabel: "設定中の打球軌道プレビュー",
+  markerHelp: "ドラッグで移動。矢印キーで10、Shift併用で1ずつ移動。Enterで打球設定を開きます。",
+
   flightTime: "落下・境界までの未捕球時の飛行時間",
   maximumHeight: "最高到達点",
   popUp: "ポップフライ",
@@ -269,7 +297,7 @@ export const ja: Record<MessageKey, string> = {
   third: "三塁",
   homePlate: "本塁",
   phase2Scope:
-    "段階2A：フェアのゴロと外野へのヒットに対応します。フライ、バント、エラーの生成は今後追加します。",
+    "フェアのゴロ・ライナー・フライ・ポップフライ・通常のバントに対応します。スクイズ・エラー・本格的な挟殺プレーには未対応です。",
   assignmentField: "打球処理",
   assignmentCover: "塁のカバー",
   assignmentRelay: "カット・中継",

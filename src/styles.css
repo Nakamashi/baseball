@@ -1075,3 +1075,99 @@ html[lang="ja"] .scenario-card strong {
     min-width: 38px;
   }
 }
+
+/* Field-first controls share the simulator draft; playback stays in its existing layout. */
+.advanced-settings > summary { font-weight: 700; min-height: 44px; }
+.advanced-content { padding: 8px; }
+.starting-situation { display: flex; align-items: center; gap: 10px; flex-shrink: 0; padding: 4px 8px; background: #edf2e9; border-radius: 7px; }
+.starting-situation > strong { font-size: 11px; max-width: 110px; }
+.base-diamond { display: grid; grid-template-columns: repeat(3, 28px); grid-template-rows: 24px 24px; width: 84px; height: 58px; flex-shrink: 0; }
+.base-toggle { width: 44px; height: 44px; padding: 0; background: transparent; border: 0; display: grid; place-items: center; }
+.base-2 { grid-column: 2; grid-row: 1; }
+.base-3 { grid-column: 1; grid-row: 2; }
+.base-1 { grid-column: 3; grid-row: 2; }
+.base-toggle span { display: grid; place-items: center; width: 23px; height: 23px; border: 2px solid #506e50; background: white; clip-path: polygon(50% 0,100% 50%,50% 100%,0 50%); color: #183e2d; font-size: 11px; font-weight: 700; }
+.base-toggle[aria-pressed="true"] span { background: #f8c766; border-color: #5b421f; }
+.starting-outs { margin-left: auto; font-size: 10px; }
+.starting-outs .segmented button { min-width: 44px; min-height: 44px; padding: 4px; }
+.field-first-hint { margin: 5px 0; font-size: 11px; color: #335b41; flex-shrink: 0; }
+.hit-destination { touch-action: none; cursor: grab; }
+.hit-destination:active { cursor: grabbing; }
+.hit-destination:focus-visible { outline: none; }
+.hit-destination:focus-visible .marker-target { stroke: #fff; stroke-width: 3px; vector-effect: non-scaling-stroke; }
+.quick-hit-editor { position: fixed; z-index: 40; width: 300px; max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); overflow: auto; padding: 12px; background: #fffdf5; border: 1px solid #8ca081; border-radius: 12px; box-shadow: 0 6px 28px #163c3540; color: #193d2b; }
+.quick-hit-editor .label-row { gap: 8px; font-size: 13px; }
+.quick-hit-editor button { min-height: 44px; font-size: 12px; }
+.quick-location { margin: 6px 0; font-size: 11px; line-height: 1.4; }
+.quick-types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.quick-strength { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 6px; }
+.quick-hit-editor button[aria-pressed="true"] { background: #244d37; color: #fff; border-color: #244d37; }
+.quick-hit-editor .hint { margin: 6px 0 0; }
+.quick-help { margin-top: 6px; font-size: 11px; }
+.quick-help summary { padding: 6px 0; }
+.quick-error { color: #852f26; font-size: 12px; margin: 6px 0; }
+@media (max-width: 600px), (max-width: 950px) and (max-height: 500px) {
+  .dynamic-mode .quick-hit-editor, .dynamic-mode .mobile-focus-open {
+    position: fixed; z-index: 45; left: 8px !important; right: 8px; top: auto !important;
+    bottom: calc(var(--generate-bar-height, 100px) + var(--generate-bottom-inset, 0px) + 8px);
+    width: auto; max-width: none; max-height: min(34dvh, calc(100dvh - var(--generate-bar-height, 100px) - var(--generate-bottom-inset, 0px) - 20px));
+    overflow: auto; overscroll-behavior: contain; padding: 10px; border: 1px solid #8ca081; border-radius: 12px; background: #fffdf5; box-shadow: 0 6px 28px #163c3540;
+  }
+  .mobile-focus-open .position-picker, .mobile-focus-open .position-key { display: none; }
+  .mobile-focus-open p { font-size: 12px; }
+  .mobile-focus-open .label-row button { min-width: 44px; min-height: 44px; }
+  .dynamic-mode .starting-situation { gap: 4px; padding: 0 4px; }
+  .dynamic-mode .starting-situation > strong { font-size: 10px; max-width: 75px; }
+  .dynamic-mode .starting-outs .segmented button { min-width: 44px; }
+  .dynamic-mode .game-context { margin-bottom: 3px; flex-wrap: wrap; gap: 4px 10px; }
+  .dynamic-mode .field-heading { margin-bottom: 3px; }
+  .dynamic-mode .field-first-hint { font-size: 10px; margin: 3px 0; }
+  .dynamic-mode .field-stage { min-height: 150px; height: min(calc((100vw - 40px) * .9), calc(100svh - 390px)); }
+  .dynamic-mode .draft-notice { margin: 2px 0; padding: 3px 6px; font-size: 10px; }
+}
+@media (max-width: 950px) and (max-height: 500px) {
+  .dynamic-mode .quick-hit-editor, .dynamic-mode .mobile-focus-open { left: auto !important; width: min(360px, 52vw); max-height: calc(100dvh - var(--generate-bar-height, 100px) - var(--generate-bottom-inset, 0px) - 20px); }
+  .dynamic-mode .simulation { height: auto; max-height: none; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+.base-toggle { clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+.base-toggle:focus-visible { background: #f8c766; }
+@media (max-width: 600px) {
+  .dynamic-mode .field-heading { flex-wrap: nowrap; align-items: center; }
+  .dynamic-mode .field-heading h1 { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .dynamic-mode .field-stage { height: min(calc((100vw - 40px) * .9), calc(100svh - var(--generate-bar-height, 100px) - 345px)); }
+  .dynamic-mode .game-context { font-size: 8px; gap: 2px 5px; }
+  .dynamic-mode .scoreboard { padding: 5px 8px; }
+  .dynamic-mode .field-hint { margin: 3px 0; }
+  .dynamic-mode .mobile-focus-open { max-height: min(44dvh, calc(100dvh - var(--generate-bar-height, 100px) - var(--generate-bottom-inset, 0px) - 20px)); }
+  .mobile-focus-open h3 { display: none; }
+  .mobile-focus-open h4 { margin: 8px 0 3px; }
+  .mobile-focus-open p { margin: 3px 0; line-height: 1.5; }
+}
+@media (max-width: 950px) and (max-height: 500px) {
+  .dynamic-mode .simulation { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 3px 12px; min-height: 0; padding: 8px; }
+  .dynamic-mode .simulation > * { grid-column: 2; }
+  .dynamic-mode .simulation .field-stage { grid-column: 1; grid-row: 1 / 10; flex: none; min-height: 150px; height: calc(100svh - var(--generate-bar-height, 100px) - 75px); }
+  .dynamic-mode .field-heading { min-height: 0; margin: 0; align-items: center; }
+  .dynamic-mode .field-heading h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 12px; min-width: 0; }
+  .dynamic-mode .field-heading .live-badge { display: none; }
+  .dynamic-mode .game-context { font-size: 8px; margin: 0; }
+  .dynamic-mode .scoreboard { padding: 4px 8px; margin: 0; }
+  .dynamic-mode .scoreboard > span { gap: 2px; }
+  .dynamic-mode .field-hint { display: none; }
+  .dynamic-mode .playback { padding: 6px; }
+  .dynamic-mode .starting-situation { padding: 0; }
+  .dynamic-mode .starting-outs .segmented button { min-height: 44px; }
+}
+@media (max-width: 600px) {
+  .dynamic-mode .field-stage { height: min(calc((100vw - 40px) * .9), calc(100svh - 420px)); }
+}
+@media (max-width: 600px) and (max-height: 667px), (max-width: 950px) and (max-height: 500px) {
+  .dynamic-mode .generate-box .hint { display: none; }
+}
+@media (max-width: 600px) { .dynamic-mode .field-hint { margin: 1px 0; } }
+@media (max-width: 950px) and (max-height: 500px) {
+  .dynamic-mode .simulation .field-stage { grid-row: 1 / 8; }
+  .dynamic-mode .simulation .field-first-hint { grid-column: 1; grid-row: 8; margin: 0; }
+}
+.quick-hit-editor > .label-row { position: sticky; top: 0; z-index: 2; background: #fffdf5; box-shadow: 0 -12px 0 #fffdf5; padding-bottom: 4px; }

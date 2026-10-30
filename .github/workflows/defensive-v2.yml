@@ -60,6 +60,9 @@ jobs:
       - name: Mobile Generate Play regression
         if: ${{ !cancelled() && steps.browser_install.outcome == 'success' && steps.browser_server.outcome == 'success' }}
         run: npm run test:mobile:browser
+      - name: Field-first UX regression
+        if: ${{ !cancelled() && steps.browser_install.outcome == 'success' && steps.browser_server.outcome == 'success' }}
+        run: npm run test:field:browser
       - name: Production pages regression
         if: ${{ !cancelled() && steps.browser_install.outcome == 'success' && steps.browser_server.outcome == 'success' }}
         run: npm run test:pages

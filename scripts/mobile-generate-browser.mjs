@@ -30,6 +30,7 @@ const visibleAtBottom = async () => {
 try {
   await page.goto(process.env.APP_URL || 'http://127.0.0.1:5173');
   await page.locator('.app-modes button').last().click();
+  await page.locator(".advanced-settings > summary").click();
   for (const [width, height] of [[320, 568], [375, 667], [390, 844], [844, 390]]) {
     await page.setViewportSize({ width, height });
     await page.evaluate(() => scrollTo(0, 0)); await visibleAtBottom();

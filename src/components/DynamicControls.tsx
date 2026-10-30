@@ -70,6 +70,9 @@ export function DynamicControls({
   const recommendation = recommendStrategy(s);
   return (
     <div id="dynamic-controls">
+      <details className="advanced-settings panel">
+        <summary>{t("advancedSettings")}</summary>
+        <div className="advanced-content">
       <details open className="panel">
         <summary>{t("dynamicSetup")}</summary>
         <div className="panel-content">
@@ -467,6 +470,8 @@ export function DynamicControls({
               <option value="hold">{t("holdBall")}</option>
             </select>
           </label>
+        </div>
+      </details>
         </div>
       </details>
       <div className="generate-box" ref={generateBar} aria-busy={generating}>

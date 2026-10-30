@@ -41,7 +41,7 @@ const configure = async ({
 } = {}) => {
   await language("en");
   const advanced = page.locator("details.panel").filter({
-    has: page.locator("summary", { hasText: "Field and throwing" }),
+    has: page.locator(":scope > summary", { hasText: "Field and throwing" }),
   });
   if ((await advanced.getAttribute("open")) === null)
     await advanced.locator("summary").click();
@@ -75,7 +75,7 @@ const configure = async ({
       .locator(".dynamic-runners input")
       .nth(n - 1)
       .setChecked(runners.includes(n));
-  await page.getByRole("button", { name: `${outs} Outs`, exact: true }).click();
+  await page.locator("#dynamic-controls").getByRole("button", { name: `${outs} Outs`, exact: true }).click();
 };
 const generate = async () => {
   await page.locator(".generate-button").click();
@@ -104,11 +104,13 @@ try {
   assert.equal(await combo("Playback mode").inputValue(), "full");
   assert.equal(await page.locator(".player").count(), 11);
   assert.equal(await page.locator(".hit-destination").count(), 1);
+  await page.locator(".advanced-settings > summary").click();
   await page
     .getByRole("button", { name: "Place hit location", exact: true })
     .click();
-  await fieldPoint(425, 425);
-  assert.ok(Math.abs(+(await coordinate("X").inputValue()) - 425) <= 2);
+  await fieldPoint(650, 180);
+  await page.keyboard.press("Escape");
+  assert.ok(Math.abs(+(await coordinate("X").inputValue()) - 650) <= 2);
   assert.equal(await page.locator(".play-button").isDisabled(), true);
   // The reported routine hard grounder is resolved by interception and real arrival times.
   await configure({ speed: "fast" });

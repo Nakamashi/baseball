@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import type { Snapshot, PlayerId, Point } from "../simulation/types";
 import { physicalPolyline } from "../dynamic/geometry";
 import { bases } from "../simulation/geometry";
@@ -18,8 +19,8 @@ interface Props {
   layers: Layers;
   locale: Locale;
   destination?: Point;
-  onLocation?: (p: Point) => void;
-  picking?: boolean;
+  onLocation?: (p: Point, edit?: boolean) => void;
+
   trajectory?: BallTrajectory;
   interception?: { point: Point; time: number; start: Point };
 }
@@ -31,10 +32,31 @@ export function BaseballField({
   locale,
   destination,
   onLocation,
-  picking,
   trajectory,
   interception,
 }: Props) {
+  const fieldRef = useRef<SVGSVGElement>(null);
+  const [touchRadius, setTouchRadius] = useState(24);
+  useEffect(() => {
+    const field = fieldRef.current;
+    if (!field) return;
+    const update = () => {
+      const matrix = field.getScreenCTM();
+      if (matrix) setTouchRadius(22 / Math.hypot(matrix.a, matrix.b));
+    };
+    const observer = new ResizeObserver(update); observer.observe(field); update();
+    return () => observer.disconnect();
+  }, []);
+  const dragging = useRef(false);
+  const moved = useRef(false);
+  const pointerPicked = useRef(false);
+  const pointerPoint = (e: ReactPointerEvent<SVGGElement>) => {
+    const svg = e.currentTarget.ownerSVGElement!;
+    const point = svg.createSVGPoint();
+    point.x = e.clientX; point.y = e.clientY;
+    const matrix = svg.getScreenCTM();
+    return matrix ? point.matrixTransform(matrix.inverse()) : undefined;
+  };
   const t = ui(locale),
     text = playText(locale);
   const flightSamples =
@@ -45,21 +67,20 @@ export function BaseballField({
       .join(" ");
   return (
     <svg
+      ref={fieldRef}
       className="field"
       viewBox="0 0 1000 900"
-      role="img"
+      role="group"
       aria-label={t("fieldLabel")}
-      onClick={(e) => {
-        if (!onLocation) return;
-        const point = e.currentTarget.createSVGPoint();
-        point.x = e.clientX;
-        point.y = e.clientY;
+      onPointerUp={(e) => {
+        if (!onLocation || (e.target as Element).closest(".player, .hit-destination")) return;
+        const point = e.currentTarget.createSVGPoint(); point.x = e.clientX; point.y = e.clientY;
         const matrix = e.currentTarget.getScreenCTM();
-        if (matrix) onLocation(point.matrixTransform(matrix.inverse()));
+        if (matrix) { onLocation(point.matrixTransform(matrix.inverse())); pointerPicked.current = true; }
       }}
-      onClickCapture={(e) => {
-        if (!picking || !onLocation) return;
-        e.stopPropagation();
+      onClick={(e) => {
+        if (pointerPicked.current) { pointerPicked.current = false; return; }
+        if (!onLocation) return;
         const point = e.currentTarget.createSVGPoint();
         point.x = e.clientX;
         point.y = e.clientY;
@@ -278,6 +299,63 @@ export function BaseballField({
           markerEnd="url(#arrow)"
         />
       )}
+      {destination && (
+        <g
+          className="hit-destination"
+          role="button"
+          tabIndex={0}
+          aria-label={t("hitLocation")}
+          aria-describedby="marker-help"
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            dragging.current = true; moved.current = false;
+            e.currentTarget.setPointerCapture(e.pointerId);
+          }}
+          onPointerMove={(e) => {
+            if (!dragging.current) return;
+            const point = pointerPoint(e);
+            if (point && Math.hypot(point.x - destination.x, point.y - destination.y) > 1) {
+              moved.current = true;
+              onLocation?.(point, false);
+            }
+          }}
+          onPointerUp={(e) => {
+            dragging.current = false;
+            e.currentTarget.releasePointerCapture(e.pointerId);
+          }}
+          onPointerCancel={() => { dragging.current = false; }}
+          transform={`translate(${destination.x} ${destination.y})`}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (!moved.current) onLocation?.(destination);
+            moved.current = false;
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault(); onLocation?.(destination); return;
+            }
+            const step = e.shiftKey ? 1 : 10;
+            const delta: Record<string, Point> = {
+              ArrowLeft: { x: -step, y: 0 },
+              ArrowRight: { x: step, y: 0 },
+              ArrowUp: { x: 0, y: -step },
+              ArrowDown: { x: 0, y: step },
+            };
+            if (delta[e.key] && onLocation) {
+              e.preventDefault();
+              onLocation({
+                x: destination.x + delta[e.key].x,
+                y: destination.y + delta[e.key].y,
+              }, false);
+            }
+          }}
+        >
+          <title id="marker-help">{t("markerHelp")}</title>
+          <circle className="marker-target" r={touchRadius} fill="transparent" />
+          <circle r={touchRadius * 0.45} fill="#173e42bb" stroke="#ffce6a" strokeWidth="3" vectorEffect="non-scaling-stroke" pointerEvents="none" />
+          <path d="M-28 0H28 M0 -28V28" stroke="#ffce6a" strokeWidth="2" />
+        </g>
+      )}
       {frame.players.map((p) => {
         const runner = p.id === "BR" || ["R1", "R2", "R3"].includes(p.id);
         const focused = p.id === selected;
@@ -301,7 +379,7 @@ export function BaseballField({
               }
             }}
             className="player"
-            opacity={selected && !focused ? 0.57 : 1}
+            opacity={!runner && selected && !focused ? 0.67 : 1}
             transform={`translate(${p.position.x + offset} ${p.position.y + (runner ? 30 : 0)})`}
           >
             {focused && (
@@ -347,34 +425,6 @@ export function BaseballField({
           </g>
         );
       })}
-      {destination && (
-        <g
-          className="hit-destination"
-          role="button"
-          tabIndex={0}
-          aria-label={t("hitLocation")}
-          transform={`translate(${destination.x} ${destination.y})`}
-          onClick={(e) => e.stopPropagation()}
-          onKeyDown={(e) => {
-            const delta: Record<string, Point> = {
-              ArrowLeft: { x: -10, y: 0 },
-              ArrowRight: { x: 10, y: 0 },
-              ArrowUp: { x: 0, y: -10 },
-              ArrowDown: { x: 0, y: 10 },
-            };
-            if (delta[e.key] && onLocation) {
-              e.preventDefault();
-              onLocation({
-                x: destination.x + delta[e.key].x,
-                y: destination.y + delta[e.key].y,
-              });
-            }
-          }}
-        >
-          <circle r="19" fill="#fff3b355" stroke="#ffce6a" strokeWidth="3" />
-          <path d="M-28 0H28 M0 -28V28" stroke="#ffce6a" strokeWidth="2" />
-        </g>
-      )}
       {(frame.ballHeight ?? 0) > 0.05 && (
         <g pointerEvents="none">
           <ellipse

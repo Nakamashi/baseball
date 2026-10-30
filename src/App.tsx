@@ -19,6 +19,7 @@ import {
   ui,
   type Locale,
 } from "./i18n";
+import { QuickHitEditor, StartingSituation } from "./components/FieldSetup";
 import { DynamicControls } from "./components/DynamicControls";
 import {
   DynamicPlayProvider,
@@ -43,6 +44,8 @@ export default function App() {
   );
   const [generationError, setGenerationError] = useState(""),
     [picking, setPicking] = useState(false);
+  const [quickEditor, setQuickEditor] = useState(false);
+  const [mobileFocus, setMobileFocus] = useState(false);
   const [generating, setGenerating] = useState(false);
   const generationInProgress = useRef(false);
   const [scriptedScenario, setScenario] = useState(scenarios[0]),
@@ -115,12 +118,14 @@ export default function App() {
     }
     setGenerationError("");
     setPicking(false);
+    setQuickEditor(false);
     playback.restart();
     document
       .querySelector(".simulation")
       ?.scrollIntoView({ block: "start", behavior: "smooth" });
   }
-  function pick(point: { x: number; y: number }) {
+  function pick(point: { x: number; y: number }, edit = true) {
+    if (generationInProgress.current) return;
     if (
       !(isAirborneType(settings.ball.type)
         ? isFairAim(point)
@@ -134,6 +139,7 @@ export default function App() {
       ball: { ...current.ball, destination: { x: point.x, y: point.y } },
     }));
     setPicking(false);
+    if (edit) { setQuickEditor(true); setMobileFocus(false); }
   }
   const frame = useMemo(
     () => sample(scenario, playback.time),
@@ -185,6 +191,28 @@ export default function App() {
     if (!pool.includes(scenario)) choose(pool[0]);
   }
   const focus = selected ? frame.phase.responsibilities[selected] : null;
+  function closeQuickEditor() {
+    setQuickEditor(false);
+    document.querySelector<SVGElement>(".hit-destination")?.focus({ preventScroll: true });
+  }
+  useEffect(() => {
+    const escape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (quickEditor) closeQuickEditor();
+      if (mobileFocus) clearPlayerFocus();
+    };
+    document.addEventListener("keydown", escape);
+    return () => document.removeEventListener("keydown", escape);
+  }, [quickEditor, mobileFocus]);
+  function clearPlayerFocus() {
+    if (selected) document.querySelector<SVGElement>(`[data-player="${selected}"]`)?.focus({ preventScroll: true });
+    setSelected(null); setMobileFocus(false);
+  }
+  useEffect(() => {
+    if (mobileFocus && window.matchMedia("(max-width: 600px), (max-width: 950px) and (max-height: 500px)").matches) {
+      document.querySelector<HTMLElement>(".focus-panel")?.focus({ preventScroll: true });
+    }
+  }, [mobileFocus, selected]);
   const phaseIndex = scenario.phases.indexOf(frame.phase);
   const previousDisabled = pending || playback.time === 0,
     nextDisabled = pending || playback.time >= playback.total;
@@ -200,6 +228,7 @@ export default function App() {
                 playback.restart();
                 setViewMode(mode);
                 setPicking(false);
+                setQuickEditor(false); setMobileFocus(false);
               }}
             >
               {t(mode === "dynamic" ? "simulator" : "encyclopedia")}
@@ -357,11 +386,11 @@ export default function App() {
             {viewMode === "dynamic" && (
               <button
                 className="text-button setup-link"
-                onClick={() =>
-                  document
-                    .getElementById("dynamic-controls")
-                    ?.scrollIntoView({ behavior: "smooth", block: "start" })
-                }
+                onClick={() => {
+                  const advanced = document.querySelector<HTMLDetailsElement>(".advanced-settings");
+                  if (advanced) advanced.open = true;
+                  document.getElementById("dynamic-controls")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
               >
                 {t("configure")}
               </button>
@@ -370,8 +399,13 @@ export default function App() {
               {t(playback.mode === "step" ? "teaching" : "fullPlay")}
             </span>
           </div>
+          {viewMode === "dynamic" && <>
+            <StartingSituation settings={settings} setSettings={updateSettings} locale={locale} />
+            <p className="field-first-hint">{t("fieldFirstHint")}</p>
+          </>}
           {viewMode === "dynamic" && (
             <div className="game-context">
+              <strong>{t("playbackSituation")}</strong>
               <span>
                 {t(frame.state.half === "bottom" ? "bottom" : "top")}{" "}
                 {frame.state.inning} · {t("fieldingTeam")}:{" "}
@@ -424,14 +458,13 @@ export default function App() {
             <BaseballField
               frame={frame}
               selected={selected}
-              onSelect={setSelected}
+              onSelect={(id) => { setSelected(id); setMobileFocus(viewMode === "dynamic"); setQuickEditor(false); }}
               layers={layers}
               locale={locale}
               destination={
                 viewMode === "dynamic" ? settings.ball.destination : undefined
               }
               onLocation={viewMode === "dynamic" ? pick : undefined}
-              picking={picking}
               trajectory={viewMode === "dynamic" ? preview : undefined}
               interception={
                 viewMode === "dynamic" &&
@@ -449,6 +482,10 @@ export default function App() {
               }
             />
           </div>
+          {viewMode === "dynamic" && quickEditor && <QuickHitEditor settings={settings} setSettings={updateSettings}
+            locale={locale} onClose={closeQuickEditor} preview={preview}
+            error={generationError ? text(generationError) : validateSettings(settings) ? text(validateSettings(settings)!) : undefined} />}
+          {viewMode === "dynamic" && layers.trajectory && <p className="field-hint">{t("previewLabel")}</p>}
           <p className="field-hint">{t("fieldHint")}</p>
           <div className="playback">
             <div className="transport">
@@ -600,13 +637,13 @@ export default function App() {
               </p>
             </details>
           </section>
-          <section className="focus-panel">
+          <section className={`focus-panel ${mobileFocus ? "mobile-focus-open" : ""}`} aria-label={t("focus")} tabIndex={-1}>
             <div className="label-row">
-              <h2>{t("focus")}</h2>
+              <h2>{t("focus")}{mobileFocus && selected ? ` · ${selected}` : ""}</h2>
               {selected && (
                 <button
                   className="text-button"
-                  onClick={() => setSelected(null)}
+                  onClick={clearPlayerFocus}
                 >
                   {t("clear")}
                 </button>
@@ -619,7 +656,7 @@ export default function App() {
                   aria-label={`${t("focusLabel")} ${id}`}
                   aria-pressed={selected === id}
                   className={selected === id ? "selected" : ""}
-                  onClick={() => setSelected(id as PlayerId)}
+                  onClick={() => { setSelected(id as PlayerId); setMobileFocus(viewMode === "dynamic"); setQuickEditor(false); }}
                 >
                   {id}
                 </button>
@@ -631,6 +668,7 @@ export default function App() {
                   <span className="focus-number">{selected}</span>
                   {t("yourJob")}
                 </h3>
+                <h4>{t("currentJob")}</h4>
                 <p className="focus-action">{text(focus.action)}</p>
                 <h4>{t("why")}</h4>
                 <p>{text(focus.why)}</p>
@@ -664,7 +702,7 @@ export default function App() {
             <summary>{t("allRoles")}</summary>
             <div className="panel-content">
               {Object.entries(frame.phase.responsibilities).map(([id, r]) => (
-                <button key={id} onClick={() => setSelected(id as PlayerId)}>
+                <button key={id} onClick={() => { setSelected(id as PlayerId); setMobileFocus(viewMode === "dynamic"); setQuickEditor(false); }}>
                   <strong>{id}</strong>
                   <span>{text(r.action)}</span>
                 </button>
