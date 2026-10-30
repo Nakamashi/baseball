@@ -1,6 +1,7 @@
 import { chromium } from 'playwright-core';
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
+import { settledLayout } from './browser-layout.mjs';
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/usr/bin/chromium', headless: true, args: ['--no-sandbox'] });
 const context = await browser.newContext({ hasTouch: true });
 const page = await context.newPage();
@@ -147,7 +148,7 @@ try {
   await page.evaluate(() => scrollTo(0,80));
   await tap(650,180); await editor.waitFor(); await page.keyboard.press('Escape');
   const beforeResize = await marker.getAttribute('transform');
-  await page.setViewportSize({width:844,height:390}); await page.evaluate(() => scrollTo(0,0));
+  await page.setViewportSize({width:844,height:390}); await settledLayout(page);
   check(await marker.getAttribute('transform') === beforeResize, 'Orientation preserves draft coordinates');
   const current = (await marker.getAttribute('transform')).match(/translate\(([^ ]+) ([^)]+)/).slice(1).map(Number);
   const from = await point(...current), to = await point(610,230);
@@ -155,6 +156,11 @@ try {
   await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:from.x,y:from.y}]});
   await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:to.x,y:to.y}]});
   await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  await page.waitForFunction(() => {
+    const transform = document.querySelector('.hit-destination')?.getAttribute('transform');
+    const p = transform?.match(/translate\(([^ ]+) ([^)]+)/)?.slice(1).map(Number);
+    return p && Math.abs(p[0] - 610) < 1 && Math.abs(p[1] - 230) < 1;
+  });
   const moved = (await marker.getAttribute('transform')).match(/translate\(([^ ]+) ([^)]+)/).slice(1).map(Number);
   check(Math.abs(moved[0]-610) < 1 && Math.abs(moved[1]-230) < 1, 'Native touch drag uses SVG coordinates after orientation');
   const lastValid = await marker.getAttribute('transform');
