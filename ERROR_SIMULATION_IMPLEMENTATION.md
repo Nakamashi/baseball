@@ -93,7 +93,7 @@ The error branch permits up to **12 further defensive actions** (including cance
 
 The checkbox is labeled **Include Error** / **エラーを含める**, starts OFF, uses the shared draft settings, and persists through successive generations in the mounted session. It sits alongside Generate in the **existing** `.generate-box`, outside advanced settings. It has a 44 px label hit area, native keyboard/checked semantics, an EN/JA scope tooltip, and is disabled during generation.
 
-The compact single-row layout places the label beside a flexible button without adding a second bar. Mobile continues to use the existing fixed action bar, ResizeObserver height measurement, visual viewport inset and field/editor padding/offset rules. No-eligible information uses a small status message. There is no comparison mode or large new teaching panel. New browser coverage includes 320×568, 390×844, 844×390, desktop, English and Japanese; execution limitations below must be resolved before claiming those layouts visually verified.
+The compact single-row layout places the label beside a flexible button without adding a second bar. Mobile continues to use the existing fixed action bar, ResizeObserver height measurement, visual viewport inset and field/editor padding/offset rules. No-eligible information uses a small status message. There is no comparison mode or large new teaching panel. New browser coverage includes 320×568, 390×844, 844×390, desktop, English and Japanese; the release follow-up below records the successful automated browser run. No physical-device or manual screenshot review is claimed.
 
 ## Verification
 
@@ -133,7 +133,7 @@ Browser coverage is implemented in `npm run test:error:browser` and added to the
 | `npm run test:field:browser` | **Blocked** by the same restriction. |
 | `npm run test:error:browser` | **Blocked** by the same restriction; test is added to the existing browser CI workflow. |
 
-The local Vite server also cannot bind its port (`listen EPERM 0.0.0.0:5173`). No browser/mobile screenshot, visual-layout or physical-device pass is claimed. The browser workflow is configured for verification in an environment that can launch Chromium; this task did not trigger remote CI, deploy or commit. These browser checks remain a review/release verification limitation.
+The local Vite server also cannot bind its port (`listen EPERM 0.0.0.0:5173`). No browser/mobile screenshot, visual-layout or physical-device pass is claimed. The initial implementation pass could not run remote CI in this sandbox. The later user-authorized release verification below resolves the automated browser limitation. Physical-device testing remains outside the verification performed here.
 
 A local warmed Node/Vite SSR probe of the acceptance scenario (15 generations) measured **15.7 ms median / 30.4 ms maximum**, **20 compiled teaching phases**, and **971 untouched overthrow physics frames**. The full scenario including existing movement/diagnostics plus error metadata serialized to approximately **1.03 MB**. These are local engineering measurements, not mobile performance guarantees. Only one scenario is generated at a time; the physics samples do not become individual teaching phases.
 
@@ -172,6 +172,14 @@ The RF/CF allocation should remain a **separate coaching review**. No clean assi
 - Recovery uses controlled, sampled interception with conservative coverage exclusions, not full reach/footwork or human perception. Calibration remains provisional.
 - The full untouched continuation is checked for safe geometry, so some throws that could be intercepted early are conservatively excluded because their later hypothetical roll would leave the supported region.
 - A maximum of one discretionary extra base per error observation keeps the decision scope bounded; later defensive opportunities are still evaluated, but there is no general multi-read arbitrary rundown agent.
-- Real-device performance and mobile layouts require the browser/device verification described below; engine tests establish model consistency, not empirical realism.
+- Automated mobile layout checks now pass in Chromium as recorded below; physical-device performance and gesture/keyboard validation remain unverified. Engine tests establish model consistency, not empirical realism.
 
 Next expand direct infield throwing lanes within an explicitly modeled in-play region, improve current-motion moving interceptions and repeat runner reads, and review the CF/RF backup convention separately. Add throw-specific out-of-play geometry and award timing **before** allowing foul/dugout/stands exits. Wide throws and short/bounced throws need explicit receiver adjustment/scoop policies; dropped airborne catches should remain a separate later rules stage.
+
+## Release verification follow-up — 2026-10-30
+
+After the user authorized pushing and deployment, release source `80dfa4c5a416c494786ce0c8c19cea4d36474170` passed the complete [Defensive V2 regression run](https://github.com/Nakamashi/baseball/actions/runs/41071907254) in [PR #4](https://github.com/Nakamashi/baseball/pull/4). All three jobs succeeded: engine, browser, and bunts-and-support. The engine job includes the full 414-test suite, production build, strict defensive audit and summary; the bunt-support audit also passed.
+
+All six browser checks passed: encyclopedia, dynamic simulation, mobile Generate Play, field-first UX, throwing-error/recovery UI, and production Pages at both `/` and `/baseball/`. The error-specific check exercised the real P-to-second miss and CF recovery, default OFF, keyboard and loading guards, repeated generation, safe failure preserving the old play, no-eligible messages, EN/JA, and field/transport/action-bar clearance at desktop and 320/390 px portrait and mobile landscape sizes. Both action controls retain a 44 px height.
+
+Browser evidence: [successful browser job](https://github.com/Nakamashi/baseball/actions/runs/41071907254/job/124117941350), including the `defensive-v2-browser` artifact with screenshots. These are automated Chromium results; no physical iOS/Android testing or manual screenshot inspection is claimed. This documentation-only follow-up leaves the successfully tested application source unchanged.
