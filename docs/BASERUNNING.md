@@ -1,5 +1,9 @@
 # Dynamic baserunning and home-ground calibration
 
+## Reads after an optional overthrow
+
+Eligible second-base overthrows now trigger a shared runner read after observed passage plus 0.25 s. Current recovery/gather/receiver/return timing and existing aggression margins decide attempts; no base is awarded by a live error. BR keeps the already traveled straight route and either stops on first when braking room exists or completes the existing run-through/return before any deferred advance. The clean running branch is unchanged. See [the implementation report](../ERROR_SIMULATION_IMPLEMENTATION.md); historical statements excluding all errors below are superseded only for this scope.
+
 Defensive Audit V2 distinguishes earliest base touch from completed settling
 or returning. Forecasts and compiled crossings share that definition; retouch
 permission and removed forces still determine legality. Ordinary fair bunts with

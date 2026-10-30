@@ -1,5 +1,7 @@
 // English keys define the UI contract. Japanese must implement every key.
 export const en = {
+  includeError: "Include Error",
+  includeErrorHint: "One elevated overthrow on an eligible direct infield throw to second; unsupported plays remain normal.",
   fieldFirstHint: "Tap the field to choose where the ball goes",
   quickHit: "Quick hit editor",
   aimDirection: "Aim direction",
@@ -102,7 +104,7 @@ export const en = {
   third: "Third",
   homePlate: "Home plate",
   phase2Scope:
-    "Fair ground balls, line drives, fly balls, pop-ups and ordinary bunts. Squeezes, errors and full rundowns are not supported.",
+    "Fair ground balls, line drives, fly balls, pop-ups and ordinary bunts. Optional elevated infield overthrows to second are supported; other errors, squeezes and full rundowns are not.",
   assignmentField: "Field ball",
   assignmentCover: "Base coverage",
   assignmentRelay: "Cutoff / relay",
@@ -195,6 +197,8 @@ export const en = {
 } as const;
 export type MessageKey = keyof typeof en;
 export const ja: Record<MessageKey, string> = {
+  includeError: "エラーを含める",
+  includeErrorHint: "対象となる内野から二塁への直接送球で、1回の高い悪送球を加えます。対象外のプレーは通常どおりです。",
   fieldFirstHint: "フィールドをタップして打球の方向・落下地点を選ぶ",
   quickHit: "打球のかんたん設定",
   aimDirection: "打球の方向",
@@ -297,7 +301,7 @@ export const ja: Record<MessageKey, string> = {
   third: "三塁",
   homePlate: "本塁",
   phase2Scope:
-    "フェアのゴロ・ライナー・フライ・ポップフライ・通常のバントに対応します。スクイズ・エラー・本格的な挟殺プレーには未対応です。",
+    "フェアのゴロ・ライナー・フライ・ポップフライ・通常のバントに対応します。二塁への内野の高い悪送球を任意で加えられます。他のエラー、スクイズ、本格的な挟殺は対象外です。",
   assignmentField: "打球処理",
   assignmentCover: "塁のカバー",
   assignmentRelay: "カット・中継",

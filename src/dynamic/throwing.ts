@@ -135,3 +135,17 @@ export function directThrowRange(
   return speed * Math.cos(throwPhysics.accurateAngle) *
     -Math.expm1(-throwPhysics.drag * (lo + hi) / 2) / throwPhysics.drag;
 }
+
+/** Exact isotropic linear-drag flight, including vertical drag, as in throwing.ts.
+ * Arbitrary world position/velocity are retained; this is not a new batted ball. */
+export function advanceThrownBall(p: Point, height: number,
+  velocity: {x:number;y:number;z:number}, dt: number) {
+  const k = throwPhysics.drag, g = throwPhysics.gravity;
+  const decay = Math.exp(-k * dt), integral = -Math.expm1(-k * dt) / k;
+  return {
+    position: { x: p.x + velocity.x * integral, y: p.y + velocity.y * integral },
+    height: height + (velocity.z + g / k) * integral - g * dt / k,
+    velocity: { x: velocity.x * decay, y: velocity.y * decay,
+      z: (velocity.z + g / k) * decay - g / k },
+  };
+}

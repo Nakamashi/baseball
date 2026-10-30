@@ -2,7 +2,7 @@ import type { Base } from "../simulation/types";
 import type { BattedBall, DynamicSettings, OffensiveRunner } from "./types";
 import { assumptions } from "./conventions";
 import { isOutfield, isOutfieldHit, metres, bases } from "./geometry";
-import { baseTouchTime } from "./runningGeometry";
+import { baseTouchTime, remainingRunningTime, runningTime, runningMetres } from "./runningGeometry";
 import { message as m } from "./messages";
 import { isForced, ThrowingEngine } from "./defense";
 export class BaserunningDecisionEngine {
@@ -178,4 +178,71 @@ export class BaserunningDecisionEngine {
     }
     return changed;
   }
+}
+
+/** Error reads use one current loose-ball snapshot for every runner. The return
+ * callback includes remaining recovery, gather, actual receiver readiness and tag.
+ * It must not use the original clean contact-to-return estimate. */
+export function readLooseThrow(
+  settings: DynamicSettings,
+  runners: OffensiveRunner[],
+  returnTime: (base: Base, candidateRunners: OffensiveRunner[], runner: OffensiveRunner) => number,
+) {
+  const snapshot = structuredClone(runners);
+  const updates: { id: OffensiveRunner['id']; goal: number; deferred: boolean; stopAtFirst: boolean;
+    candidates: NonNullable<OffensiveRunner['plan']>['candidates'] }[] = [];
+  let leadGoal = 5;
+  const safety = {conservative:1.6,normal:0.4,aggressive:-0.65}[settings.aggression];
+  for (const r of snapshot.filter(r=>r.status === 'active').sort((a,b)=>b.originBase-a.originBase)) {
+    let goal = Math.max(r.afterFirstReturnGoal ?? r.goal, Math.floor(r.progress));
+    const mustReturn = r.id === 'BR' && r.approach === 'straight' && goal === 1 &&
+      (!r.firstTurn || r.firstTurn.stage !== 'complete');
+    const candidates: NonNullable<OffensiveRunner['plan']>['candidates'] = [];
+    // At most one discretionary extra base per observation; existing commitments
+    // and live forces survive the read. This does not award a base.
+    const next = Math.min(4, goal + 1);
+    if (goal < 4 && next < (leadGoal === 4 ? 5 : leadGoal)) {
+      const base: Base = next === 4 ? 'home' : next as 1|2|3;
+      const runnerTime = looseThrowRunningTime(r, next);
+      const proposed = snapshot.map(v=>v.id === r.id ? {...v,goal:next,
+        afterFirstReturnGoal:undefined} : v);
+      const defensiveTime = returnTime(base, proposed, r);
+      const accepted = runnerTime + safety < defensiveTime;
+      candidates.push({base,runnerTime,defensiveTime,margin:defensiveTime-runnerTime,accepted});
+      if (accepted) goal = next;
+    }
+    const stopAtFirst=goal>1 && canStopAtFirst(r);
+    updates.push({id:r.id,goal,deferred:mustReturn && goal>1 && !stopAtFirst,stopAtFirst,candidates});
+    if(mustReturn && goal>1 && !stopAtFirst) r.afterFirstReturnGoal=goal;
+    else r.goal=goal;
+    leadGoal=goal;
+  }
+  for (const u of updates) {
+    const r=runners.find(r=>r.id===u.id)!;
+    if (u.deferred) r.afterFirstReturnGoal=u.goal;
+    else {
+      r.goal=u.goal;
+      if(u.stopAtFirst) r.errorTurnAtFirst=true;
+      if (r.id==='BR' && r.goal>1 && r.firstTurn?.stage==='complete') r.firstTurn=undefined;
+      r.decision=r.progress<r.goal?'advance':r.progress>r.goal?'retreat':'hold';
+    }
+    r.plan={candidates:u.candidates,reason:m(u.candidates.some(c=>c.accepted)?'errorRunnerGo':'errorRunnerHold')};
+  }
+}
+
+/** A straight run-through retains its existing physical stop/read/return. */
+export function canStopAtFirst(r: OffensiveRunner) {
+  return r.id==='BR' && r.approach==='straight' && r.progress<1 && !r.firstTurn &&
+    Math.max(0,r.runVelocity ?? 0)**2/(2*assumptions.runnerAcceleration) <=
+      runningMetres(r,r.progress,1)-0.01;
+}
+export function looseThrowRunningTime(r: OffensiveRunner, target: number) {
+  if(canStopAtFirst(r)) return baseTouchTime({...r,goal:target,errorTurnAtFirst:true},target);
+  if (r.id === 'BR' && r.approach === 'straight' && (r.goal === 1 || r.afterFirstReturnGoal) &&
+      (!r.firstTurn || r.firstTurn.stage !== 'complete')) {
+    return remainingRunningTime({...r,afterFirstReturnGoal:undefined}) +
+      runningTime({...r,progress:1,goal:target,runVelocity:0,startDelay:0,
+        firstTurn:undefined,afterFirstReturnGoal:undefined},target);
+  }
+  return baseTouchTime({...r,goal:target},target);
 }

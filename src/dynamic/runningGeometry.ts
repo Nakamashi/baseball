@@ -61,7 +61,7 @@ export function runningMetres(
   if (from > to) return runningMetres(r, to, from);
   let current = from,
     total = 0;
-  while (current < to - 1e-8) {
+  while (current < to - (r.errorTurnAtFirst ? 1e-12 : 1e-8)) {
     const leg = Math.floor(current + 1e-8),
       end = Math.min(to, leg + 1);
     total += pathMetres(legPath(r, leg)) * (end - current);
@@ -70,8 +70,11 @@ export function runningMetres(
   return total;
 }
 export function runningPlan(r: OffensiveRunner, target: number) {
+  const stopOnFirst = r.errorTurnAtFirst && r.progress < 1 && target > 1;
+  if (stopOnFirst) target = 1;
   const direction = Math.sign(target - r.progress) || 1;
   const ending =
+    stopOnFirst ? true :
     target === 4 || target < r.goal
       ? false
       : r.id === "BR" && target === 1
@@ -92,8 +95,9 @@ export function runningPlan(r: OffensiveRunner, target: number) {
     sliding ? assumptions.slideDeceleration : assumptions.runnerAcceleration,
   );
 }
-export const runningTime = (r: OffensiveRunner, target: number) =>
-  runningPlan(r, target).duration;
+export const runningTime = (r: OffensiveRunner, target: number): number =>
+  runningPlan(r, target).duration + (r.errorTurnAtFirst && r.progress < 1 && target > 1
+    ? runningPlan({...r,progress:1,runVelocity:0,startDelay:0,errorTurnAtFirst:false},target).duration : 0);
 /** Earliest crossing of a signed route distance, including a crossing before
  * an overshoot/return finishes. The compiler and tactical forecasts share this
  * event definition; settling duration remains available as runningTime. */
@@ -132,7 +136,10 @@ export function firstDistanceCrossing(
 /** Time to the next physical touch, not the subsequent stop/read/return.
  * Retouch legality is supplied by the caller's retouch state; a previous
  * first-base touch never creates a new force on an overrun/rounding runner. */
-export function baseTouchTime(r: OffensiveRunner, target: number) {
+export function baseTouchTime(r: OffensiveRunner, target: number): number {
+  if (r.errorTurnAtFirst && r.progress < 1 && target > 1)
+    return runningPlan(r,target).duration + baseTouchTime({...r,progress:1,runVelocity:0,
+      startDelay:0,errorTurnAtFirst:false},target);
   if (Math.abs(target - r.progress) < 1e-8) return 0;
   const plan = runningPlan(r, target);
   const distance = runningMetres(r, r.progress, target);
@@ -176,7 +183,7 @@ export function advanceProgress(
 ): number {
   let current = r.progress;
   const direction = Math.sign(target - current);
-  while (Math.abs(target - current) > 1e-8 && distance > 1e-8) {
+  while (Math.abs(target - current) > (r.errorTurnAtFirst ? 1e-12 : 1e-8) && distance > (r.errorTurnAtFirst ? 1e-12 : 1e-8)) {
     const leg =
       direction > 0
         ? Math.floor(current + 1e-8)
@@ -221,6 +228,12 @@ export function turnTime(r: OffensiveRunner): number {
         : 0;
 }
 export function remainingRunningTime(r: OffensiveRunner): number {
+  if (r.afterFirstReturnGoal !== undefined) {
+    const goal = r.afterFirstReturnGoal;
+    return remainingRunningTime({ ...r, afterFirstReturnGoal: undefined }) +
+      runningTime({ ...r, afterFirstReturnGoal: undefined, firstTurn: undefined,
+        progress: 1, goal, runVelocity: 0, startDelay: 0 }, goal);
+  }
   if (r.status !== "active" && !r.retiredRunThrough) return 0;
   if (r.retiredRunThrough)
     return r.firstTurn

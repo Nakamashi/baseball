@@ -2,6 +2,22 @@ import type { Locale } from "../i18n/ui";
 // Generated plays carry typed message references. Formatting belongs to the display
 // boundary, so changing languages never changes paths, decisions or timestamps.
 const english = {
+  errorFlightPhase: "Follow the live overthrow",
+  errorLiveWhy: "The released ball remains live. Keep backup and base coverage while reading the missed throw.",
+  throwMissed: "The throw passes above {player}'s reachable glove height. There is no reception or out.",
+  loosePursuitAction: "Pursue the loose throw and secure it under control.",
+  loosePursuitWhy: "Your current position and momentum provide the earliest supported interception. Teammates retain base coverage and backup.",
+  recoveryStarted: "{player} pursues the live ball from the current position and momentum.",
+  recoveryTouched: "{player} reaches the loose ball; secure control is not yet complete.",
+  recoveryGather: "{player} gathers the ball before any further throw or out attempt.",
+  recoverySecured: "{player} secures the recovered ball and reads the remaining runners.",
+  errorRunnerRead: "After observing the miss, all runners read recovery and return timing together. An error does not award an extra base.",
+  errorRunnerGo: "The observed recovery and return timing allow an extra-base attempt under this aggression setting. Touch each base; a further out is still possible.",
+  errorRunnerHold: "Read the live ball and hold the planned base when recovery and return timing make another base too risky.",
+  errorScope: "One elevated overthrow on an eligible direct infield throw to second is modeled. Recovery and extra bases depend on actual timing; other errors and thrown-ball boundary awards remain unsupported.",
+  noEligibleError: "No eligible throwing error occurred in this play.",
+  errorRecoveryUnavailable: "The throwing-error recovery could not finish safely within the supported model. Adjust the situation or turn Include Error off; the previous play is preserved.",
+
   priorityCatchWhy: "Claim this reachable pop-up under the team's priority system. Teammates yield and cover the vacated bases or back up the catch.",
   baseContact: "{player} touches {base} while securely holding the ball.",
   challengeExpired: "The opportunity at {base} has ended before release. The defender reads the live play again.",
@@ -81,7 +97,7 @@ const english = {
   trajectoryLimit:
     "The requested landing distance is outside this launch profile. The displayed landing point shows the attainable trajectory for the selected strength.",
   physicsNote:
-    "Provisional junior-high timing profiles: contact-to-first 5.3 / 4.7 / 4.2 s. The modeled fence is {wallHeight} m high. Surface, bounce and throw parameters require local calibration. No errors or rundowns are generated.",
+    "Provisional junior-high timing profiles: contact-to-first 5.3 / 4.7 / 4.2 s. The modeled fence is {wallHeight} m high. Surface, bounce and throw parameters require local calibration. Optional errors cover eligible infield overthrows to second; full rundowns remain unsupported.",
   runnerFinishOut:
     "Finish sprinting through first, then clear the play after the out.",
   runnerFinishOutWhy:
@@ -97,7 +113,7 @@ const english = {
   runnerOverrun:
     "Sprint through first, slow down beyond the bag, and look for the ball.",
   runnerOverrunWhy:
-    "On an infield play, run through first without attempting second, then return promptly. This model does not generate overthrows or errors.",
+    "On an ordinary infield play, run through first and return promptly. After an observed overthrow, an extra-base attempt requires a controlled first-base turn or completion of this run-through and return.",
   runnerRound:
     "Round first, read the ball and coach, and prepare to continue or return.",
   runnerRoundWhy:
@@ -253,6 +269,22 @@ const english = {
 };
 export type DynamicMessageKey = keyof typeof english;
 const japanese: Record<DynamicMessageKey, string> = {
+  errorFlightPhase: "生きている悪送球を追う",
+  errorLiveWhy: "送球後もボールは生きています。悪送球を読みながら、バックアップと塁のカバーを続けます。",
+  throwMissed: "送球は{player}が捕れる高さを越えて通過します。捕球もアウトも成立しません。",
+  loosePursuitAction: "悪送球のボールを追い、制御して確保します。",
+  loosePursuitWhy: "現在の位置と勢いから、最も早く確実に到達できます。味方は塁のカバーとバックアップを続けます。",
+  recoveryStarted: "{player}は現在の位置と勢いから、生きているボールを追います。",
+  recoveryTouched: "{player}がボールに到達しました。まだ確実な保持は完了していません。",
+  recoveryGather: "{player}は次の送球やアウトを狙う前に、ボールを確実に確保します。",
+  recoverySecured: "{player}がボールを確保し、残る走者の動きを判断します。",
+  errorRunnerRead: "悪送球を確認してから、全走者が回収と返球の時間を同時に読みます。エラーだけで次の塁が与えられるわけではありません。",
+  errorRunnerGo: "確認した回収と返球の時間から、この積極性では次の塁を狙います。各塁を踏み、次の守備でアウトになる可能性にも備えます。",
+  errorRunnerHold: "生きているボールを読み、回収と返球が速く次の塁が危険なときは、予定の塁にとどまります。",
+  errorScope: "対象となる内野から二塁への直接送球で、1回の高い悪送球に対応します。回収と進塁は実際の時間で決まり、他のエラーや場外への悪送球による進塁権は対象外です。",
+  noEligibleError: "このプレーでは対象となる送球エラーは発生しませんでした。",
+  errorRecoveryUnavailable: "対応範囲内で悪送球後のプレーを安全に完了できませんでした。状況を変えるか「エラーを含める」をオフにしてください。前のプレーは保持されています。",
+
   priorityCatchWhy: "捕球可能なフライに対し、チームの優先順位に従って声をかけて捕球します。他の野手は譲り、空いた塁のカバーや捕球のバックアップに回ります。",
   baseContact: "{player}がボールを確実に保持した状態で{base}を踏みます。",
   challengeExpired: "送球前に{base}でアウトを取る機会がなくなりました。野手はプレーの状況を見直します。",
@@ -331,7 +363,7 @@ const japanese: Record<DynamicMessageKey, string> = {
   trajectoryLimit:
     "指定した落下距離はこの打球設定の範囲外です。表示の落下地点は、選んだ強さで到達できる軌道を示します。",
   physicsNote:
-    "中学生向けの仮設定：打撃から一塁まで5.3／4.7／4.2秒。モデルのフェンス高は{wallHeight}mです。地面、バウンド、送球の数値は実測で調整が必要です。エラーや挟殺は生成しません。",
+    "中学生向けの仮設定：打撃から一塁まで5.3／4.7／4.2秒。モデルのフェンス高は{wallHeight}mです。地面、バウンド、送球の数値は実測で調整が必要です。対象となる内野から二塁への悪送球を任意で加えられます。完全な挟殺は対象外です。",
   runnerFinishOut:
     "アウトでも一塁を全力で駆け抜け、その後はプレーを妨げない場所へ離れます。",
   runnerFinishOutWhy:
@@ -347,7 +379,7 @@ const japanese: Record<DynamicMessageKey, string> = {
   runnerOverrun:
     "一塁を全力で駆け抜け、ベースの先で減速してボールを確認します。",
   runnerOverrunWhy:
-    "内野のプレーでは二塁を狙わず一塁を駆け抜け、速やかに戻ります。このモデルでは悪送球やエラーは発生しません。",
+    "通常の内野プレーでは一塁を駆け抜け、速やかに戻ります。悪送球を確認して次の塁を狙う場合は、一塁で制御して方向を変えるか、駆け抜け後に帰塁してから進みます。",
   runnerRound: "一塁を回り、ボールとコーチを見て、進塁か帰塁を判断します。",
   runnerRoundWhy:
     "外野へのヒットでは曲線で一塁に入り、勢いを調整して回ります。駆け抜け時の保護とは異なり、進めないときは一塁へ戻ります。",
@@ -485,7 +517,7 @@ const japanese: Record<DynamicMessageKey, string> = {
   alternative:
     "送球先、走者の積極性、打球の強さ、位置を変えて再生成し、別の守備対応を比べましょう。",
   unsupported:
-    "動的シミュレーターではゴロ・ライナー・フライ・ポップフライ・通常のフェアバントを選べます。エラー、スクイズ、完全な挟殺は生成しません。プレー図鑑の例も利用できます。",
+    "動的シミュレーターではゴロ・ライナー・フライ・ポップフライ・通常のフェアバントを選べます。エラーは対象となる内野から二塁への高い悪送球のみ対応します。スクイズ、完全な挟殺は生成しません。プレー図鑑の例も利用できます。",
   invalid:
     "グラウンド内のフェアの位置と、正しいアウト数・走者・カウント・試合状況を選んでください。",
   infieldHit:

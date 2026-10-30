@@ -14,6 +14,7 @@ export type RunnerSpeed = "slow" | "average" | "fast";
 export type Strategy = "standard" | "prevent" | "conservative";
 export type ThrowTarget = Base | "auto" | "hold" | "cutoff";
 export type AssignmentType =
+  | "PursueLooseBall"
   | "FieldBall"
   | "CoverBase"
   | "Cutoff"
@@ -33,6 +34,7 @@ export type AssignmentType =
   | "TrackBall"
   | "ChargeBunt";
 export interface DynamicSettings {
+  includeError?: boolean;
   field?: { fenceHeight: number; fenceMode: "standard" | "keep-in-play" };
   anticipateBunt?: boolean;
   armStrength?: "developing" | "standard" | "strong";
@@ -104,6 +106,7 @@ export interface DefensiveAssignment {
   receivingPoint?: Point;
 }
 export type AssignmentReason =
+  | "loosePursuit"
   | "priorityCatch"
   | "primary"
   | "release"
@@ -230,6 +233,10 @@ export interface OffensiveRunner {
   afterRetouchGoal?: number;
   approach?: "straight" | "round";
   retiredRunThrough?: boolean;
+  /** Finish the existing physical run-through/return before departing again. */
+  afterFirstReturnGoal?: number;
+  /** Observed error, enough braking room: stop on first before changing direction. */
+  errorTurnAtFirst?: boolean;
   firstTurn?: {
     kind: "overrun" | "round";
     stage: "outbound" | "read" | "return" | "complete";
@@ -254,6 +261,11 @@ export interface SimulationEvent {
   type:
     | "BallContact"
     | "BallFielded"
+    | "ThrowMissed"
+    | "RecoveryStarted"
+    | "RecoveryTouched"
+    | "RecoverySecured"
+    | "ErrorRunnerRead"
     | "ThrowStarted"
     | "ThrowCancelled"
     | "ThrowReceived"
@@ -306,7 +318,23 @@ export interface ThrowDecision {
   time?: number;
   owner?: Position;
 }
+export type BallControl =
+  | { kind: "secure"; owner: Position }
+  | { kind: "released" | "loose" }
+  | { kind: "gathering"; fielder: Position };
+export interface ThrowingErrorMetadata {
+  policy: string;
+  status: "injected" | "no-eligible-throw";
+  attempts: { time: number; owner: Position; target: Base; reason: string }[];
+  noEligibleReason?: "no-released-throw" | "all-releases-ineligible";
+  selected?: { eventId: string; releaseTime: number; thrower: Position; receiver: Position;
+    intendedPoint: Point; missTime: number; recognitionTime: number;
+    trajectory: import("./throwRecovery").Overthrow };
+  recovery?: { recognitionPositions: Record<string, Point>; recognitionVelocities: Record<string, Point>;
+    candidates: import("./throwRecovery").RecoveryCandidate[]; player: Position; touchTime: number; secureTime: number };
+}
 export interface SimulationMetadata {
+  throwingError?: ThrowingErrorMetadata;
   holdingDecisions?: ThrowDecision[];
   airborneReads?: import("./airborne").AirborneRead[];
   terminationReason?: string;
@@ -321,6 +349,7 @@ export interface SimulationMetadata {
   diagnostics: DefensiveAuditFrame[];
 }
 export interface DefensiveAuditFrame {
+  ballControl?: BallControl;
   time: number;
   trigger: string;
   state: GameState;

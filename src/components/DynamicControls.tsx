@@ -12,6 +12,7 @@ interface Props {
   generating: boolean;
   pending: boolean;
   error?: string;
+  notice?: string;
   picking: boolean;
   setPicking: (value: boolean) => void;
   preview?: BallTrajectory;
@@ -24,6 +25,7 @@ export function DynamicControls({
   generating,
   pending,
   error,
+  notice,
   picking,
   setPicking,
   preview,
@@ -480,11 +482,19 @@ export function DynamicControls({
             {error}
           </p>
         )}
+        <div className="generation-actions">
+          <label className="include-error" title={t("includeErrorHint")}>
+            <input type="checkbox" checked={!!settings.includeError} disabled={generating}
+              onChange={e=>setSettings(current=>({...current,includeError:e.target.checked}))} />
+            <span>{t("includeError")}</span>
+          </label>
         <button type="button" className="generate-button" onClick={onGenerate}
           disabled={generating} aria-describedby={error ? "generation-error" : undefined}>
           {generating && <span className="generation-spinner" aria-hidden="true" />}
           {t(generating ? "generatingPlay" : pending ? "generate" : "regenerate")}
         </button>
+        </div>
+        {notice && <p className="generation-info" role="status">{notice}</p>}
         <p className="hint">{t("compareNote")}</p>
       </div>
       <p className="hint scope-note">{t("phase2Scope")}</p>

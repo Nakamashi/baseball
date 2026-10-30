@@ -1,5 +1,9 @@
 # Defensive fundamentals audit
 
+## Throwing-error recovery follow-up
+
+Optional eligible infield-to-second overthrows now have real live-ball pursuit and gathering. Clean all-nine allocation remains unchanged: in the verified P-fielded bunt, RF has the late second-backup duty and CF initially holds. Once the miss is observed, current-state reachability selects CF for the rolling recovery; RF retains its actual momentum. This does not prove the clean CF hold is the preferred coaching convention. Review that separately rather than assigning CF an artificial catch or changing normal positions. New tests independently check all-nine uniqueness, early backups, current-motion recovery, real subsequent tags and clean-output hashes. Details and verification limits: [ERROR_SIMULATION_IMPLEMENTATION.md](../ERROR_SIMULATION_IMPLEMENTATION.md).
+
 ## October 30: bunt fielding and return-support follow-up
 
 See [BUNTS_AND_RETURN_SUPPORT.md](BUNTS_AND_RETURN_SUPPORT.md) for the audit,

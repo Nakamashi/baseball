@@ -1,0 +1,901 @@
+{
+  "source": "8c132aeade11f9b1f03132f34bc2005ca0099a52",
+  "cases": [
+    {
+      "id": "ground-second",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {},
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Ground ball",
+          "destination": {
+            "x": 640,
+            "y": 430
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "sha256": "96666cb02295f7e797081bf7115268e8e1aa27bd7e932ac6d44c4417735654e9",
+      "events": [
+        {
+          "id": "event-5",
+          "time": 3.559361,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"2B\",\"to\":\"1B\"}",
+          "player": "2B",
+          "base": 1
+        },
+        {
+          "id": "event-8",
+          "time": 4.260125,
+          "type": "RunnerOut",
+          "explanation": "@v2:forceOut:{\"runner\":\"BR\",\"base\":1}",
+          "player": "BR",
+          "base": 1,
+          "force": true
+        }
+      ]
+    },
+    {
+      "id": "ground-short",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {},
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Ground ball",
+          "destination": {
+            "x": 360,
+            "y": 440
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "sha256": "c12fc8f13afff7f4b1ba444bb677ddd52591452fdb7aa68ddb4bdbe226738579",
+      "events": [
+        {
+          "id": "event-5",
+          "time": 3.578296,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"SS\",\"to\":\"1B\"}",
+          "player": "SS",
+          "base": 1
+        },
+        {
+          "id": "event-8",
+          "time": 5.431178,
+          "type": "RunnerOut",
+          "explanation": "@v2:forceOut:{\"runner\":\"BR\",\"base\":1}",
+          "player": "BR",
+          "base": 1,
+          "force": true
+        }
+      ]
+    },
+    {
+      "id": "double-play",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Ground ball",
+          "destination": {
+            "x": 425,
+            "y": 425
+          },
+          "strength": "hard"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "slow",
+        "throwTarget": "auto"
+      },
+      "sha256": "245e77901d2c674d07676bc4fb9755ce7cd060627977977d5c1a2ac049c4fcf0",
+      "events": [
+        {
+          "id": "event-5",
+          "time": 2.895032,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"SS\",\"to\":\"2B\"}",
+          "player": "SS",
+          "base": 2
+        },
+        {
+          "id": "event-9",
+          "time": 3.717565,
+          "type": "RunnerOut",
+          "explanation": "@v2:forceOut:{\"runner\":\"R1\",\"base\":2}",
+          "player": "R1",
+          "base": 2,
+          "force": true
+        },
+        {
+          "id": "event-10",
+          "time": 3.957565,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"2B\",\"to\":\"1B\"}",
+          "player": "2B",
+          "base": 1
+        },
+        {
+          "id": "event-13",
+          "time": 5.395769,
+          "type": "RunnerOut",
+          "explanation": "@v2:forceOut:{\"runner\":\"BR\",\"base\":1}",
+          "player": "BR",
+          "base": 1,
+          "force": true
+        }
+      ]
+    },
+    {
+      "id": "third-ground-second",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Ground ball",
+          "destination": {
+            "x": 640,
+            "y": 430
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "sha256": "0169730ea3ff5e1a8b6b683f3dfb9efb1521a84944d536a950c5be1d903824c6",
+      "events": [
+        {
+          "id": "event-6",
+          "time": 3.559361,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"2B\",\"to\":\"1B\"}",
+          "player": "2B",
+          "base": 1
+        },
+        {
+          "id": "event-9",
+          "time": 4.260125,
+          "type": "RunnerOut",
+          "explanation": "@v2:forceOut:{\"runner\":\"BR\",\"base\":1}",
+          "player": "BR",
+          "base": 1,
+          "force": true
+        }
+      ]
+    },
+    {
+      "id": "single-left",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {},
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Ground ball",
+          "destination": {
+            "x": 235,
+            "y": 280
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "sha256": "03f8d404f9f83c45a6385c29d010a15cfe492bdf5f68dd4e6f08495eea1ac544",
+      "events": [
+        {
+          "id": "event-6",
+          "time": 4.917647,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"LF\",\"to\":\"SS\"}",
+          "player": "LF",
+          "base": 2
+        }
+      ]
+    },
+    {
+      "id": "first-single-left",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Ground ball",
+          "destination": {
+            "x": 235,
+            "y": 280
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": 2
+      },
+      "sha256": "439cc7d5c4c1848ddd0e970ea6ec523cc0ea28bb5c6c0b7773eff09572488308",
+      "events": [
+        {
+          "id": "event-6",
+          "time": 4.917647,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"LF\",\"to\":\"2B\"}",
+          "player": "LF",
+          "base": 2
+        }
+      ]
+    },
+    {
+      "id": "second-single-right",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Ground ball",
+          "destination": {
+            "x": 814,
+            "y": 219
+          },
+          "strength": "hard"
+        },
+        "aggression": "aggressive",
+        "runnerSpeed": "fast",
+        "throwTarget": "auto"
+      },
+      "sha256": "baa2992f0e01365114e257772bc088669ec3efd252a94b46933f8b34b8bb88df",
+      "events": [
+        {
+          "id": "event-6",
+          "time": 4.073674,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"RF\",\"to\":\"C\"}",
+          "player": "RF",
+          "base": "home"
+        },
+        {
+          "id": "event-11",
+          "time": 8.358652,
+          "type": "RunnerOut",
+          "explanation": "@v2:tagOut:{\"runner\":\"R2\",\"base\":\"home\"}",
+          "player": "R2",
+          "base": "home",
+          "force": false
+        }
+      ]
+    },
+    {
+      "id": "extra-base-trail",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {},
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Line drive",
+          "destination": {
+            "x": 374,
+            "y": 291
+          },
+          "strength": "hard"
+        },
+        "aggression": "aggressive",
+        "runnerSpeed": "average",
+        "throwTarget": 3
+      },
+      "sha256": "9636095614a8cc0da5e8f65bcf6e722ff5d5d235e559364bc050b3380e6d3d0f",
+      "events": [
+        {
+          "id": "event-12",
+          "time": 7.062936,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"CF\",\"to\":\"SS\"}",
+          "player": "CF",
+          "base": 3
+        },
+        {
+          "id": "event-15",
+          "time": 9.45036,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"SS\",\"to\":\"3B\"}",
+          "player": "SS",
+          "base": 3
+        }
+      ]
+    },
+    {
+      "id": "deep-left-centre",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1,
+            "R2": 2
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Fly ball",
+          "destination": {
+            "x": 170,
+            "y": 200
+          },
+          "strength": "hard"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "home"
+      },
+      "sha256": "a7cecb3f32e854a97c7354ab413a25c1604cad870a502744fc16b8f51416c093",
+      "events": [
+        {
+          "id": "event-14",
+          "time": 7.394957,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"LF\",\"to\":\"SS\"}",
+          "player": "LF",
+          "base": "home"
+        },
+        {
+          "id": "event-17",
+          "time": 9.71242,
+          "type": "RunScored",
+          "explanation": "@v2:runnerScored:{}",
+          "player": "R2",
+          "base": "home"
+        },
+        {
+          "id": "event-20",
+          "time": 10.129025,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"SS\",\"to\":\"C\"}",
+          "player": "SS",
+          "base": "home"
+        }
+      ]
+    },
+    {
+      "id": "home-to-second",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Ground ball",
+          "destination": {
+            "x": 814,
+            "y": 219
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "home"
+      },
+      "sha256": "d15465dee3aecef5d86b15f329de36d62878dbec962c45542e02c4e2aa4f7c40",
+      "events": [
+        {
+          "id": "event-6",
+          "time": 4.917071,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"RF\",\"to\":\"C\"}",
+          "player": "RF",
+          "base": "home"
+        }
+      ]
+    },
+    {
+      "id": "aggressive-home",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Ground ball",
+          "destination": {
+            "x": 814,
+            "y": 219
+          },
+          "strength": "hard"
+        },
+        "aggression": "aggressive",
+        "runnerSpeed": "fast",
+        "throwTarget": "auto"
+      },
+      "sha256": "baa2992f0e01365114e257772bc088669ec3efd252a94b46933f8b34b8bb88df",
+      "events": [
+        {
+          "id": "event-6",
+          "time": 4.073674,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"RF\",\"to\":\"C\"}",
+          "player": "RF",
+          "base": "home"
+        },
+        {
+          "id": "event-11",
+          "time": 8.358652,
+          "type": "RunnerOut",
+          "explanation": "@v2:tagOut:{\"runner\":\"R2\",\"base\":\"home\"}",
+          "player": "R2",
+          "base": "home",
+          "force": false
+        }
+      ]
+    },
+    {
+      "id": "infield-in",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R3": 3
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 7,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "prevent"
+        },
+        "ball": {
+          "type": "Ground ball",
+          "destination": {
+            "x": 640,
+            "y": 430
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "sha256": "9a4ccdf9a5e3859b5e6eb33149a4d41c631a7c270f30f42e75e223865a7cca65",
+      "events": [
+        {
+          "id": "event-6",
+          "time": 3.093417,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"2B\",\"to\":\"1B\"}",
+          "player": "2B",
+          "base": 1
+        },
+        {
+          "id": "event-9",
+          "time": 3.894733,
+          "type": "RunnerOut",
+          "explanation": "@v2:forceOut:{\"runner\":\"BR\",\"base\":1}",
+          "player": "BR",
+          "base": 1,
+          "force": true
+        }
+      ]
+    },
+    {
+      "id": "center-home-close",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R2": 2
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "prevent"
+        },
+        "ball": {
+          "type": "Ground ball",
+          "destination": {
+            "x": 558,
+            "y": 284
+          },
+          "strength": "hard"
+        },
+        "aggression": "aggressive",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "sha256": "dbc2e2481fe9418015967571b50947a9ec07ad9f72f6da5fb2ec75db23aca67a",
+      "events": [
+        {
+          "id": "event-6",
+          "time": 4.952629,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"CF\",\"to\":\"2B\"}",
+          "player": "CF",
+          "base": "home"
+        },
+        {
+          "id": "event-11",
+          "time": 7.090711,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"2B\",\"to\":\"C\"}",
+          "player": "2B",
+          "base": "home"
+        },
+        {
+          "id": "event-14",
+          "time": 9.424457,
+          "type": "RunnerOut",
+          "explanation": "@v2:tagOut:{\"runner\":\"R2\",\"base\":\"home\"}",
+          "player": "R2",
+          "base": "home",
+          "force": false
+        }
+      ]
+    },
+    {
+      "id": "pitcher-bunt",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Bunt",
+          "destination": {
+            "x": 500,
+            "y": 650
+          },
+          "strength": "hard"
+        },
+        "aggression": "aggressive",
+        "runnerSpeed": "average",
+        "throwTarget": "auto",
+        "anticipateBunt": true
+      },
+      "sha256": "15cf2d997866dfd28d726da62bdfbbbafea7ca75a4275c4bd68e4d8758692d0f",
+      "events": [
+        {
+          "id": "event-5",
+          "time": 3.70932,
+          "type": "ThrowStarted",
+          "explanation": "@v2:throw:{\"from\":\"P\",\"to\":\"SS\"}",
+          "player": "P",
+          "base": 2
+        },
+        {
+          "id": "event-8",
+          "time": 5.11337,
+          "type": "RunnerOut",
+          "explanation": "@v2:forceOut:{\"runner\":\"R1\",\"base\":2}",
+          "player": "R1",
+          "base": 2,
+          "force": true
+        }
+      ]
+    },
+    {
+      "id": "caught-fly",
+      "settings": {
+        "field": {
+          "fenceHeight": 8,
+          "fenceMode": "keep-in-play"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {},
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Fly ball",
+          "destination": {
+            "x": 390,
+            "y": 390
+          },
+          "strength": "normal"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "sha256": "8a01aa8356baf10b66cd8263addb8389bb5f7cdda2be50c1e55fe070e6db7388",
+      "events": [
+        {
+          "id": "event-7",
+          "time": 3.808339,
+          "type": "BallCaught",
+          "explanation": "@v2:catchOut:{\"runner\":\"BR\"}",
+          "player": "SS"
+        },
+        {
+          "id": "event-8",
+          "time": 3.808339,
+          "type": "RunnerOut",
+          "explanation": "@v2:catchOut:{\"runner\":\"BR\",\"base\":1}",
+          "player": "BR",
+          "base": 1,
+          "force": false
+        }
+      ]
+    },
+    {
+      "id": "boundary",
+      "settings": {
+        "field": {
+          "fenceHeight": 2.5,
+          "fenceMode": "standard"
+        },
+        "state": {
+          "outs": 0,
+          "balls": 0,
+          "strikes": 0,
+          "runners": {
+            "R1": 1
+          },
+          "phase": "Ready",
+          "runs": 0,
+          "inning": 1,
+          "half": "top",
+          "homeScore": 0,
+          "awayScore": 0,
+          "fieldingTeam": "home",
+          "strategy": "standard"
+        },
+        "ball": {
+          "type": "Fly ball",
+          "destination": {
+            "x": 500,
+            "y": 15
+          },
+          "strength": "hard"
+        },
+        "aggression": "normal",
+        "runnerSpeed": "average",
+        "throwTarget": "auto"
+      },
+      "sha256": "08966a7dff5ef522c5887cf27a5b2bf2cca5a4a9f55647a0d6635dca1e5dd7d1",
+      "events": [
+        {
+          "id": "event-1",
+          "time": 5.018984,
+          "type": "BallBoundary",
+          "explanation": "@v2:homeRunWhy:{}"
+        },
+        {
+          "id": "event-7",
+          "time": 13.476687,
+          "type": "RunScored",
+          "explanation": "@v2:runnerScored:{}",
+          "player": "R1",
+          "base": "home"
+        },
+        {
+          "id": "event-10",
+          "time": 18.074487,
+          "type": "RunScored",
+          "explanation": "@v2:runnerScored:{}",
+          "player": "BR",
+          "base": "home"
+        }
+      ]
+    }
+  ]
+}
