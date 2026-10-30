@@ -50,6 +50,9 @@ try {
     });
     await page.goto(origin + path);
     await page.locator(".field").waitFor();
+    assert.equal(await page.locator(".app-modes button").last().getAttribute("aria-pressed"), "true");
+    assert.equal(await page.locator(".hit-destination").count(), 1);
+    await page.locator(".app-modes button").first().click();
     assert.equal(await page.locator(".scenario-card").count(), 24);
     await page.locator(".reading-nav button").last().click();
     assert.equal(

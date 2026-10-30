@@ -1090,7 +1090,6 @@ html[lang="ja"] .scenario-card strong {
 .base-toggle[aria-pressed="true"] span { background: #f8c766; border-color: #5b421f; }
 .starting-outs { margin-left: auto; font-size: 10px; }
 .starting-outs .segmented button { min-width: 44px; min-height: 44px; padding: 4px; }
-.field-first-hint { margin: 5px 0; font-size: 11px; color: #335b41; flex-shrink: 0; }
 .hit-destination { touch-action: none; cursor: grab; }
 .hit-destination:active { cursor: grabbing; }
 .hit-destination:focus-visible { outline: none; }
@@ -1119,9 +1118,7 @@ html[lang="ja"] .scenario-card strong {
   .dynamic-mode .starting-situation { gap: 4px; padding: 0 4px; }
   .dynamic-mode .starting-situation > strong { font-size: 10px; max-width: 75px; }
   .dynamic-mode .starting-outs .segmented button { min-width: 44px; }
-  .dynamic-mode .game-context { margin-bottom: 3px; flex-wrap: wrap; gap: 4px 10px; }
   .dynamic-mode .field-heading { margin-bottom: 3px; }
-  .dynamic-mode .field-first-hint { font-size: 10px; margin: 3px 0; }
   .dynamic-mode .field-stage { min-height: 150px; height: min(calc((100vw - 40px) * .9), calc(100svh - 390px)); }
   .dynamic-mode .draft-notice { margin: 2px 0; padding: 3px 6px; font-size: 10px; }
 }
@@ -1136,7 +1133,6 @@ html[lang="ja"] .scenario-card strong {
   .dynamic-mode .field-heading { flex-wrap: nowrap; align-items: center; }
   .dynamic-mode .field-heading h1 { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
   .dynamic-mode .field-stage { height: min(calc((100vw - 40px) * .9), calc(100svh - var(--generate-bar-height, 100px) - 345px)); }
-  .dynamic-mode .game-context { font-size: 8px; gap: 2px 5px; }
   .dynamic-mode .scoreboard { padding: 5px 8px; }
   .dynamic-mode .field-hint { margin: 3px 0; }
   .dynamic-mode .mobile-focus-open { max-height: min(44dvh, calc(100dvh - var(--generate-bar-height, 100px) - var(--generate-bottom-inset, 0px) - 20px)); }
@@ -1151,7 +1147,6 @@ html[lang="ja"] .scenario-card strong {
   .dynamic-mode .field-heading { min-height: 0; margin: 0; align-items: center; }
   .dynamic-mode .field-heading h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 12px; min-width: 0; }
   .dynamic-mode .field-heading .live-badge { display: none; }
-  .dynamic-mode .game-context { font-size: 8px; margin: 0; }
   .dynamic-mode .scoreboard { padding: 4px 8px; margin: 0; }
   .dynamic-mode .scoreboard > span { gap: 2px; }
   .dynamic-mode .field-hint { display: none; }
@@ -1168,6 +1163,21 @@ html[lang="ja"] .scenario-card strong {
 @media (max-width: 600px) { .dynamic-mode .field-hint { margin: 1px 0; } }
 @media (max-width: 950px) and (max-height: 500px) {
   .dynamic-mode .simulation .field-stage { grid-row: 1 / 8; }
-  .dynamic-mode .simulation .field-first-hint { grid-column: 1; grid-row: 8; margin: 0; }
 }
 .quick-hit-editor > .label-row { position: sticky; top: 0; z-index: 2; background: #fffdf5; box-shadow: 0 -12px 0 #fffdf5; padding-bottom: 4px; }
+
+/* Compact pointer-layout setup leaves the height to the field. */
+@media (min-width: 601px) and (min-height: 501px), (min-width: 951px) {
+  .dynamic-mode .starting-situation { min-height: 36px; padding: 3px 8px; gap: 12px; margin-bottom: 5px; }
+  .dynamic-mode .starting-situation > strong { max-width: none; font-size: 10px; }
+  .dynamic-mode .base-diamond { display: flex; gap: 4px; width: auto; height: auto; }
+  .dynamic-mode .base-toggle { width: 28px; height: 28px; min-height: 28px; border: 1px solid #a4b49b; border-radius: 4px; clip-path: none; }
+  .dynamic-mode .base-toggle span { width: 20px; height: 20px; }
+  .dynamic-mode .base-toggle[aria-pressed="true"] { background: #f8c766; }
+  .dynamic-mode .starting-outs { display: flex; align-items: center; gap: 6px; }
+  .dynamic-mode .starting-outs .segmented button { min-width: 28px; min-height: 28px; font-size: 11px; padding: 2px 5px; }
+  .dynamic-mode .scoreboard { padding: 5px 10px; gap: 20px; margin-bottom: 5px; }
+  .dynamic-mode .scoreboard > span { flex-direction: row; align-items: center; gap: 6px; }
+  .dynamic-mode .scoreboard small { font-size: 9px; line-height: 1.2; }
+  .dynamic-mode .scoreboard strong { font-size: 13px; gap: 6px; line-height: 1.2; }
+}

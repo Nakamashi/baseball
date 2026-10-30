@@ -99,8 +99,8 @@ const fieldPoint = async (x, y) => {
 try {
   await page.goto(process.env.APP_URL || "http://127.0.0.1:5173");
   await page.locator(".field").waitFor();
-  assert.equal(await page.locator(".scenario-card").count(), 24);
-  await page.locator(".app-modes button").last().click();
+  assert.equal(await page.locator(".app-modes button").last().getAttribute("aria-pressed"), "true");
+  assert.equal(await page.locator(".scenario-card").count(), 0);
   assert.equal(await combo("Playback mode").inputValue(), "full");
   assert.equal(await page.locator(".player").count(), 11);
   assert.equal(await page.locator(".hit-destination").count(), 1);

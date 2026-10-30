@@ -36,7 +36,7 @@ export default function App() {
   const t = ui(locale),
     text = playText(locale);
   const [viewMode, setViewMode] = useState<"encyclopedia" | "dynamic">(
-    "encyclopedia",
+    "dynamic",
   );
   const [settings, setSettings] = useState<DynamicSettings>(defaultSettings);
   const [generated, setGenerated] = useState<DynamicScenario>(() =>
@@ -399,30 +399,15 @@ export default function App() {
               {t(playback.mode === "step" ? "teaching" : "fullPlay")}
             </span>
           </div>
-          {viewMode === "dynamic" && <>
-            <StartingSituation settings={settings} setSettings={updateSettings} locale={locale} />
-            <p className="field-first-hint">{t("fieldFirstHint")}</p>
-          </>}
           {viewMode === "dynamic" && (
-            <div className="game-context">
-              <strong>{t("playbackSituation")}</strong>
-              <span>
-                {t(frame.state.half === "bottom" ? "bottom" : "top")}{" "}
-                {frame.state.inning} · {t("fieldingTeam")}:{" "}
-                {t(frame.state.fieldingTeam === "away" ? "away" : "home")}
-              </span>
-              <span>
-                {t("away")} {frame.state.awayScore} : {frame.state.homeScore}{" "}
-                {t("home")}
-              </span>
-            </div>
+            <StartingSituation settings={settings} setSettings={updateSettings} locale={locale} />
           )}
           {pending && (
             <p className="draft-notice" role="status">
               {t("draftChanged")}
             </p>
           )}
-          <div className="scoreboard">
+          <div className="scoreboard" aria-label={viewMode === "dynamic" ? t("playbackSituation") : undefined}>
             <span>
               <small>{t("outs")}</small>
               <strong>
@@ -486,7 +471,6 @@ export default function App() {
             locale={locale} onClose={closeQuickEditor} preview={preview}
             error={generationError ? text(generationError) : validateSettings(settings) ? text(validateSettings(settings)!) : undefined} />}
           {viewMode === "dynamic" && layers.trajectory && <p className="field-hint">{t("previewLabel")}</p>}
-          <p className="field-hint">{t("fieldHint")}</p>
           <div className="playback">
             <div className="transport">
               <button

@@ -33,11 +33,16 @@ try {
   await page.locator(".advanced-settings > summary").click();
   for (const [width, height] of [[320, 568], [375, 667], [390, 844], [844, 390]]) {
     await page.setViewportSize({ width, height });
+    // Viewport changes update the existing bar measurement asynchronously.
+    await page.waitForFunction(() => {
+      const bar = document.querySelector('.generate-box'), main = bar?.closest('main');
+      return bar && main && Math.abs(parseFloat(main.style.getPropertyValue('--generate-bar-height')) - bar.getBoundingClientRect().height) < 1;
+    });
     await page.evaluate(() => scrollTo(0, 0)); await visibleAtBottom();
     await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight)); await visibleAtBottom();
     const tail = await page.locator('#dynamic-controls .scope-note').boundingBox();
     const bar = await page.locator('.generate-box').boundingBox();
-    if (tail && bar) assert.ok(tail.y + tail.height <= bar.y + 1, 'Last content obscured');
+    if (tail && bar) assert.ok(tail.y + tail.height <= bar.y + 1, `Last content obscured at ${width}x${height}: tail ${JSON.stringify(tail)}, bar ${JSON.stringify(bar)}`);
     await page.getByRole('combobox', { name: 'Batted ball', exact: true }).selectOption('Bunt');
     await page.getByRole('spinbutton', { name: 'Ball aim / landing point X', exact: true }).fill('620');
     await page.getByRole('spinbutton', { name: 'Ball aim / landing point Y', exact: true }).fill('650');

@@ -27,7 +27,20 @@ try {
   for (const [width, height] of [[320,568],[375,667],[390,844],[844,390],[1366,768]]) {
     await page.setViewportSize({ width, height });
     await page.goto(process.env.APP_URL || 'http://127.0.0.1:5173');
-    await page.locator('.app-modes button').last().click();
+    check(await page.locator('.app-modes button').last().getAttribute('aria-pressed') === 'true', 'Simulator is the initial view');
+    check(await page.locator('.field-first-hint, .game-context').count() === 0, 'No extra instruction or game-context lines');
+    check(await page.getByText('Select a player to follow their role.', {exact:true}).count() === 0, 'No player instruction line');
+    if (width === 1366) {
+      const setup = await page.locator('.starting-situation').boundingBox();
+      const score = await page.locator('.scoreboard').boundingBox();
+      const fieldHeight = await page.locator('.field').evaluate(svg => svg.getScreenCTM().d * 900);
+      check(setup.height <= 38, `Compact setup: ${setup.height}`);
+      check(score.height <= 30, `Compact scoreboard: ${score.height}`);
+      check(fieldHeight >= 420, `Desktop field uses reclaimed height: ${fieldHeight}`);
+      const bases = await page.locator('.base-toggle').evaluateAll(nodes => nodes.map(n => n.getBoundingClientRect().y));
+      check(Math.max(...bases) - Math.min(...bases) < 1, 'Desktop runner choices share one line');
+      await screenshot('desktop-expanded-field');
+    }
     check(!await page.locator('.advanced-settings').evaluate(e => e.open), 'Advanced collapsed initially');
     await page.evaluate(() => scrollTo(0,0));
     await tap(650, 180);

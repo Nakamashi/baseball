@@ -36,6 +36,8 @@ async function fits(width, height) {
 try {
   await page.goto(process.env.APP_URL || "http://127.0.0.1:5173");
   await page.locator(".field").waitFor();
+  assert.equal(await page.locator(".app-modes button").last().getAttribute("aria-pressed"), "true");
+  await page.locator(".app-modes button").first().click();
   const playbackMode = page.getByRole("combobox", {
     name: "Playback mode",
     exact: true,
@@ -136,6 +138,8 @@ try {
   );
   assert.match(await page.locator(".phase-explanation").innerText(), /遊撃手/);
   await page.reload();
+  assert.equal(await page.locator(".app-modes button").last().getAttribute("aria-pressed"), "true");
+  await page.locator(".app-modes button").first().click();
   assert.equal(
     await page
       .getByRole("combobox", { name: "Language / 言語", exact: true })

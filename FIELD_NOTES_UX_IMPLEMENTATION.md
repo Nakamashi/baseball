@@ -4,9 +4,9 @@ Implemented in the existing `work` checkout, 30 October 2026. No simulation-engi
 
 ## Workflow
 
-On a phone, enter Simulator, tap a legal field location, choose one of five hit types and three strengths in the bottom sheet, optionally toggle runners and outs beside the field, then press the single existing sticky Generate button. Done or Escape dismisses the sheet. The marker supports touch/mouse dragging, arrow keys (10 units), Shift+arrow (1 unit), and Enter/Space to reopen the editor. On very small phones, scroll within the sheet; Done stays visible. Short landscape screens place the field beside setup and playback.
+The website now opens in Simulator by default. On a phone, tap a legal field location, choose one of five hit types and three strengths in the bottom sheet, optionally toggle runners and outs beside the field, then press the single existing sticky Generate button. Done or Escape dismisses the sheet. The marker supports touch/mouse dragging, arrow keys (10 units), Shift+arrow (1 unit), and Enter/Space to reopen the editor. On very small phones, scroll within the sheet; Done stays visible. Short landscape screens place the field beside setup and playback.
 
-On desktop, the same editor is anchored beside the marker, bounded by the field and viewport, with scrolling when necessary. Click another field point to reposition it; Done, Escape or a pointer click outside closes it. The existing sidebar Generate action remains the only generation control. Advanced Settings and Configure play expose the complete form.
+On desktop, runner choices are in a single compact row with 28 px buttons. The setup strip is 36 px high and the inline scoreboard about 28 px high. The same editor is anchored beside the marker, bounded by the field and viewport, with scrolling when necessary. Click another field point to reposition it; Done, Escape or a pointer click outside closes it. The existing sidebar Generate action remains the only generation control. Advanced Settings and Configure play expose the complete form.
 
 Selecting a fielder preserves normal player selection and opens the existing responsibility panel as a nearby mobile drawer: Current job, Why and Next responsibility follow the existing playback phase. Clear/Escape returns focus to the player. This drawer applies only to Simulator; Encyclopedia retains its existing presentation.
 
@@ -16,13 +16,15 @@ Selecting a fielder preserves normal player selection and opens the existing res
 | --- | --- |
 | Field tap, marker drag and keyboard | `settings.ball.destination` |
 | Five hit types / three strengths | `settings.ball.type` / `settings.ball.strength` |
-| Base diamond | `settings.state.runners` (`R1`, `R2`, `R3`) |
+| Runner choices (mobile diamond / desktop row) | `settings.state.runners` (`R1`, `R2`, `R3`) |
 | 0 / 1 / 2 outs | `settings.state.outs` |
 | Generate | Existing `generate()`, validation and submission latch |
 
-Every quick change uses the existing draft updater. The traditional form stays synchronized. Draft edits do not compile a new scenario; generated scoreboard values remain separate and are labeled as generated. Existing pending-playback protection and interception-overlay suppression remain intact. Trajectory overlays are labeled as draft previews.
+Every quick change uses the existing draft updater. The traditional form stays synchronized. Draft edits do not compile a new scenario; generated scoreboard values remain separate and retain the translated generated-play accessibility label. Existing pending-playback protection and interception-overlay suppression remain intact. Trajectory overlays are labeled as draft previews.
 
 Raw pointer coordinates are transformed through the SVG screen matrix, including letterboxing, scroll and resizing. Invalid taps/drags retain the last valid marker and use the existing error path. Hit-type changes never silently manufacture a legal quick-editor destination; an invalid distant bunt is explained and cannot generate. Ground/bunt aim and requested airborne landing remain distinct. Location help and launch-constraint notices explain the existing semantics.
+
+The field-tap and player-selection instruction lines, plus the visible generated-play/inning/team/score context line, have been removed as requested. Inning/team/scores remain available under Advanced Settings.
 
 The original mobile Generate bar retains ResizeObserver/visualViewport handling, safe-area padding, disabled loading text, spinner, contrast, error display and duplicate-submit prevention. The sheet uses its measured height and keyboard inset. On short screens the secondary comparison hint is hidden to keep the transport and action visible.
 
@@ -55,14 +57,14 @@ All listed commands completed locally with exit code 0. Chromium required the ex
 | `npm run test:browser` | Passed: 24 English/Japanese authored plays, reading/field synchronization, step auto-pause, full playback, language persistence and six layouts |
 | `npm run test:dynamic:browser` | Passed: physics/rules scenarios, draft protection, generation, playback, EN/JA and six layouts |
 | `npm run test:mobile:browser` | Passed: four phone sizes, one sticky action, long-form clearance, invalid states, loading contrast, repeat prevention, EN/JA, desktop and Encyclopedia |
-| `npm run test:field:browser` | **196 assertions passed, 0 failed** across five layouts, both languages, tap/edit/generate, keyboard, mouse/native touch drag, scroll/rotation coordinates, invalid tap/drag/bunt, draft runners/outs, focus, advanced persistence and edge anchoring |
+| `npm run test:field:browser` | **215 assertions passed, 0 failed** across five layouts, both languages, tap/edit/generate, keyboard, mouse/native touch drag, scroll/rotation coordinates, invalid tap/drag/bunt, draft runners/outs, focus, advanced persistence and edge anchoring |
 | `npm run test:pages` | **2 hosting paths passed**, `/` and `/baseball/` |
 | `npm run audit:defense:v2 -- --strict` | **2,522/2,522 generated**, strict exit 0; **0 Critical, 0 High**, 2,139 Medium advisory scenarios and 383 unflagged; 60 deterministic replays |
 | `git diff --check` | Passed |
 
 The strict audit's advisory findings are not a claim that all baseball decisions are certified correct. The generated audit summary is in `.browser-tests/field-ux/test-results/defensive-v2-summary.json`; its generated timestamp was not committed over the repository's baseline summary.
 
-Browser sizes: **320×568, 375×667, 390×844, 844×390, 1366×768** for the new suite. Existing suites additionally cover laptop, tablet and larger desktop sizes. Checks include horizontal overflow and transport/Generate clearance, usable labels and pressed states, keyboard dismissal and focus return, semantic nonmodal editor, and bilingual validation. SVG interactive children are exposed as a group. Marker, editor and outs touch targets are about 44 CSS pixels; base buttons use diamond-shaped hit regions to avoid overlapping targets.
+Browser sizes: **320×568, 375×667, 390×844, 844×390, 1366×768** for the new suite. Existing suites additionally cover laptop, tablet and larger desktop sizes. Checks include horizontal overflow and transport/Generate clearance, usable labels and pressed states, keyboard dismissal and focus return, semantic nonmodal editor, and bilingual validation. SVG interactive children are exposed as a group. Mobile marker, editor and outs touch targets remain about 44 CSS pixels; mobile base buttons use diamond-shaped hit regions to avoid overlapping targets. Desktop runner/outs buttons are 28 px to keep the field large.
 
 Inspected screenshots include English/Japanese phone tap → sheet → generated play, editable runners, mobile player focus and desktop popover. See `.browser-tests/field-ux/` (screenshots and `test-results/` logs); representative files:
 
@@ -78,3 +80,11 @@ Chromium mobile viewport/touch emulation was tested, including native touch even
 No new dependencies, backend, save/share features or explicit editing/playback modes were introduced. The implementation passed the local checks above before deployment was requested. The user subsequently authorized deployment to `main`; pushing this implementation triggers the existing Pages deployment and Defensive V2 regression workflows. Deployment status and workflow links are reported separately after the push.
 
 The projectless chat export directory is on a different filesystem and is unavailable in this managed environment. The requested report is saved in the repository, and screenshots/logs are retained under `.browser-tests/field-ux/`.
+
+## Desktop field-size follow-up
+
+The desktop field now receives the height previously spent on instructions and expanded setup/status rows. Measured on initial load: **450.4 px** field height at **1366×768**, **762.4 px** at **1920×1080**; setup **36 px**, scoreboard **27.6 px**. Mobile keeps its existing field sizing and larger touch controls (315 px field height at 390×844). Playback controls and simulator mechanics are unchanged.
+
+Browser tests now assert Simulator on initial load and reload, deliberately switch to Encyclopedia to test all 24 guided plays, and verify the desktop field minimum height, compact row heights, inline runner choices and removed text. Static-hosting tests check the new default at both hosting paths. Additional screenshots: `.browser-tests/field-ux/compact-1366x768.png`, `compact-1920x1080.png`, `compact-390x844.png`.
+
+Follow-up validation passed: `npm test` (364/364), `npm run build`, and all five browser scripts (`test:browser`, `test:dynamic:browser`, `test:mobile:browser`, `test:field:browser`, `test:pages`). The mobile test now waits for the existing ResizeObserver bar measurement after viewport changes before checking scroll clearance.

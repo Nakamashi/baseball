@@ -13,7 +13,7 @@ export function StartingSituation({ settings, setSettings, locale }: Props) {
   return <div className="starting-situation" role="group" aria-label={t("startingSituation")}>
     <strong>{t("startingSituation")}</strong>
     <div className="base-diamond" role="group" aria-label={t("runnersOn")}>
-      {([2, 3, 1] as const).map(base => <button key={base} className={`base-toggle base-${base}`}
+      {([1, 2, 3] as const).map(base => <button key={base} className={`base-toggle base-${base}`}
         aria-label={t(base === 1 ? "first" : base === 2 ? "second" : "third")}
         aria-pressed={s.runners[`R${base}`] === base}
         onClick={() => setSettings(c => {
