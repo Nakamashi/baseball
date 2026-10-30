@@ -207,6 +207,7 @@ export class MovementEngine {
   }
   starting(settings: DynamicSettings): Record<Position, Point> {
     const result = structuredClone(defaults);
+    result.C = beyond(bases[2], bases.home, assumptions.catcherDepth);
     const s = settings.state;
     const difference =
       s.fieldingTeam === "home"

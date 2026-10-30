@@ -4,7 +4,7 @@ import { bases, toWorld, fromWorld, fieldRadius } from "./geometry";
 import { fieldConfiguration } from "./fieldConfiguration";
 
 export const ballPhysics = {
-  version: "trajectory-2-tactics",
+  version: "trajectory-3-bunts",
   gravity: 9.81,
   step: 1 / 120,
   wallHeight: 2.5,
@@ -76,7 +76,8 @@ export function predictTrajectory(settings: DynamicSettings): BallTrajectory {
     180;
   let speed =
     (type === "Bunt"
-      ? { soft: 5, normal: 7, hard: 9 }
+      // Soft represents a deadened bunt, not a 7 m roller. Aim remains intent.
+      ? { soft: 3, normal: 7, hard: 9 }
       : { soft: 11, normal: 23, hard: 32 })[strength] *
     Math.max(0.92, Math.min(1.12, 0.92 + range / 350));
   let adjusted = false;

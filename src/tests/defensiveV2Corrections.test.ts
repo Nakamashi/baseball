@@ -134,9 +134,9 @@ describe("V2 moving receivers, forces and pivots", () => {
 });
 
 describe("V2 ordinary R3 bunts and cooperative pop-ups", () => {
-  it.each([[430, 650, "C"], [470, 650, "C"], [500, 640, "P"], [500, 620, "P"]] as const)(
-    "uses reachable C/P priority without delaying a clearly earlier pitcher catch at %s,%s", (x, y, owner) => {
-      const c = settings(x, y, "Pop-up"); c.ball.strength = "soft"; c.state.runners = {};
+  it.each([[430, 650, "C", "soft"], [470, 650, "C", "soft"], [500, 730, "P", "hard"], [500, 700, "P", "hard"]] as const)(
+    "uses reachable C/P priority without delaying a clearly earlier pitcher catch at %s,%s", (x, y, owner, strength) => {
+      const c = settings(x, y, "Pop-up"); c.ball.strength = strength; c.state.runners = {};
       const s = provider.generate(c);
       expect(s.dynamic.ball.caught).toBe(true);
       expect(s.dynamic.ball.fielder).toBe(owner);

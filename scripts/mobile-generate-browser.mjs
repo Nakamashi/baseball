@@ -39,7 +39,16 @@ try {
       return bar && main && Math.abs(parseFloat(main.style.getPropertyValue('--generate-bar-height')) - bar.getBoundingClientRect().height) < 1;
     });
     await page.evaluate(() => scrollTo(0, 0)); await visibleAtBottom();
-    await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight)); await visibleAtBottom();
+    // ResizeObserver equality can hold before the responsive content finishes
+    // reflowing. Re-establish the bottom after reflow; a real padding/overlap
+    // failure still times out here and is asserted again below.
+    await page.waitForFunction(() => {
+      scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
+      const tail = document.querySelector('#dynamic-controls .scope-note')?.getBoundingClientRect();
+      const bar = document.querySelector('.generate-box')?.getBoundingClientRect();
+      return tail && bar && tail.bottom <= bar.top + 1;
+    });
+    await visibleAtBottom();
     const tail = await page.locator('#dynamic-controls .scope-note').boundingBox();
     const bar = await page.locator('.generate-box').boundingBox();
     if (tail && bar) assert.ok(tail.y + tail.height <= bar.y + 1, `Last content obscured at ${width}x${height}: tail ${JSON.stringify(tail)}, bar ${JSON.stringify(bar)}`);

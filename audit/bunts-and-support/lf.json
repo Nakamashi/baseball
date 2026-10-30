@@ -1,0 +1,1840 @@
+[
+  {
+    "x": 727,
+    "y": 101,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964154,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 727,
+    "y": 111,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964146,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 727,
+    "y": 121,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.962437,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 727,
+    "y": 131,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.962527,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 727,
+    "y": 141,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964155,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 727,
+    "y": 151,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964153,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 727,
+    "y": 161,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964149,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 737,
+    "y": 101,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964151,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 737,
+    "y": 111,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964147,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 737,
+    "y": 121,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964152,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 737,
+    "y": 131,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.963255,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 737,
+    "y": 141,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964148,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 737,
+    "y": 151,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.961811,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 737,
+    "y": 161,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.96415,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 747,
+    "y": 101,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.967731,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 747,
+    "y": 111,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964154,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 747,
+    "y": 121,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964147,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 747,
+    "y": 131,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964153,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 747,
+    "y": 141,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.962065,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 747,
+    "y": 151,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964147,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 747,
+    "y": 161,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.962757,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 757,
+    "y": 101,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.969837,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 757,
+    "y": 111,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.96202,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 757,
+    "y": 121,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.963266,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 757,
+    "y": 131,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964146,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 757,
+    "y": 141,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964148,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 757,
+    "y": 151,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964146,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 757,
+    "y": 161,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964145,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 767,
+    "y": 101,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.970835,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 767,
+    "y": 111,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.963487,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 767,
+    "y": 121,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964152,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 767,
+    "y": 131,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964149,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 767,
+    "y": 141,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.961198,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 767,
+    "y": 151,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964148,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 767,
+    "y": 161,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964144,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 777,
+    "y": 101,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.96538,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 777,
+    "y": 111,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.961879,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 777,
+    "y": 121,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.962976,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 777,
+    "y": 131,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.96415,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 777,
+    "y": 141,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.961515,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 777,
+    "y": 151,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.96415,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 777,
+    "y": 161,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.961877,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 787,
+    "y": 101,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.961319,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 787,
+    "y": 111,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.962515,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 787,
+    "y": 121,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.96415,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 787,
+    "y": 131,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964147,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 787,
+    "y": 141,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964146,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 787,
+    "y": 151,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.963449,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 787,
+    "y": 161,
+    "group": "nearby",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964148,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 650,
+    "y": 80,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.988598,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 650,
+    "y": 120,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.961722,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 650,
+    "y": 160,
+    "group": "broad",
+    "caught": true,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 5.526084,
+        "type": "SupportBase",
+        "base": 2,
+        "target": "hold"
+      },
+      {
+        "time": 5.926084,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 6.907171,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 650,
+    "y": 200,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 8.078999,
+        "type": "HoldPosition",
+        "target": 2
+      },
+      {
+        "time": 8.078999,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 650,
+    "y": 240,
+    "group": "broad",
+    "caught": true,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 5.013671,
+        "type": "SupportBase",
+        "base": 2,
+        "target": "hold"
+      },
+      {
+        "time": 5.413671,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 6.394758,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 650,
+    "y": 280,
+    "group": "broad",
+    "caught": true,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 4.738224,
+        "type": "SupportBase",
+        "base": 2,
+        "target": "hold"
+      },
+      {
+        "time": 5.138224,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 6.119311,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 700,
+    "y": 80,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.986356,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 700,
+    "y": 120,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964151,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 700,
+    "y": 160,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964147,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 700,
+    "y": 200,
+    "group": "broad",
+    "caught": true,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 5.328637,
+        "type": "SupportBase",
+        "base": 2,
+        "target": "hold"
+      },
+      {
+        "time": 5.728637,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 6.709724,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 700,
+    "y": 240,
+    "group": "broad",
+    "caught": true,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 5.080741,
+        "type": "SupportBase",
+        "base": 2,
+        "target": "hold"
+      },
+      {
+        "time": 5.480741,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 6.461828,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 700,
+    "y": 280,
+    "group": "broad",
+    "caught": true,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 4.824595,
+        "type": "SupportBase",
+        "base": 2,
+        "target": "hold"
+      },
+      {
+        "time": 5.224595,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 6.205682,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 750,
+    "y": 80,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.982364,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 750,
+    "y": 120,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.963309,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 750,
+    "y": 160,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.963471,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 750,
+    "y": 200,
+    "group": "broad",
+    "caught": true,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 5.399466,
+        "type": "SupportBase",
+        "base": 2,
+        "target": "hold"
+      },
+      {
+        "time": 5.799466,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 6.780553,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 750,
+    "y": 240,
+    "group": "broad",
+    "caught": true,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 5.169062,
+        "type": "SupportBase",
+        "base": 2,
+        "target": "hold"
+      },
+      {
+        "time": 5.569062,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 6.550149,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 750,
+    "y": 280,
+    "group": "broad",
+    "caught": true,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 4.933436,
+        "type": "SupportBase",
+        "base": 2,
+        "target": "hold"
+      },
+      {
+        "time": 5.333436,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 6.314523,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 800,
+    "y": 80,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.963256,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 800,
+    "y": 120,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.96392,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 800,
+    "y": 160,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.962808,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 800,
+    "y": 200,
+    "group": "broad",
+    "caught": true,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 5.491006,
+        "type": "SupportBase",
+        "base": 2,
+        "target": "hold"
+      },
+      {
+        "time": 5.891006,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 6.872093,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 800,
+    "y": 240,
+    "group": "broad",
+    "caught": true,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 5.279894,
+        "type": "SupportBase",
+        "base": 2,
+        "target": "hold"
+      },
+      {
+        "time": 5.679894,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 6.660981,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 800,
+    "y": 280,
+    "group": "broad",
+    "caught": true,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 5.067041,
+        "type": "SupportBase",
+        "base": 2,
+        "target": "hold"
+      },
+      {
+        "time": 5.467041,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 6.448128,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 850,
+    "y": 80,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.962775,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 850,
+    "y": 120,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.961788,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 850,
+    "y": 160,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964146,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 850,
+    "y": 200,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.962604,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 850,
+    "y": 240,
+    "group": "broad",
+    "caught": true,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 5.414537,
+        "type": "SupportBase",
+        "base": 2,
+        "target": "hold"
+      },
+      {
+        "time": 5.814537,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 6.795624,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 850,
+    "y": 280,
+    "group": "broad",
+    "caught": true,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 5.225568,
+        "type": "SupportBase",
+        "base": 2,
+        "target": "hold"
+      },
+      {
+        "time": 5.625568,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 6.606655,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 900,
+    "y": 80,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.963153,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 900,
+    "y": 120,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.963932,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 900,
+    "y": 160,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.962225,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 900,
+    "y": 200,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964149,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 900,
+    "y": 240,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964148,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 900,
+    "y": 280,
+    "group": "broad",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.962544,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 243,
+    "y": 131,
+    "group": "other-sector",
+    "caught": false,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "BackupFielder",
+        "target": 3
+      },
+      {
+        "time": 7.763309,
+        "type": "SupportBase",
+        "base": 3,
+        "target": 3
+      },
+      {
+        "time": 12.964145,
+        "type": "Decelerate",
+        "target": 3
+      },
+      {
+        "time": 12.964145,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 14.345232,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  },
+  {
+    "x": 500,
+    "y": 131,
+    "group": "other-sector",
+    "caught": true,
+    "transitions": [
+      {
+        "time": 0,
+        "type": "SupportBase",
+        "base": 2,
+        "target": 2
+      },
+      {
+        "time": 5.661632,
+        "type": "SupportBase",
+        "base": 2,
+        "target": "hold"
+      },
+      {
+        "time": 6.061632,
+        "type": "Decelerate",
+        "target": "hold"
+      },
+      {
+        "time": 7.042719,
+        "type": "HoldPosition",
+        "target": "hold"
+      }
+    ]
+  }
+]

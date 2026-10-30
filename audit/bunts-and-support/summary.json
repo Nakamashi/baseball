@@ -1,0 +1,276 @@
+{
+  "cases": 3360,
+  "errors": [],
+  "denseSoft": {
+    "cases": 2760,
+    "winners": {
+      "C": 2760
+    },
+    "stopMin": 3.0737699972150936,
+    "stopMax": 3.412060489704577
+  },
+  "lfCases": 87,
+  "rates": [
+    {
+      "speed": "average",
+      "mask": 0,
+      "anticipation": false,
+      "strength": "soft",
+      "cases": 63,
+      "BRout": 63,
+      "leadOut": 0,
+      "noOut": 0
+    },
+    {
+      "speed": "average",
+      "mask": 0,
+      "anticipation": false,
+      "strength": "normal",
+      "cases": 63,
+      "BRout": 45,
+      "leadOut": 0,
+      "noOut": 18
+    },
+    {
+      "speed": "average",
+      "mask": 0,
+      "anticipation": false,
+      "strength": "hard",
+      "cases": 63,
+      "BRout": 54,
+      "leadOut": 0,
+      "noOut": 9
+    },
+    {
+      "speed": "average",
+      "mask": 0,
+      "anticipation": true,
+      "strength": "soft",
+      "cases": 63,
+      "BRout": 63,
+      "leadOut": 0,
+      "noOut": 0
+    },
+    {
+      "speed": "average",
+      "mask": 0,
+      "anticipation": true,
+      "strength": "normal",
+      "cases": 63,
+      "BRout": 45,
+      "leadOut": 0,
+      "noOut": 18
+    },
+    {
+      "speed": "average",
+      "mask": 0,
+      "anticipation": true,
+      "strength": "hard",
+      "cases": 63,
+      "BRout": 63,
+      "leadOut": 0,
+      "noOut": 0
+    },
+    {
+      "speed": "average",
+      "mask": 1,
+      "anticipation": false,
+      "strength": "soft",
+      "cases": 63,
+      "BRout": 0,
+      "leadOut": 63,
+      "noOut": 0
+    },
+    {
+      "speed": "average",
+      "mask": 1,
+      "anticipation": false,
+      "strength": "normal",
+      "cases": 63,
+      "BRout": 32,
+      "leadOut": 13,
+      "noOut": 18
+    },
+    {
+      "speed": "average",
+      "mask": 1,
+      "anticipation": false,
+      "strength": "hard",
+      "cases": 63,
+      "BRout": 9,
+      "leadOut": 45,
+      "noOut": 9
+    },
+    {
+      "speed": "average",
+      "mask": 1,
+      "anticipation": true,
+      "strength": "soft",
+      "cases": 63,
+      "BRout": 0,
+      "leadOut": 63,
+      "noOut": 0
+    },
+    {
+      "speed": "average",
+      "mask": 1,
+      "anticipation": true,
+      "strength": "normal",
+      "cases": 63,
+      "BRout": 32,
+      "leadOut": 13,
+      "noOut": 18
+    },
+    {
+      "speed": "average",
+      "mask": 1,
+      "anticipation": true,
+      "strength": "hard",
+      "cases": 63,
+      "BRout": 16,
+      "leadOut": 47,
+      "noOut": 0
+    },
+    {
+      "speed": "fast",
+      "mask": 0,
+      "anticipation": false,
+      "strength": "soft",
+      "cases": 63,
+      "BRout": 63,
+      "leadOut": 0,
+      "noOut": 0
+    },
+    {
+      "speed": "fast",
+      "mask": 0,
+      "anticipation": false,
+      "strength": "normal",
+      "cases": 63,
+      "BRout": 21,
+      "leadOut": 0,
+      "noOut": 42
+    },
+    {
+      "speed": "fast",
+      "mask": 0,
+      "anticipation": false,
+      "strength": "hard",
+      "cases": 63,
+      "BRout": 36,
+      "leadOut": 0,
+      "noOut": 27
+    },
+    {
+      "speed": "fast",
+      "mask": 0,
+      "anticipation": true,
+      "strength": "soft",
+      "cases": 63,
+      "BRout": 63,
+      "leadOut": 0,
+      "noOut": 0
+    },
+    {
+      "speed": "fast",
+      "mask": 0,
+      "anticipation": true,
+      "strength": "normal",
+      "cases": 63,
+      "BRout": 23,
+      "leadOut": 0,
+      "noOut": 40
+    },
+    {
+      "speed": "fast",
+      "mask": 0,
+      "anticipation": true,
+      "strength": "hard",
+      "cases": 63,
+      "BRout": 45,
+      "leadOut": 0,
+      "noOut": 18
+    },
+    {
+      "speed": "fast",
+      "mask": 1,
+      "anticipation": false,
+      "strength": "soft",
+      "cases": 63,
+      "BRout": 0,
+      "leadOut": 63,
+      "noOut": 0
+    },
+    {
+      "speed": "fast",
+      "mask": 1,
+      "anticipation": false,
+      "strength": "normal",
+      "cases": 63,
+      "BRout": 21,
+      "leadOut": 0,
+      "noOut": 42
+    },
+    {
+      "speed": "fast",
+      "mask": 1,
+      "anticipation": false,
+      "strength": "hard",
+      "cases": 63,
+      "BRout": 24,
+      "leadOut": 13,
+      "noOut": 26
+    },
+    {
+      "speed": "fast",
+      "mask": 1,
+      "anticipation": true,
+      "strength": "soft",
+      "cases": 63,
+      "BRout": 0,
+      "leadOut": 63,
+      "noOut": 0
+    },
+    {
+      "speed": "fast",
+      "mask": 1,
+      "anticipation": true,
+      "strength": "normal",
+      "cases": 63,
+      "BRout": 23,
+      "leadOut": 0,
+      "noOut": 40
+    },
+    {
+      "speed": "fast",
+      "mask": 1,
+      "anticipation": true,
+      "strength": "hard",
+      "cases": 63,
+      "BRout": 32,
+      "leadOut": 13,
+      "noOut": 18
+    }
+  ],
+  "movingFirstCases": 814,
+  "movingExample": {
+    "id": "1.1:-42:soft:true:average:0:0",
+    "depth": 1.1,
+    "angle": -42,
+    "strength": "soft",
+    "anticipateBunt": true,
+    "speed": "average",
+    "mask": 0,
+    "outs": 0,
+    "fielder": "C",
+    "pickup": 1.5113165946964549,
+    "firstCover": "1B",
+    "BRout": true,
+    "leadOut": false,
+    "noOut": false,
+    "movingFirst": true,
+    "firstControl": 4.528184,
+    "failures": []
+  },
+  "note": "Deterministic engineering regression, not population baseball success rates. Times include the one-second Ready phase."
+}

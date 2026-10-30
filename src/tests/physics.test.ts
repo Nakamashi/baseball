@@ -33,7 +33,8 @@ it("slides into second and third while preserving reactions and retouches", () =
   c.ball = { type: "Bunt", destination: { x: 500, y: 650 }, strength: "soft" };
   c.aggression = "aggressive";
   const s = provider.generate(c);
-  expect(s.dynamic.decisions[0].target).toBe(1);
+  expect(s.dynamic.decisions[0].target).toBe(2);
+  expect(s.dynamic.events.some(e => e.type === "RunnerOut" && e.player === "R1" && e.force)).toBe(true);
   expect(validateScenario(s)).toEqual([]);
 });
 function settings(

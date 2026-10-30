@@ -270,7 +270,7 @@ try {
     });
     await generate();
     await slider.fill("1.2");
-    await page.locator('[data-player="2B"]').click();
+    await page.locator(`[data-player="${x === 380 ? "1B" : "2B"}"]`).click();
     await page.screenshot({
       path:
         x === 380
@@ -284,15 +284,31 @@ try {
     await end();
     const buntEvents = await eventText();
     if (x === 380) {
-      // Verified against 8331a1c: this late 3B pickup cannot beat either
-      // runner. Holding is the sound play; do not demand a futile throw.
+      // The closer catcher now wins this pickup, but its wide lane is still
+      // too late. Preserve the legitimate hold rather than forcing an out.
       assert.doesNotMatch(buntEvents, /throws/);
       assert.match(await page.locator(".scoreboard").innerText(), /Outs\s*0/);
     } else {
-      assert.match(buntEvents, /1B throws to 2B/);
+      assert.match(buntEvents, /C throws to 2B/);
       assert.match(await page.locator(".scoreboard").innerText(), /Outs\s*1/);
     }
   }
+  for (const [strength, fielder] of [["soft", "C"], ["hard", "P"]]) {
+    await configure({ type: "Bunt", x: 500, y: 739.065689, strength, speed: "fast", runners: [] });
+    await generate(); await end();
+    assert.match(await eventText(), new RegExp(`${fielder} throws to 1B`));
+    assert.match(await page.locator(".scoreboard").innerText(), /Outs\s*1/);
+  }
+  await configure({ type: "Fly ball", x: 757, y: 131, strength: "normal", speed: "fast", runners: [],
+    fenceMode: "keep-in-play", fenceHeight: 8 });
+  await generate(); await slider.fill("10.6");
+  const lfPosition = () => page.locator('[data-player="LF"]').evaluate(node => {
+    const m = node.transform.baseVal.consolidate().matrix; return [m.e, m.f];
+  });
+  const lfBeforeTag = await lfPosition();
+  await slider.fill("13"); const lfAfterTag = await lfPosition();
+  assert.ok(Math.hypot(lfBeforeTag[0] - lfAfterTag[0], lfBeforeTag[1] - lfAfterTag[1]) < 0.1,
+    "LF retains third support through relay control and the tag");
   await configure({
     type: "Bunt",
     x: 637,
@@ -315,7 +331,7 @@ try {
       return Math.hypot(matrix.e - 300, matrix.f - 570) < 0.1;
     }),
     true,
-    "Third is already covered before P secures the bunt",
+    "Third is already covered before C secures the bunt",
   );
   await end();
   const recoveredThird = await page

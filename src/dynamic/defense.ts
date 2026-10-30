@@ -17,7 +17,6 @@ import { throwingProfile, directThrowRange, throwFlight, throwPhysics } from "./
 import { planMovingReception } from "./receiving";
 import {
   bases,
-  defaults,
   beyond,
   metres,
   mixPhysical,
@@ -230,17 +229,26 @@ export class DefensiveDecisionEngine {
     const speed = Math.hypot(velocity.x, velocity.y),
       brake = speed / assumptions.defenderAcceleration;
     const p = toWorld(from);
+    const stop = fromWorld({ x: p.x + velocity.x * brake / 2,
+      y: p.y + velocity.y * brake / 2 });
+    const prep = to ? throwingProfile(from, to, player, this.settings?.armStrength).prepare
+      : assumptions.transfer;
+    // An aligned catcher transfer can release during the same bounded braking
+    // approach. It does not accelerate the throw or shorten nominal preparation.
+    const destination = to && toWorld(to);
+    const dx = destination ? destination.x - p.x : 0,
+      dy = destination ? destination.y - p.y : 0;
+    const aligned = player === "C" && this.settings?.ball.type === "Bunt" && !!to &&
+      speed > 1e-6 && speed <= 3 &&
+      (velocity.x * dx + velocity.y * dy) / (speed * Math.hypot(dx, dy)) >= Math.cos(Math.PI / 9);
+    const time = Math.max(prep, aligned ? (speed - 1.2) / assumptions.defenderAcceleration : brake);
+    const dt = Math.min(time, brake), distance = speed * dt - assumptions.defenderAcceleration * dt * dt / 2;
     return {
-      time: Math.max(
-        to
-          ? throwingProfile(from, to, player, this.settings?.armStrength)
-              .prepare
-          : assumptions.transfer,
-        brake,
-      ),
+      time,
+      motionTarget: stop,
       point: fromWorld({
-        x: p.x + (velocity.x * brake) / 2,
-        y: p.y + (velocity.y * brake) / 2,
+        x: p.x + (speed ? velocity.x / speed * distance : 0),
+        y: p.y + (speed ? velocity.y / speed * distance : 0),
       }),
     };
   }
@@ -819,7 +827,7 @@ export class DefensiveDecisionEngine {
         ? ball.boundary
           ? toward(ball.fieldingPoint, bases.home, 2)
           : (ball.pursuitTarget ?? ball.fieldingPoint)
-        : this.release(owner, locations[owner]).point,
+        : this.release(owner, locations[owner]).motionTarget,
       100,
       stage === "contact"
         ? ball.boundary
@@ -842,6 +850,10 @@ export class DefensiveDecisionEngine {
       for (const p of ["P", "1B", "3B"] as Position[]) {
         if (
           map.has(p) ||
+          // Communicate the primary pickup. Corners with no competitive
+          // interception remain available for their own base coverage.
+          (ball.candidates?.find(c => c.player === p)?.time ?? Infinity) >
+            (ball.touchTime ?? ball.fieldingTime) + 0.3 ||
           p === context?.fixedReceiver ||
           // When C fields near home with R3 present, keep P available for
           // plate coverage rather than sending every corner/mound player in.
@@ -883,6 +895,11 @@ export class DefensiveDecisionEngine {
     );
     const distanceToTarget = target === "hold" ? 0 : metres(source, bases[target]);
     const deepReturn = outfield && distanceToTarget > directThrowRange(owner, settings.armStrength);
+    // Support follows the whole original pickup-to-base return, even when an
+    // intermediate reception makes the remaining throw a short infield leg.
+    const returnOrigin = ball.touchPoint ?? ball.fieldingPoint;
+    const deepSupport = outfieldReturn && target !== "hold" &&
+      metres(returnOrigin, bases[target]) > directThrowRange(ball.fielder, settings.armStrength);
     const ballSide: Position = source.x < 500 ? "SS" : "2B";
     const pending = target !== "hold" && this.continuation?.target === target
       ? this.continuation.stops : undefined;
@@ -1021,7 +1038,7 @@ export class DefensiveDecisionEngine {
           (owner === "1B" &&
             base === 1 &&
             metres(locations[owner], bases[1]) < 4));
-      const preferences =
+      let preferences =
         base === 2 && trailer && replacement
           ? [replacement, ...conventions.coverage[2]]
           : settings.ball.type === "Bunt" && base === 1 && map.has("1B")
@@ -1031,6 +1048,8 @@ export class DefensiveDecisionEngine {
             : base === 1 && owner === "1B"
               ? (["P", "2B", "SS", "3B", "C"] as Position[])
               : conventions.coverage[base];
+      if (base === target && context?.fixedReceiver)
+        preferences = [context.fixedReceiver, ...preferences.filter(p => p !== context.fixedReceiver)];
       const eligible = preferences.filter(
         (p) =>
           !map.has(p) &&
@@ -1100,7 +1119,7 @@ export class DefensiveDecisionEngine {
       const player =
         base === target &&
         context?.fixedReceiver &&
-        pool.includes(context.fixedReceiver)
+        eligible.includes(context.fixedReceiver)
           ? context.fixedReceiver
           : carry
             ? owner
@@ -1122,6 +1141,33 @@ export class DefensiveDecisionEngine {
             catchAfter: Math.max(0, fixed.reception.plannedAt + fixed.reception.catchAfter - time),
             controlAfter: Math.max(0, fixed.reception.plannedAt + fixed.reception.controlAfter - time),
             plannedAt: time };
+        } else if (base === 1 && target === 1 && player !== owner && !outfield &&
+          settings.ball.type === "Bunt" && !context?.ballInFlight &&
+          runners.some(r => r.id === "BR" && isForced(r, runners, 1))) {
+          const velocity = state && metres(state.position, locations[player]) < 0.001
+            ? state.velocity : zeroVelocity();
+          const reception = planMovingReception(locations[player], velocity, bases[1],
+            state?.reaction ?? 0, point => {
+              const prep = stage === "contact"
+                ? Math.max(throwingProfile(source, point, owner, settings.armStrength).prepare,
+                    (ball.candidates?.find(c => c.player === owner)?.endingSpeed ?? 0) /
+                      assumptions.defenderAcceleration - assumptions.fieldDelay)
+                : this.release(owner, locations[owner], point).time;
+              return (stage === "contact" ? ball.fieldingTime : 0) + prep +
+                throwFlight(source, point, owner, settings.armStrength).duration;
+            }, time);
+          // A player who can settle at the bag earlier should wait there. Do
+          // not delay coverage to manufacture moving footwork for an easy catch.
+          const ready = stage === "contact" ? ball.fieldingTime : 0;
+          const stopped = Math.max(ready + (stage === "contact"
+            ? Math.max(throwingProfile(source, bases[1], owner, settings.armStrength).prepare,
+                (ball.candidates?.find(c => c.player === owner)?.endingSpeed ?? 0) /
+                  assumptions.defenderAcceleration - assumptions.fieldDelay)
+            : this.release(owner, locations[owner], bases[1]).time) +
+              throwFlight(source, bases[1], owner, settings.armStrength).duration,
+            this.travel(player, locations[player], bases[1])) + assumptions.catchTime;
+          if (reception && reception.controlAfter < stopped - 1e-5)
+            assignment.reception = { ...reception, kind: "moving-first" };
         } else if (base === 2 && target === 2 && player !== owner && !outfield &&
           settings.ball.type === "Ground ball" && outs < 2 &&
           ["SS", "2B"].includes(player) && !context?.ballInFlight &&
@@ -1183,7 +1229,7 @@ export class DefensiveDecisionEngine {
         84, "innerCutoff", "home", cutoff);
     if (trailer)
       put(trailer, "RelayTrailer", backupPoint(source, relayPoint!, 7.62), 83, "relayTrailer", target as Base, cutoff);
-    if (deepReturn && (target === "home" || target === 3) && !map.has("P") && context?.fixedReceiver !== "P") {
+    if (deepSupport && (target === "home" || target === 3) && !map.has("P") && context?.fixedReceiver !== "P") {
       const incoming = relayStops.at(-1)?.point ?? context?.incomingFrom ?? source;
       put("P", "BackupThrow", backupPoint(incoming, bases[target]), 82, "throwBackup", target, receiver);
       map.get("P")!.throwOrigin = incoming;
@@ -1198,9 +1244,10 @@ export class DefensiveDecisionEngine {
       if (base !== target && liveAt(base)) cover(base, 80);
     // Control second on all outfield returns, even while BR is headed to first.
     if ((outfield || liveAt(1)) && target !== 2) cover(2, 78);
-    if (deepReturn && source.x >= 500 && (target === "home" || target === 3) && !map.has("LF")) {
-      put("LF", "SupportBase", backupPoint(relayPoint ?? source, bases[3], conventions.secondaryBackupDepth), 77, "throwBackup", 3);
-      map.get("LF")!.throwOrigin = relayPoint ?? source;
+    if (deepSupport && returnOrigin.x >= 500 && (target === "home" || target === 3) && !map.has("LF")) {
+      const incoming = relayStops.at(-1)?.point ?? context?.incomingFrom ?? source;
+      put("LF", "SupportBase", backupPoint(incoming, bases[3], conventions.secondaryBackupDepth), 77, "throwBackup", 3);
+      map.get("LF")!.throwOrigin = incoming;
     }
     // A sacrifice runner's current goal of second does not make third safe to
     // abandon. Read a right-side bunt immediately; otherwise recover once the
@@ -1505,7 +1552,7 @@ export class DefensiveDecisionEngine {
           ? "RF"
           : ball.fielder === "RF"
             ? "LF"
-            : source.x < 500
+            : returnOrigin.x < 500
               ? "RF"
               : "LF";
       if (!map.has(opposite)) {
@@ -1570,13 +1617,14 @@ export class DefensiveDecisionEngine {
     }
     // A nonreceiving catcher protects home and directs play. Deliberate holding
     // is explicit and has a stationary destination rather than hidden shading.
+    const catcherHome = beyond(bases[2], bases.home, assumptions.catcherDepth);
     if (!map.has("C"))
       put(
         "C",
-        metres(locations.C, defaults.C) > 1
+        metres(locations.C, catcherHome) > 1
           ? "RecoverPosition"
           : "HoldPosition",
-        metres(locations.C, defaults.C) > 1 ? defaults.C : locations.C,
+        metres(locations.C, catcherHome) > 1 ? catcherHome : locations.C,
         35,
         "homeGuard",
         "home",
