@@ -1,5 +1,17 @@
 # Continuous ball motion and coordinated defense
 
+October 30 follow-up: dynamic C starts physically 1.5 m behind home; the authored
+diagram remains unchanged. Soft bunt launch is now 3 m/s before the existing
+bounded depth-intent multiplier, producing about 3.07–3.41 m untouched rollout
+over the audited fair inputs. Normal/hard remain 7/9 m/s. A click still does not
+stop the ball. These are engineering contact presets, not measured youth data.
+First-base bunt forces can use bounded 1.2 m/s bag-crossing reception only when
+it beats stopping/waiting; secure control coincides with actual base contact
+0.12 s after glove contact. A C moving at <=3 m/s within 20 degrees of the throw
+can release while decelerating to <=1.2 m/s, after the full nominal preparation.
+All other throws retain stopping preparation. Compiler samples retain even the
+last micrometres of a route. See [BUNTS_AND_RETURN_SUPPORT.md](BUNTS_AND_RETURN_SUPPORT.md).
+
 Defensive Audit V2: tactical arrival means the earliest physical base crossing,
 not the duration of the complete stop/overshoot/return plan. The event compiler
 shares the crossing-root calculation and ignores stationary reaction intervals

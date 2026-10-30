@@ -176,7 +176,7 @@ describe("baseball tactical correctness: developing reads, profiles and new cont
     expect(
       s.phases
         .find((p) => p.title === "Contact")!
-        .assignments!.find((a) => a.player === "2B"),
+        .assignments!.find((a) => a.player === "1B"),
     ).toMatchObject({ type: "CoverBase", base: 1 });
     audit(s);
   });
@@ -185,13 +185,13 @@ describe("baseball tactical correctness: developing reads, profiles and new cont
     [620, 650, "1B"],
   ] as const)("coordinates a fair sacrifice bunt at %s,%s", (x, y, fielder) => {
     const c = make(x, y, "Bunt");
-    c.ball.strength = "normal";
+    c.ball.strength = "hard";
     c.runnerSpeed = "slow";
     c.anticipateBunt = true;
     const s = provider.generate(c),
       a = s.phases.find((p) => p.title === "Contact")!.assignments!;
     expect(s.dynamic.ball.fielder).toBe(fielder);
-    expect(a.find((a) => a.player === "2B")).toMatchObject({
+    expect(a.find((a) => a.player === (fielder === "1B" ? "2B" : "1B"))).toMatchObject({
       type: "CoverBase",
       base: 1,
     });
@@ -199,7 +199,9 @@ describe("baseball tactical correctness: developing reads, profiles and new cont
       type: "CoverBase",
       base: 2,
     });
-    expect(a.some((a) => a.type === "ChargeBunt")).toBe(true);
+    expect(a.find(a => a.player === fielder)!.type).toBe("FieldBall");
+    expect(a.filter(a => a.type === "ChargeBunt").every(a =>
+      s.dynamic.ball.candidates!.find(c => c.player === a.player)!.time <= s.dynamic.ball.touchTime! + 0.3)).toBe(true);
     expect(throws(s).length).toBeGreaterThan(0);
     audit(s);
   });
@@ -210,7 +212,7 @@ describe("baseball tactical correctness: developing reads, profiles and new cont
       c.ball.strength = "normal";
       c.aggression = "normal";
       const s = provider.generate(c);
-      expect(s.dynamic.ball.fielder).toBe("P");
+      expect(s.dynamic.ball.fielder).toBe("C");
       expect(throws(s).map((e) => e.base)).toEqual([1]);
       const secured = s.dynamic.events.find((e) => e.type === "BallFielded")!;
       for (const p of s.phases.filter((p) => p.start < secured.time))
@@ -236,7 +238,7 @@ describe("baseball tactical correctness: developing reads, profiles and new cont
           3,
         ),
       );
-      expect(recover.assignments.find((a) => a.player === "2B")).toMatchObject({
+      expect(recover.assignments.find((a) => a.player === "1B")).toMatchObject({
         type: "CoverBase",
         base: 1,
       });

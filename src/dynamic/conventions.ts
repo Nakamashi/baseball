@@ -18,6 +18,8 @@ export const assumptions = {
     batterStart,
   ),
   defenderAcceleration: 5,
+  // Physical receiving stance; the authored diagram's C marker is schematic.
+  catcherDepth: 1.5,
   fieldingReach: 0.6,
   secondaryLeadMetres: 27.43 * 0.08,
   runnerAcceleration,

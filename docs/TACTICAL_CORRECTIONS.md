@@ -1,5 +1,10 @@
 # Tactical correctness and baseball accuracy corrections
 
+> October 30: [BUNTS_AND_RETURN_SUPPORT.md](BUNTS_AND_RETURN_SUPPORT.md) describes
+> cooperative bunt charging, first-base reception, physical catcher stance,
+> deadened contact and stable deep-return support. Runner sprint and throw
+> flight profiles remain unchanged. Numerical presets remain provisional.
+
 > October 29 update: [THROWING_RELAYS.md](THROWING_RELAYS.md) supersedes the
 > constant effective-flight-speed and one-intermediate-relay limitations in this
 > historical report. Deep returns now distinguish a ball-side primary relay, an

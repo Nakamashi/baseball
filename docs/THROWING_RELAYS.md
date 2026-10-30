@@ -1,5 +1,15 @@
 # Throwing flight and coordinated gap relays
 
+October 30 follow-up: secondary third support and P's base backup derive from
+the original pickup/fielder and current ultimate base, independently of each
+relay leg's remaining range. Far-outfielder sector also uses original pickup.
+This pure derived context is shared by candidate forecasts and compilation;
+there is no mutable assignment history. Reserved receivers, genuine coverage,
+redirections and play completion can release support. An aligned catcher bunt
+transfer may release during bounded braking after nominal preparation, at
+<=1.2 m/s; other throws still plant. Flight speeds, drag and gravity are unchanged.
+See [BUNTS_AND_RETURN_SUPPORT.md](BUNTS_AND_RETURN_SUPPORT.md).
+
 This update uses the user's attached **Inside Baseball Cut-Off & Relay Manual**,
 read locally. Page 17 covers right-center with R1; pages 14–16 cover the related
 left-center and bases-empty patterns. Pages 18–19 distinguish right-field-line

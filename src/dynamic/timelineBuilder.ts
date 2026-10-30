@@ -202,7 +202,9 @@ export class TimelineBuilder {
         const end = sampleMotion(plan, dt);
         this.velocities[assignment.player] = end.velocity;
         const samples = motionSamples(plan, dt);
-        if (samples.some((p) => metres(from, p.point) > 0.00001))
+        // Retain sub-millimetre completion too: dropping the last few microns
+        // leaves base recovery permanently pending in the finishing loop.
+        if (samples.some((p) => metres(from, p.point) > 1e-9))
           movements.push({
             player: assignment.player,
             path: samples.map((p) => p.point),

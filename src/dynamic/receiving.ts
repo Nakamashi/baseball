@@ -3,11 +3,11 @@ import { planMotion, sampleMotion, type MotionPlan } from "./locomotion";
 import { assumptions } from "./conventions";
 import { fromWorld, toWorld, metres, beyond } from "./geometry";
 
-/** Controlled walking-speed passage across the force bag. Provisional, not a
+/** Controlled walking-speed passage across a force bag. Provisional, not a
  * measured youth benchmark. The same bounded braking plan drives all samples. */
 export const pivotReceivingSpeed = 1.2;
 export interface MovingReception {
-  kind: "moving-pivot";
+  kind: "moving-pivot" | "moving-first";
   catchPoint: Point;
   basePoint: Point;
   throughPoint: Point;

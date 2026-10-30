@@ -1,5 +1,25 @@
 # Defensive fundamentals audit
 
+## October 30: bunt fielding and return-support follow-up
+
+See [BUNTS_AND_RETURN_SUPPORT.md](BUNTS_AND_RETURN_SUPPORT.md) for the audit,
+implementation and reproducible checks. Physical catcher stance is now 1.5 m
+behind home rather than the authored diagram's 4.36 m marker offset. Soft bunts
+use a deadened 3 m/s launch preset. Corners charge only when their interception
+is competitive with the selected primary; otherwise 1B stays available for first.
+2B rotates when 1B genuinely fields/charges. First-base bunt forces may use the
+same controlled moving reception as second, provided it improves arrival over a
+stopped catch. Possession control and actual base contact remain separate from
+glove contact. An aligned moving catcher can release during bounded braking;
+unaligned throws still require a plant. These numbers are provisional presets.
+
+LF third support and P base backup follow the original pickup's deep return,
+not the remaining distance after each relay. Original pickup sector determines
+the far outfielder. Final incoming lanes, receiver reservations, actual target
+changes and higher-priority base coverage still govern reassignment. The original
+757,131 fly retains its throw/tag times while LF stays at third through the tag.
+The finishing compiler retains micrometre motion so base recovery can converge.
+
 ## Defensive Audit V2 implementation (October 29)
 
 The historical [V2 audit](DEFENSIVE_AUDIT_V2.md) remains unchanged. Current fixes
