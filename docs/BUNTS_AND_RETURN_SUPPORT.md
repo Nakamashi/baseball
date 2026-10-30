@@ -120,11 +120,13 @@ third-to-second role flip. These times include the one-second Ready phase.
   main deployment. Dynamic checks additionally cover fast Soft/hard bunt outs,
   EN/JA first coverage and LF holding third across relay control/tag.
 
-The initial CI browser run passed the gameplay, encyclopedia, field editor and
-static-hosting suites but exposed a mobile resize-test race: scrolling before
-responsive reflow finished left the document short of its new bottom. The mobile
-test now re-establishes the bottom while awaiting actual note/bar clearance and
-retains its overlap assertion. No product layout or padding was changed for this.
+Repeated CI runs exposed mobile orientation-test races after otherwise passing
+browser runs: delayed responsive/focus scrolling invalidated earlier geometry,
+and a native touch assertion could read before React committed its update.
+Browser helpers now blur stale focus and await 150 ms of unchanged measured
+geometry, preserving actual note/bar overlap assertions at the document bottom.
+The touch test awaits its committed coordinates before asserting them. A real
+overlap or wrong coordinate still fails; no product layout or padding changed.
 
 Compact measured evidence is in `audit/bunts-and-support/summary.json` and
 `lf.json`. The reproducible audit writes full per-case rows to `cases.json`;

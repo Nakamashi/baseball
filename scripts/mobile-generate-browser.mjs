@@ -1,6 +1,7 @@
 import { chromium } from 'playwright-core';
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
+import { settledLayout } from './browser-layout.mjs';
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/usr/bin/chromium', headless: true, args: ['--no-sandbox'] });
 const page = await browser.newPage();
 const errors = []; page.on('pageerror', e => errors.push(e.message));
@@ -33,25 +34,12 @@ try {
   await page.locator(".advanced-settings > summary").click();
   for (const [width, height] of [[320, 568], [375, 667], [390, 844], [844, 390]]) {
     await page.setViewportSize({ width, height });
-    // Viewport changes update the existing bar measurement asynchronously.
-    await page.waitForFunction(() => {
-      const bar = document.querySelector('.generate-box'), main = bar?.closest('main');
-      return bar && main && Math.abs(parseFloat(main.style.getPropertyValue('--generate-bar-height')) - bar.getBoundingClientRect().height) < 1;
-    });
-    await page.evaluate(() => scrollTo(0, 0)); await visibleAtBottom();
-    // ResizeObserver equality can hold before the responsive content finishes
-    // reflowing. Re-establish the bottom after reflow; a real padding/overlap
-    // failure still times out here and is asserted again below.
-    await page.waitForFunction(() => {
-      scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
-      const tail = document.querySelector('#dynamic-controls .scope-note')?.getBoundingClientRect();
-      const bar = document.querySelector('.generate-box')?.getBoundingClientRect();
-      return tail && bar && tail.bottom <= bar.top + 1;
-    });
+    await settledLayout(page); await visibleAtBottom();
+    const layout = await settledLayout(page, 'bottom');
     await visibleAtBottom();
-    const tail = await page.locator('#dynamic-controls .scope-note').boundingBox();
-    const bar = await page.locator('.generate-box').boundingBox();
-    if (tail && bar) assert.ok(tail.y + tail.height <= bar.y + 1, `Last content obscured at ${width}x${height}: tail ${JSON.stringify(tail)}, bar ${JSON.stringify(bar)}`);
+    const { tail, bar } = layout;
+    assert.ok(Math.abs(layout.scrollHeight - layout.clientHeight - layout.scroll) <= 1, 'Reached document bottom');
+    assert.ok(tail && bar && tail.bottom <= bar.y + 1, `Last content obscured at ${width}x${height}: ${JSON.stringify(layout)}`);
     await page.getByRole('combobox', { name: 'Batted ball', exact: true }).selectOption('Bunt');
     await page.getByRole('spinbutton', { name: 'Ball aim / landing point X', exact: true }).fill('620');
     await page.getByRole('spinbutton', { name: 'Ball aim / landing point Y', exact: true }).fill('650');
