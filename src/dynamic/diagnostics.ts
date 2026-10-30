@@ -86,10 +86,12 @@ export function inspectDefense(scenario: DynamicScenario, requestedTime = 0) {
       throws: scenario.dynamic.events
         .filter((e) => e.type === "ThrowStarted")
         .map((e) => {
-          const glove = scenario.dynamic.events.find(
+          const missed = scenario.dynamic.events.find(v=>v.type === "ThrowMissed" &&
+            v.time >= e.time && v.time < (scenario.dynamic.events.find(n=>n.type === "ThrowStarted" && n.time > e.time)?.time ?? Infinity));
+          const glove = missed ? undefined : scenario.dynamic.events.find(
             (v) => v.type === "ThrowGloveContact" && v.time >= e.time,
           );
-          const secured = scenario.dynamic.events.find(
+          const secured = missed ? undefined : scenario.dynamic.events.find(
             (v) => v.type === "ThrowReceived" && v.time >= e.time,
           );
           const phase = scenario.phases.find(
@@ -102,11 +104,12 @@ export function inspectDefense(scenario: DynamicScenario, requestedTime = 0) {
             .filter(
               (v) =>
                 v.time <= e.time &&
-                (v.type === "BallFielded" || v.type === "ThrowReceived") &&
+                (v.type === "BallFielded" || v.type === "ThrowReceived" || v.type === "RecoverySecured") &&
                 v.player === e.player,
             )
             .at(-1);
           return {
+            ...(missed ? { outcome: "missed", missed: missed.time } : {}),
             preparation: previousControl
               ? e.time - previousControl.time
               : undefined,
@@ -146,6 +149,7 @@ export function inspectDefense(scenario: DynamicScenario, requestedTime = 0) {
           force: e.force,
         })),
     },
+    ...(scenario.dynamic.throwingError ? {throwingError: scenario.dynamic.throwingError, ballControl: frame.ballControl} : {}),
     phase: snapshot.phase.title,
     state: snapshot.state,
     settings: scenario.dynamic.settings,

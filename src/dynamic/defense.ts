@@ -100,6 +100,7 @@ export class ThrowingEngine {
   }
 }
 const reasonKeys: Record<AssignmentReason, DynamicMessageKey> = {
+  loosePursuit: "loosePursuitWhy",
   priorityCatch: "priorityCatchWhy",
   primary: "fieldWhy",
   release: "releaseWhy",
@@ -139,6 +140,7 @@ export function assignmentText(a: DefensiveAssignment): Responsibility {
     DefensiveAssignment["type"],
     readonly [DynamicMessageKey, DynamicMessageKey]
   > = {
+    PursueLooseBall: ["loosePursuitAction", "fieldNext"],
     FieldBall: ["fieldAction", "fieldNext"],
     CoverBase: ["coverAction", "coverNext"],
     Cutoff: ["cutoffAction", "relayNext"],

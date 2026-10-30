@@ -1,0 +1,325 @@
+[
+  {
+    "name": "recovered-tag-0",
+    "settings": {
+      "includeError": true,
+      "field": {
+        "fenceHeight": 8,
+        "fenceMode": "keep-in-play"
+      },
+      "state": {
+        "outs": 2,
+        "balls": 0,
+        "strikes": 0,
+        "runners": {
+          "R1": 1,
+          "R2": 2,
+          "R3": 3
+        },
+        "phase": "Ready",
+        "runs": 0,
+        "inning": 1,
+        "half": "top",
+        "homeScore": 0,
+        "awayScore": 0,
+        "fieldingTeam": "home",
+        "strategy": "standard"
+      },
+      "ball": {
+        "type": "Bunt",
+        "strength": "hard",
+        "destination": {
+          "x": 454.25323333595,
+          "y": 645.1228622817406
+        }
+      },
+      "aggression": "aggressive",
+      "runnerSpeed": "slow",
+      "throwTarget": 2,
+      "armStrength": "developing",
+      "anticipateBunt": true
+    }
+  },
+  {
+    "name": "recovered-tag-1",
+    "settings": {
+      "includeError": true,
+      "field": {
+        "fenceHeight": 8,
+        "fenceMode": "keep-in-play"
+      },
+      "state": {
+        "outs": 0,
+        "balls": 0,
+        "strikes": 0,
+        "runners": {
+          "R1": 1,
+          "R2": 2,
+          "R3": 3
+        },
+        "phase": "Ready",
+        "runs": 0,
+        "inning": 1,
+        "half": "top",
+        "homeScore": 0,
+        "awayScore": 0,
+        "fieldingTeam": "home",
+        "strategy": "prevent"
+      },
+      "ball": {
+        "type": "Ground ball",
+        "strength": "soft",
+        "destination": {
+          "x": 512.7955437248202,
+          "y": 746.4753023827086
+        }
+      },
+      "aggression": "aggressive",
+      "runnerSpeed": "slow",
+      "throwTarget": 2,
+      "armStrength": "developing",
+      "anticipateBunt": false
+    }
+  },
+  {
+    "name": "recovered-tag-2",
+    "settings": {
+      "includeError": true,
+      "field": {
+        "fenceHeight": 8,
+        "fenceMode": "keep-in-play"
+      },
+      "state": {
+        "outs": 1,
+        "balls": 0,
+        "strikes": 0,
+        "runners": {
+          "R1": 1,
+          "R2": 2,
+          "R3": 3
+        },
+        "phase": "Ready",
+        "runs": 0,
+        "inning": 1,
+        "half": "top",
+        "homeScore": 0,
+        "awayScore": 0,
+        "fieldingTeam": "home",
+        "strategy": "standard"
+      },
+      "ball": {
+        "type": "Ground ball",
+        "strength": "normal",
+        "destination": {
+          "x": 526.3136793991935,
+          "y": 736.0251523218533
+        }
+      },
+      "aggression": "aggressive",
+      "runnerSpeed": "slow",
+      "throwTarget": 2,
+      "armStrength": "developing",
+      "anticipateBunt": true
+    }
+  },
+  {
+    "name": "recovered-tag-3",
+    "settings": {
+      "includeError": true,
+      "field": {
+        "fenceHeight": 8,
+        "fenceMode": "keep-in-play"
+      },
+      "state": {
+        "outs": 0,
+        "balls": 0,
+        "strikes": 0,
+        "runners": {
+          "R1": 1,
+          "R2": 2
+        },
+        "phase": "Ready",
+        "runs": 0,
+        "inning": 1,
+        "half": "top",
+        "homeScore": 0,
+        "awayScore": 0,
+        "fieldingTeam": "home",
+        "strategy": "standard"
+      },
+      "ball": {
+        "type": "Ground ball",
+        "strength": "soft",
+        "destination": {
+          "x": 536.3680331631489,
+          "y": 689.8175537374279
+        }
+      },
+      "aggression": "aggressive",
+      "runnerSpeed": "slow",
+      "throwTarget": 2,
+      "armStrength": "developing",
+      "anticipateBunt": false
+    }
+  },
+  {
+    "name": "recovered-tag-4",
+    "settings": {
+      "includeError": true,
+      "field": {
+        "fenceHeight": 8,
+        "fenceMode": "keep-in-play"
+      },
+      "state": {
+        "outs": 2,
+        "balls": 0,
+        "strikes": 0,
+        "runners": {
+          "R1": 1,
+          "R2": 2
+        },
+        "phase": "Ready",
+        "runs": 0,
+        "inning": 1,
+        "half": "top",
+        "homeScore": 0,
+        "awayScore": 0,
+        "fieldingTeam": "home",
+        "strategy": "standard"
+      },
+      "ball": {
+        "type": "Ground ball",
+        "strength": "soft",
+        "destination": {
+          "x": 411.6335706080394,
+          "y": 612.1999705515127
+        }
+      },
+      "aggression": "aggressive",
+      "runnerSpeed": "slow",
+      "throwTarget": 2,
+      "armStrength": "developing",
+      "anticipateBunt": false
+    }
+  },
+  {
+    "name": "recovered-tag-5",
+    "settings": {
+      "includeError": true,
+      "field": {
+        "fenceHeight": 8,
+        "fenceMode": "keep-in-play"
+      },
+      "state": {
+        "outs": 2,
+        "balls": 0,
+        "strikes": 0,
+        "runners": {
+          "R1": 1,
+          "R3": 3
+        },
+        "phase": "Ready",
+        "runs": 0,
+        "inning": 1,
+        "half": "top",
+        "homeScore": 0,
+        "awayScore": 0,
+        "fieldingTeam": "home",
+        "strategy": "standard"
+      },
+      "ball": {
+        "type": "Ground ball",
+        "strength": "soft",
+        "destination": {
+          "x": 413.86751261741574,
+          "y": 656.8702712218542
+        }
+      },
+      "aggression": "aggressive",
+      "runnerSpeed": "slow",
+      "throwTarget": 2,
+      "armStrength": "developing",
+      "anticipateBunt": true
+    }
+  },
+  {
+    "name": "controlled-first-turn-0",
+    "settings": {
+      "includeError": true,
+      "field": {
+        "fenceHeight": 8,
+        "fenceMode": "keep-in-play"
+      },
+      "state": {
+        "outs": 1,
+        "balls": 0,
+        "strikes": 0,
+        "runners": {
+          "R1": 1,
+          "R2": 2,
+          "R3": 3
+        },
+        "phase": "Ready",
+        "runs": 0,
+        "inning": 1,
+        "half": "top",
+        "homeScore": 0,
+        "awayScore": 0,
+        "fieldingTeam": "home",
+        "strategy": "prevent"
+      },
+      "ball": {
+        "type": "Ground ball",
+        "strength": "normal",
+        "destination": {
+          "x": 437.27626517040443,
+          "y": 675.6351775619544
+        }
+      },
+      "aggression": "aggressive",
+      "runnerSpeed": "average",
+      "throwTarget": 2,
+      "armStrength": "standard",
+      "anticipateBunt": false
+    }
+  },
+  {
+    "name": "controlled-first-turn-1",
+    "settings": {
+      "includeError": true,
+      "field": {
+        "fenceHeight": 8,
+        "fenceMode": "keep-in-play"
+      },
+      "state": {
+        "outs": 0,
+        "balls": 0,
+        "strikes": 0,
+        "runners": {
+          "R1": 1
+        },
+        "phase": "Ready",
+        "runs": 0,
+        "inning": 1,
+        "half": "top",
+        "homeScore": 0,
+        "awayScore": 0,
+        "fieldingTeam": "home",
+        "strategy": "conservative"
+      },
+      "ball": {
+        "type": "Ground ball",
+        "strength": "soft",
+        "destination": {
+          "x": 520.6745677612226,
+          "y": 701.9477599392483
+        }
+      },
+      "aggression": "aggressive",
+      "runnerSpeed": "slow",
+      "throwTarget": 2,
+      "armStrength": "developing",
+      "anticipateBunt": true
+    }
+  }
+]

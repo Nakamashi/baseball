@@ -159,7 +159,7 @@ export class TimelineBuilder {
     let remaining = Math.max(0.001, round(duration)),
       elapsed = 0;
     const whole = remaining;
-    const journeyId = `flight-${this.phases.length}`;
+    const journeyId = (ball.kind === "travel" && ball.journeyId) || `flight-${this.phases.length}`;
     while (remaining > 0.0000001) {
       let dt = remaining;
       if (run && this.state.outs < 3)
@@ -381,6 +381,8 @@ export class TimelineBuilder {
                   ? portion.secure === false
                     ? "gathering"
                     : "held"
+                  : portion.loose
+                    ? "loose"
                   : portion.style === "throw"
                     ? "throwing"
                     : portion.dead
@@ -414,8 +416,11 @@ export class TimelineBuilder {
         if (Math.abs(r.runVelocity ?? 0) < 1e-5) r.runVelocity = 0;
         r.startDelay = next.startDelay;
         r.retiredRunThrough = next.retiredRunThrough;
-        r.progress = round(next.progress);
-        if (Math.abs(r.progress - Math.round(r.progress)) < 0.00001)
+        // A controlled stop at first approaches the bag at zero speed. Keep
+        // its physical progress: the normal display-oriented snap tolerance
+        // would manufacture an early touch while still braking.
+        r.progress = r.errorTurnAtFirst ? next.progress : round(next.progress);
+        if (Math.abs(r.progress - Math.round(r.progress)) < (r.errorTurnAtFirst ? 1e-12 : 0.00001))
           r.progress = Math.round(r.progress);
         if (r.firstTurn?.stage === "complete" && previousTurn !== "complete") {
           if (r.status === "out") {
@@ -425,6 +430,12 @@ export class TimelineBuilder {
           }
           this.state.runners[r.id] = 1;
           this.event("RunnerReturned", m("runnerReturnFirst"), r.id, 1);
+          if (r.afterFirstReturnGoal !== undefined) {
+            r.goal = r.afterFirstReturnGoal;
+            r.afterFirstReturnGoal = undefined;
+            r.firstTurn = undefined;
+            r.decision = "advance";
+          }
           crossedBase = true;
           continue;
         }

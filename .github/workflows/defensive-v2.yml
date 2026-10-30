@@ -63,6 +63,9 @@ jobs:
       - name: Field-first UX regression
         if: ${{ !cancelled() && steps.browser_install.outcome == 'success' && steps.browser_server.outcome == 'success' }}
         run: npm run test:field:browser
+      - name: Throwing error and recovery UI regression
+        if: ${{ !cancelled() && steps.browser_install.outcome == 'success' && steps.browser_server.outcome == 'success' }}
+        run: npm run test:error:browser
       - name: Production pages regression
         if: ${{ !cancelled() && steps.browser_install.outcome == 'success' && steps.browser_server.outcome == 'success' }}
         run: npm run test:pages

@@ -1,3 +1,4 @@
+import { ErrorRecoveryFailure } from "./dynamic/throwRecovery";
 import {
   useEffect,
   useMemo,
@@ -110,7 +111,7 @@ export default function App() {
       setGenerated(new DynamicPlayProvider().generate(settings));
     } catch (error) {
       console.error("Dynamic play generation failed", error);
-      setGenerationError(dynamicMessage("generationUnavailable"));
+      setGenerationError(dynamicMessage(error instanceof ErrorRecoveryFailure ? "errorRecoveryUnavailable" : "generationUnavailable"));
       return;
     } finally {
       generationInProgress.current = false;
@@ -257,6 +258,8 @@ export default function App() {
               locale={locale}
               onGenerate={generate}
               generating={generating}
+              notice={!pending && generated.dynamic.throwingError?.status === "no-eligible-throw"
+                ? text(dynamicMessage("noEligibleError")) : undefined}
               pending={pending}
               error={
                 generationError

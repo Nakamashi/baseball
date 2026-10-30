@@ -27,6 +27,7 @@ export interface GameState {
   runs: number;
   ballStatus?:
     | "ready"
+    | "loose"
     | "rolling"
     | "airborne"
     | "gathering"
@@ -97,6 +98,7 @@ export type BallAction =
   | {
       kind: "travel";
       journeyId?: string;
+      loose?: boolean;
       path: Point[];
       style: "hit" | "throw";
       receiver?: Position;

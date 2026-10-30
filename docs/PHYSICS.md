@@ -1,5 +1,9 @@
 # Continuous ball motion and coordinated defense
 
+## Optional elevated-overthrow continuation
+
+Current addition: eligible direct infield throws to second can use a deterministic elevated launch at the existing release speed. `throwing.advanceThrownBall` continues arbitrary position/height/velocity using throw drag/gravity; `throwRecovery` applies the existing impact/rolling assumptions and rejects unsupported geometry rather than clamping or awarding bases. Recovery uses current defender momentum. Accurate throws and normal contact physics remain unchanged. Read [the implementation report](../ERROR_SIMULATION_IMPLEMENTATION.md) for numerical bounds and verification; historical exclusions of all errors below are superseded only for this narrow feature.
+
 October 30 follow-up: dynamic C starts physically 1.5 m behind home; the authored
 diagram remains unchanged. Soft bunt launch is now 3 m/s before the existing
 bounded depth-intent multiplier, producing about 3.07–3.41 m untouched rollout

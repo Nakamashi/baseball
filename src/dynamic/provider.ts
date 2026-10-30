@@ -23,12 +23,13 @@ import {
   type AirborneRead,
 } from "./airborne";
 import { MovementEngine } from "./movement";
-import { BaserunningDecisionEngine } from "./baserunning";
+import { BaserunningDecisionEngine, readLooseThrow } from "./baserunning";
 import { DefensiveDecisionEngine, isForced } from "./defense";
 import { TimelineBuilder } from "./timelineBuilder";
 import { planMotion, sampleMotion } from "./locomotion";
 import { throwingProfile, throwFlight, throwSamples, throwPhysics, cutoffCrossing } from "./throwing";
 import { fieldConfiguration, defaultField } from "./fieldConfiguration";
+import { elevatedOverthrow, missClearsDefenders, recoveryCandidates, errorPolicy, ErrorRecoveryFailure, type Overthrow } from "./throwRecovery";
 import { assumptions, recommendStrategy } from "./conventions";
 import {
   bases,
@@ -49,9 +50,13 @@ import type {
   DefensiveAuditFrame,
   RelayStop,
   ThrowRoute,
+  DefensiveLayout,
+  BallControl,
+  ThrowingErrorMetadata,
 } from "./types";
 export function defaultSettings(): DynamicSettings {
   return {
+    includeError: false,
     field: { ...defaultField },
     state: {
       outs: 0,
@@ -80,6 +85,7 @@ export function defaultSettings(): DynamicSettings {
 export function validateSettings(
   settings: DynamicSettings,
 ): string | undefined {
+  if (settings.includeError !== undefined && typeof settings.includeError !== "boolean") return m("invalid");
   const s = settings.state,
     values = Object.values(s.runners);
   if (
@@ -186,6 +192,13 @@ export class DynamicPlayProvider implements PlayProvider {
       startingPositions,
       runners,
     );
+    let playSettings = settings;
+    const throwingError: ThrowingErrorMetadata | undefined = settings.includeError ? {
+      policy: errorPolicy.version, status: "no-eligible-throw", attempts: [],
+    } : undefined;
+    let errorInjected = false, recoveryActions = 0;
+    let ballControl: BallControl = {kind:"secure",owner:ball.fielder};
+    let recoveryLayout: (()=>DefensiveLayout) | undefined;
     const decisions: ThrowDecision[] = [],
       diagnostics: DefensiveAuditFrame[] = [];
     const holdingDecisions: ThrowDecision[] = [];
@@ -275,8 +288,8 @@ export class DynamicPlayProvider implements PlayProvider {
     );
     const reassess = (trigger: string) => {
       const latestBall = builder.phases.at(-1)?.ball;
-      layout = defense.assign(
-        settings,
+      layout = recoveryLayout ? recoveryLayout() : defense.assign(
+        playSettings,
         activeBall,
         owner,
         activeTarget,
@@ -305,6 +318,7 @@ export class DynamicPlayProvider implements PlayProvider {
       builder.assignments = layout.assignments;
       diagnostics.push(
         structuredClone({
+          ...(errorInjected ? {ballControl} : {}),
           time: builder.time,
           trigger,
           state: {
@@ -315,6 +329,10 @@ export class DynamicPlayProvider implements PlayProvider {
                 ? "ready"
                 : stage === "complete"
                   ? "complete"
+                  : errorInjected && ballControl.kind === "loose"
+                    ? "loose"
+                  : errorInjected && ballControl.kind === "gathering"
+                    ? "gathering"
                   : ball.status === "out-of-play"
                     ? "dead"
                     : inFlight
@@ -690,8 +708,110 @@ export class DynamicPlayProvider implements PlayProvider {
       };
     record(decision);
     let additionalOutfieldThrow = true;
+    const recoverMiss = (overthrow: Overthrow, receiver: Position, intendedPoint: Point) => {
+      const releaseTime = builder.time;
+      const journeyId = `error-flight-${builder.phases.length}`;
+      let elapsed = 0;
+      const followLoose = (end: number, actualReceiver?: Position) => {
+        if (end <= elapsed + 1e-7) return;
+        const samples = sliceTimed(overthrow.frames, elapsed, end);
+        builder.interval(m("errorFlightPhase"), m("errorLiveWhy"), end-elapsed, {
+          kind:"travel", style:"throw", loose:ballControl.kind!=="released", journeyId, samples,
+          path:[samples[0].point,samples.at(-1)!.point], receiver:actualReceiver,
+        });
+        elapsed=end;
+      };
+      followLoose(overthrow.missTime);
+      ballControl={kind:"loose"};
+      builder.event("ThrowMissed",m("throwMissed",{player:receiver}),receiver,2);
+      // A released lane remains committed until the observed miss. Do not let
+      // initial goals or early backup movement depend on the selected outcome.
+      lockedReceiver=undefined; lockedCutoff=undefined; lockedReception=undefined;
+      lockedRelays=undefined; lockedRouteKind=undefined; deadlines={};
+      inFlight=false; activeTarget="hold";
+      // Keep existing duties/momentum during the bounded recognition interval.
+      const oldReassess=builder.reassess;
+      builder.reassess=undefined;
+      followLoose(overthrow.missTime+errorPolicy.readDelay);
+      builder.reassess=oldReassess;
+      playSettings={...settings,throwTarget:"auto"};
+      const recognitionPositions=structuredClone(builder.locations);
+      const recognitionVelocities=structuredClone(builder.velocities);
+      // Home and the corner bases retain receiving/coverage priority in this
+      // bounded central-lane feature. All other defenders compete on timing.
+      const candidates=recoveryCandidates(overthrow,elapsed,builder.locations,builder.velocities,
+        (["P","2B","SS","LF","CF","RF"] as Position[]));
+      const winner=candidates[0];
+      const gather=winner.height>0.05?assumptions.catchTime:assumptions.fieldDelay;
+      const inherited=structuredClone(builder.assignments);
+      const looseLayout = (observedRunners = runners): DefensiveLayout => {
+        const result=defense.assign(playSettings,{...ball,fieldingPoint:winner.point},winner.player,
+          "hold",builder.locations,"received",{runners:observedRunners,outs:builder.state.outs});
+        result.assignments=result.assignments.map(a=> {
+          if(a.player===winner.player) return {...a,type:"PursueLooseBall",reason:"loosePursuit",
+            target:winner.point,reception:undefined,notBefore:undefined,base:undefined,
+            arrivalTime:defense.travel(a.player,builder.locations[a.player],winner.point)};
+          const prior=inherited.find(v=>v.player===a.player && v.type==="BackupThrow");
+          return prior && ["HoldPosition","Decelerate","SupportBase"].includes(a.type)
+            ? {...prior,neededBy:undefined,reception:undefined,notBefore:undefined} : a;
+        });
+        return result;
+      };
+      recoveryLayout=looseLayout;
+      stage="received";
+      reassess("Loose throw / real pursuit assigned");
+      // Forecast all receiving defenders from this same observation, including
+      // current velocity. Actual gathering/throws still use the compiled clock.
+      const untilControl=winner.time-elapsed+gather;
+      readLooseThrow(playSettings,runners,(base,proposed,runner)=> {
+        const projectedLocations={...builder.locations}, projectedVelocities={...builder.velocities};
+        // Candidate coverage uses the same observation and the proposed legal
+        // goals, including earlier runners' intentions; time never advances here.
+        for(const a of looseLayout(proposed).assignments) {
+          const state=sampleMotion(planMotion({position:toWorld(builder.locations[a.player]),velocity:builder.velocities[a.player]},
+            toWorld(a.target),assumptions.defenderSpeed,assumptions.defenderAcceleration),untilControl);
+          projectedLocations[a.player]=fromWorld(state.position);projectedVelocities[a.player]=state.velocity;
+        }
+        const saved=defense.motion;
+        defense.motion=p=>({position:projectedLocations[p],velocity:projectedVelocities[p],reaction:0});
+        try {
+          const receiving=defense.assign(playSettings,{...ball,fieldingPoint:winner.point},winner.player,
+            base,projectedLocations,"received",{runners:proposed,outs:builder.state.outs});
+          const challenged=proposed.find(r=>r.id===runner.id);
+          return untilControl+defense.arrival(receiving,projectedLocations,winner.player)+
+            (challenged && isForced(challenged,proposed,base==="home"?4:base)?0:assumptions.tagTime);
+        } finally {defense.motion=saved;}
+      });
+      builder.event("ErrorRunnerRead",m("errorRunnerRead"));
+      builder.event("RecoveryStarted",m("recoveryStarted",{player:winner.player}),winner.player);
+      reassess("Observed error / coordinated runner read");
+      throwingError!.selected={eventId:builder.events.filter(e=>e.type==="ThrowStarted").at(-1)!.id,
+        releaseTime,thrower:owner,receiver,intendedPoint,missTime:releaseTime+overthrow.missTime,
+        recognitionTime:builder.time,trajectory:overthrow};
+      const cues=overthrow.events.filter(e=>e.t>elapsed && e.t<winner.time);
+      for(const cue of cues) {
+        followLoose(cue.t);
+        if(cue.type==="landing"||cue.type==="bounce") builder.event("BallBounce",m("bounceWhy"));
+      }
+      followLoose(winner.time,winner.player);
+      if(metres(builder.locations[winner.player],winner.point)>0.005)
+        throw new ErrorRecoveryFailure("Recovery movement did not reach the actual interception");
+      ballControl={kind:"gathering",fielder:winner.player};
+      builder.event("RecoveryTouched",m("recoveryTouched",{player:winner.player}),winner.player);
+      builder.interval(m("phaseGather"),m("recoveryGather",{player:winner.player}),gather,
+        {kind:"held",owner:winner.player,secure:false,height:winner.height,endHeight:throwPhysics.receivingHeight});
+      owner=winner.player;ballControl={kind:"secure",owner};
+      recoveryLayout=undefined; opportunitiesClosed=false;
+      activeBall={...ball,fieldingPoint:builder.locations[owner]};
+      throwingError!.recovery={recognitionPositions,recognitionVelocities,candidates,player:owner,
+        touchTime:releaseTime+winner.time,secureTime:builder.time};
+      builder.event("RecoverySecured",m("recoverySecured",{player:owner}),owner);
+      reassess("Recovery secure / fresh defensive opportunities");
+    };
     const performThrow = (next: ThrowDecision, directOnly = false, remaining?: RelayStop[], relayCount = 0): void => {
       if (ball.boundary || builder.state.outs >= 3) return;
+      if (errorInjected && (++recoveryActions>errorPolicy.maximumActions || builder.liveTime>errorPolicy.maximumLiveTime))
+        throw new ErrorRecoveryFailure("Recovery continuation action/time budget exhausted");
       const target = next.target;
       activeTarget = target;
       deadlines = {};
@@ -785,13 +905,13 @@ export class DynamicPlayProvider implements PlayProvider {
           (next.appeal ? challenged.retouchBase !== targetNumber :
             next.force ? !isForced(challenged, runners, targetNumber) :
               challenged.goal < targetNumber || challenged.progress >= targetNumber));
-        if (settings.throwTarget === "auto" && expired) {
+        if (playSettings.throwTarget === "auto" && expired) {
           // Preparation is still reversible; released flights remain reserved.
           lockedCutoff = undefined; lockedReceiver = undefined;
           lockedRouteKind = undefined; lockedRelays = undefined; deadlines = {};
           lockedReception = undefined;
           activeBall = { ...ball, fieldingPoint: builder.locations[owner] };
-          const revised = defense.choose(settings, activeBall, runners,
+          const revised = defense.choose(playSettings, activeBall, runners,
             builder.state.outs, builder.locations, owner, "received");
           builder.event("ThrowCancelled", m("challengeExpired", { base: target }), owner, target);
           record(revised);
@@ -803,7 +923,19 @@ export class DynamicPlayProvider implements PlayProvider {
         trajectory = throwFlight(builder.locations[owner], destination, owner, settings.armStrength);
         flight = trajectory.duration;
         let samples = throwSamples(builder.locations[owner], destination, trajectory);
-        if (settings.throwTarget === "auto" && plan.route.kind === "through-cutoff" && plan.cutoff &&
+        let outcome: import("./throwRecovery").ThrowOutcome = {outcome:"received"};
+        if (throwingError && !errorInjected) {
+          const eligible=target===2 && plan.route.kind==="direct" && relayCount===0 && !next.appeal &&
+            !ball.caught && ["Ground ball","Bunt"].includes(ball.type) &&
+            !["LF","CF","RF"].includes(owner);
+          if(eligible) outcome=elevatedOverthrow(builder.locations[owner],destination,owner,settings.armStrength);
+          const intervened=outcome.outcome==="missed" && !missClearsDefenders(outcome,owner,
+            builder.locations,builder.velocities,builder.assignments,builder.liveTime);
+          if(intervened) outcome={outcome:"received"};
+          throwingError.attempts.push({time:builder.time,owner,target,
+            reason:outcome.outcome==="missed"?"eligible-central-elevated-overthrow":intervened?"intervening-reachable-defender":eligible?"unsupported-physical-corridor":"unsupported-throw-class"});
+        }
+        if (playSettings.throwTarget === "auto" && plan.route.kind === "through-cutoff" && plan.cutoff &&
             relayCount < throwPhysics.maximumRelays && !runners.some(r => r.firstTurn && r.firstTurn.stage !== "complete")) {
           const cutoff = plan.cutoff;
           const point = plan.assignments.find(a => a.player === cutoff)!.target;
@@ -820,7 +952,7 @@ export class DynamicPlayProvider implements PlayProvider {
             const oldBudget = defense.relayBudget, oldContinuation = defense.continuation;
             defense.relayBudget = Math.max(0, throwPhysics.maximumRelays - relayCount - 1);
             defense.continuation = undefined;
-            const read = defense.choose(settings, { ...ball, fieldingPoint: point }, projected,
+            const read = defense.choose(playSettings, { ...ball, fieldingPoint: point }, projected,
               builder.state.outs, locations, cutoff, "received");
             defense.relayBudget = oldBudget; defense.continuation = oldContinuation;
             const originalStillAvailable = read.alternatives?.some(c => c.target === target && (c.viable || c.competitive));
@@ -847,7 +979,12 @@ export class DynamicPlayProvider implements PlayProvider {
         };
         inFlight = true;
         incomingFrom = { ...builder.locations[owner] };
+        if(outcome.outcome==="missed") {
+          errorInjected=true;throwingError!.status="injected";
+          ballControl={kind:"released"};
+        } else if(errorInjected) ballControl={kind:"released"};
         reassess("ThrowStarted");
+        if(outcome.outcome==="missed") {recoverMiss(outcome,to,destination);return;}
         builder.interval("Throw", m("throw", { from: owner, to }), flight, {
           kind: "travel",
           path: [builder.locations[owner], samples.at(-1)!.point],
@@ -861,6 +998,7 @@ export class DynamicPlayProvider implements PlayProvider {
           to,
           target,
         );
+        if(errorInjected) ballControl={kind:"gathering",fielder:to};
         builder.interval(
           "Receive",
           m("received", { player: to, base: target }),
@@ -875,6 +1013,7 @@ export class DynamicPlayProvider implements PlayProvider {
       lockedRelays = undefined;
       lockedReception = undefined;
       owner = to;
+      if(errorInjected) ballControl={kind:"secure",owner};
       if (intercepted)
         builder.event("CutoffIntercepted", m("cutoffIntercepted", { player: owner }), owner, target);
       builder.event(
@@ -914,9 +1053,9 @@ export class DynamicPlayProvider implements PlayProvider {
         // Read the live runners at every relay receipt. At most two intermediate
         // players may receive this return, including any redirected chain.
         const redirect =
-          settings.throwTarget === "auto"
+          playSettings.throwTarget === "auto"
             ? defense.choose(
-                settings,
+                playSettings,
                 activeBall,
                 runners,
                 builder.state.outs,
@@ -993,13 +1132,13 @@ export class DynamicPlayProvider implements PlayProvider {
       // labeled Cutoff/Relay. In particular, returning to second must not end
       // the play while a realistic home challenge is still available.
       if (
-        settings.throwTarget === "auto" &&
+        playSettings.throwTarget === "auto" &&
         isOutfieldHit(ball) &&
         builder.state.outs < 3 &&
         additionalOutfieldThrow
       ) {
         const follow = defense.choose(
-          settings,
+          playSettings,
           activeBall,
           runners,
           builder.state.outs,
@@ -1020,8 +1159,21 @@ export class DynamicPlayProvider implements PlayProvider {
       }
     };
     performThrow(decision);
+    if(errorInjected) {
+      // Every action is ranked from the recovered state; the missed original
+      // force and its hypothetical double-play continuation no longer exist.
+      for(let pass=0;pass<=errorPolicy.maximumActions;pass++) {
+        if(builder.state.outs>=3) break;
+        const fresh=defense.choose(playSettings,{...ball,fieldingPoint:builder.locations[owner]},
+          runners,builder.state.outs,builder.locations,owner,"received");
+        if(!fresh.runner || fresh.target==="hold") break;
+        if(pass===errorPolicy.maximumActions) throw new ErrorRecoveryFailure("Recovery opportunities did not converge");
+        record(fresh);performThrow(fresh,true);
+      }
+    }
     const br = runners.find((r) => r.id === "BR")!;
     if (
+      !errorInjected &&
       ["Ground ball", "Bunt"].includes(settings.ball.type) &&
       !isOutfieldHit(ball) &&
       builder.state.outs > settings.state.outs &&
@@ -1119,7 +1271,7 @@ export class DynamicPlayProvider implements PlayProvider {
         if (builder.state.outs >= 3) break;
         if (
           !ball.boundary &&
-          settings.throwTarget === "auto" &&
+          playSettings.throwTarget === "auto" &&
           lateThrowsRemaining > 0
         ) {
           const freshBall = {
@@ -1127,7 +1279,7 @@ export class DynamicPlayProvider implements PlayProvider {
             fieldingPoint: builder.locations[owner],
           };
           const next = defense.choose(
-            settings,
+            playSettings,
             freshBall,
             runners,
             builder.state.outs,
@@ -1270,6 +1422,16 @@ export class DynamicPlayProvider implements PlayProvider {
         );
       }
     }
+    if(errorInjected) {
+      if(ballControl.kind!=="secure" || builder.liveTime>errorPolicy.maximumLiveTime ||
+        (builder.state.outs<3 && runners.some(r=>r.status==="active" && remainingRunningTime(r)>0.0001)))
+        throw new ErrorRecoveryFailure("Error play has unresolved possession or runners");
+      if(builder.state.outs<3) {
+        const remaining=defense.choose(playSettings,{...ball,fieldingPoint:builder.locations[owner]},runners,
+          builder.state.outs,builder.locations,owner,"received");
+        if(remaining.runner && remaining.target!=="hold") throw new ErrorRecoveryFailure("An unresolved defensive opportunity remains");
+      }
+    }
     builder.state.runs = builder.forceThird ? 0 : builder.pendingRuns;
     if (builder.state.outs === 3) builder.state.runners = {};
     const scoreKey = settings.state.half === "top" ? "awayScore" : "homeScore";
@@ -1297,6 +1459,8 @@ export class DynamicPlayProvider implements PlayProvider {
         : { kind: "held", owner },
       false,
     );
+    if(throwingError && !errorInjected)
+      throwingError.noEligibleReason=throwingError.attempts.length ? "all-releases-ineligible" : "no-released-throw";
     return {
       id: "dynamic",
       title: m("title", { fielder: ball.fielder, ball: settings.ball.type }),
@@ -1323,6 +1487,7 @@ export class DynamicPlayProvider implements PlayProvider {
       phases: builder.phases,
       result,
       notes: [
+        ...(throwingError ? [m(errorInjected?"errorScope":"noEligibleError")] : []),
         m("model", {
           baseMetres: assumptions.baseMetres,
           cornerMetres: assumptions.field.cornerMetres,
@@ -1350,6 +1515,7 @@ export class DynamicPlayProvider implements PlayProvider {
       alternatives: [m("alternative")],
       notation: "",
       dynamic: {
+        ...(throwingError ? {throwingError} : {}),
         holdingDecisions,
         airborneReads,
         terminationReason:

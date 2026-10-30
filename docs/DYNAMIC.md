@@ -1,12 +1,16 @@
 # Dynamic simulator: continuous trajectories
 
+## Optional throwing errors
+
+The generation controls now include a default-OFF **Include Error** checkbox. A suitable actually released direct infield throw to second may become one deterministic elevated overthrow, with a genuinely loose ball, timed pursuit/gather, runner reads and fresh defensive decisions. Unsupported plays remain normal and report that no eligible throwing error occurred. Other fielding/relay errors, wild-throw boundary awards and full rundowns remain outside scope. See [ERROR_SIMULATION_IMPLEMENTATION.md](../ERROR_SIMULATION_IMPLEMENTATION.md) for eligibility, lifecycle, verification and limitations. Playback remains precompiled and deterministic.
+
 The current implementation extends the original dynamic simulator and preserves the authored encyclopedia. See [TACTICAL_CORRECTIONS.md](TACTICAL_CORRECTIONS.md) for the tactical review release and [PHYSICS.md](PHYSICS.md) for the six-stage implementation report, calibration, coaching conventions, click meanings, supported rules and limitations.
 
 ## Execution boundary
 
 `DynamicPlayProvider` validates a situation and compiles an immutable `PlayScenario`. Both providers use the same SVG field, pure sampler and playback controls. Physical generation never depends on browser animation frames, playback history or language. Settings remain drafts until Generate is selected. Invalid or unresolved inputs preserve the previous generated play and display a translated notice; they never substitute an unrelated script.
 
-Dynamic ball inputs are **Ground ball**, **Line drive**, **Fly ball**, **Pop-up** and ordinary fair **Bunt**, with soft/normal/hard profiles. The former `Base hit` input is an outcome label and is no longer accepted by this provider. Authored base-hit scenarios are unaffected. Bunts are limited to ordinary fair contact within 25 m, with no runner on third; squeezes/foul-bunt rules and errors are not generated.
+Dynamic ball inputs are **Ground ball**, **Line drive**, **Fly ball**, **Pop-up** and ordinary fair **Bunt**, with soft/normal/hard profiles. The former `Base hit` input is an outcome label and is no longer accepted by this provider. Authored base-hit scenarios are unaffected. Bunts are limited to ordinary fair contact within 25 m; dedicated squeezes and foul-bunt rules are not generated. Optional elevated throwing errors have the limited eligibility described above.
 
 ## Modules
 
@@ -40,6 +44,6 @@ Ground clicks aim a lane; airborne clicks request the untouched first landing. C
 
 Run automated tests, `npm run build`, `npm run test:dynamic:browser`, `npm run test:browser` and `npm run test:pages`. Preserve both the 576-case all-nine base/out/target matrix and the 576-case physical trajectory/base/out matrix, plus focused numerical, rules, localization and deterministic-seek checks. Use `npm run audit:defense -- --case center-home-close` for a developer JSON timing/assignment review.
 
-Detailed surface physics, human read mistakes, spin/wind, errors, squeezes/foul-bunt rules, full rundowns, detailed body mechanics, general foul-ball simulation and uncommon appeal adjudications remain outside the model. Do not imply that an unsupported case is physically or legally resolved.
+Detailed surface physics, human read mistakes, spin/wind, errors beyond the supported central overthrow, squeezes/foul-bunt rules, full rundowns, detailed body mechanics, general foul-ball simulation and uncommon appeal adjudications remain outside the model. Do not imply that an unsupported case is physically or legally resolved.
 
 The default provisional 8 m training net retains boundary flights; standard mode applies the configured height. The default is not a surveyed home-ground measurement. Progressive airborne reads can release runners before landing. Later retouches/runner events reopen useful throws; obsolete support is cancelled with bounded braking. Diagnostics distinguish ordinary retouch/hold from a tag-up departure and expose holding alternatives separately.

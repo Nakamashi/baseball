@@ -1,5 +1,9 @@
 # Throwing flight and coordinated gap relays
 
+## Optional central throwing error
+
+A default-OFF option now permits one elevated error on a suitable direct **infield-to-second** release. This does not introduce relay/cutoff errors or thrown-ball boundary awards. The error path preserves launch speed and uses arbitrary-state throw flight plus real loose-ball pursuit/gather and fresh live defense. Accurate relay forecasts, receiver reservations and two-intermediate-reception limits are unchanged. See [the implementation report](../ERROR_SIMULATION_IMPLEMENTATION.md). The no-error limitation in the historical relay-model description below still applies to relay legs, not this new direct-throw branch.
+
 October 30 follow-up: secondary third support and P's base backup derive from
 the original pickup/fielder and current ultimate base, independently of each
 relay leg's remaining range. Far-outfielder sector also uses original pickup.

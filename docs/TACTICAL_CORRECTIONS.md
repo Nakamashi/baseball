@@ -1,5 +1,9 @@
 # Tactical correctness and baseball accuracy corrections
 
+## Optional throwing-error recovery addition
+
+The default-OFF Include Error feature adds a bounded elevated miss on eligible direct infield throws to second, real recovery and coordinated runner reads. It does not alter clean defensive conventions. New all-nine/physical/rules tests cover the error branch alongside clean-output baselines. The existing P-to-second fixture still sends RF to a late second-base backup while CF initially holds; CF wins actual loose-ball recovery on timing. That initial backup convention remains a separate coaching question. See [the implementation report](../ERROR_SIMULATION_IMPLEMENTATION.md); historical exclusions of all errors below have this limited exception.
+
 > October 30: [BUNTS_AND_RETURN_SUPPORT.md](BUNTS_AND_RETURN_SUPPORT.md) describes
 > cooperative bunt charging, first-base reception, physical catcher stance,
 > deadened contact and stable deep-return support. Runner sprint and throw
