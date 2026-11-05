@@ -1,5 +1,10 @@
 # Tactical correctness and baseball accuracy corrections
 
+## Current all-nine responsibility correction — 2026-11-05
+
+[DEFENSIVE_RESPONSIBILITIES_REVIEW.md](../DEFENSIVE_RESPONSIBILITIES_REVIEW.md) supersedes the generic deliberate-hold fallback described in the historical sections below. Every live defender now receives a concrete ball, receiving, base, backup, support, guarding, directing or containment job. Spare middle infielders support the receiving shoulder; free corners guard near their bags; spare outfielders shade their gap or form a separate deeper infield-throw backup layer. Set receivers and completed support positions may wait with explicit next-action cues. RF's late primary backup in the P-to-second example is still reported; CF now starts a deeper support role before the miss. All nine positions are checked across 720 generated situations and all 24 guided plays.
+
+
 ## Optional throwing-error recovery addition
 
 The default-OFF Include Error feature adds a bounded elevated miss on eligible direct infield throws to second, real recovery and coordinated runner reads. It does not alter clean defensive conventions. New all-nine/physical/rules tests cover the error branch alongside clean-output baselines. The existing P-to-second fixture still sends RF to a late second-base backup while CF initially holds; CF wins actual loose-ball recovery on timing. That initial backup convention remains a separate coaching question. See [the implementation report](../ERROR_SIMULATION_IMPLEMENTATION.md); historical exclusions of all errors below have this limited exception.

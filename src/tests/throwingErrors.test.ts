@@ -37,13 +37,14 @@ function integrity(s:DynamicScenario) {
       expect(formatDynamic(value,'ja')).toMatch(/[ぁ-んァ-ヶ一-龯]/);
     for(const move of p.movements) for(let i=1;i<(move.samples?.length ?? 0);i++) {
       const a=move.samples![i-1],b=move.samples![i];
-      const maximum=move.player==='BR'?10:assumptions.defenderSpeed;
+      const maximum=(positions as readonly string[]).includes(move.player)
+        ? assumptions.defenderSpeed : assumptions.runnerSpeed[s.dynamic.settings.runnerSpeed];
       expect(metres(a.point,b.point)).toBeLessThanOrEqual(maximum*(b.t-a.t)+0.0001);
     }
   }
 }
 afterEach(()=>vi.restoreAllMocks());
-describe('clean simulation equivalence captured before implementation',()=> {
+describe('clean simulation baseline after the explicit all-nine responsibility review',()=> {
   it.each(corpus.cases)('preserves every compiled clean field for $id',async c=> {
     for(const includeError of [undefined,false]) {
       const input=structuredClone(c.settings) as DynamicSettings;
@@ -80,7 +81,7 @@ describe('continuous elevated overthrow and true recovery',()=> {
     for(let t=chosen.releaseTime+0.02;t<recovery.touchTime;t+=0.13)expect(sample(s,t).owner).toBeUndefined();
     const start=s.dynamic.diagnostics.find(f=>f.trigger==='Initial contact plan')!;
     expect(start.assignments.find(a=>a.player==='RF')).toMatchObject({type:'BackupThrow',base:2});
-    expect(start.assignments.find(a=>a.player==='CF')).toMatchObject({type:'HoldPosition'});
+    expect(start.assignments.find(a=>a.player==='CF')).toMatchObject({type:'SupportBase',reason:'layeredBackup',base:2});
     expect(Math.hypot(recovery.recognitionVelocities.RF.x,recovery.recognitionVelocities.RF.y)).toBeGreaterThan(1);
     expect(events(s,'ErrorRunnerRead')[0].time).toBeCloseTo(chosen.missTime+errorPolicy.readDelay,5);
     expect(sample(s,duration(s)).state.runners).toMatchObject({R1:3,BR:1});
@@ -195,7 +196,7 @@ describe('error runner reads, further defense and bounded completion',()=> {
   it('fails explicitly on an exhausted action budget before making a further recovered throw',()=> {
     const original=errorPolicy.maximumActions;
     Object.assign(errorPolicy,{maximumActions:0});
-    try {expect(()=>provider.generate(structuredClone(recoveryCases[0].settings) as DynamicSettings)).toThrow(ErrorRecoveryFailure);}
+    try {expect(()=>provider.generate(structuredClone(recoveryCases[2].settings) as DynamicSettings)).toThrow(ErrorRecoveryFailure);}
     finally {Object.assign(errorPolicy,{maximumActions:original});}
   });
   it('retains moving RF momentum and chooses actual reachability instead of assigning the backup possession',()=> {
@@ -219,14 +220,30 @@ describe('independent recovered out / first-base motion fixtures',()=> {
     expect(events(s,'RecoverySecured')).toHaveLength(1);
     const meta=s.dynamic.throwingError!, control=meta.recovery!.secureTime;
     const brRead=s.dynamic.diagnostics.find(f=>f.trigger==='Observed error / coordinated runner read')!.runners.find(r=>r.id==='BR')!;
-    expect(brRead).toMatchObject({goal:2,errorTurnAtFirst:true,approach:'straight'});
+    expect(brRead.approach).toBe('straight');
+    expect(brRead.goal).toBe(fixture.firstBaseTransition==='stop-turn'?2:1);
+    if(fixture.firstBaseTransition==='stop-turn')expect(brRead.errorTurnAtFirst).toBe(true);
+    if(fixture.firstBaseTransition==='run-through-advance') {
+      expect(brRead.firstTurn?.kind).toBe('overrun');
+      expect(brRead.afterFirstReturnGoal).toBe(2);
+    }
     const first=events(s,'RunnerAdvanced').find(e=>e.player==='BR'&&e.base===1)!;
     expect(metres(sample(s,first.time).players.find(p=>p.id==='BR')!.position,bases[1])).toBeLessThan(0.001);
     const before=sample(s,first.time-0.001).players.find(p=>p.id==='BR')!.position;
     const after=sample(s,first.time+0.001).players.find(p=>p.id==='BR')!.position;
-    expect(metres(before,after)).toBeLessThan(0.0001); // stop before the turn
-    expect(events(s,'FirstBaseOverrun').filter(e=>e.player==='BR')).toEqual([]);
-    if(fixture.name.startsWith('recovered-tag')) {
+    if(fixture.firstBaseTransition!=='stop-turn') {
+      expect(metres(before,after)).toBeLessThan(brRead.speed*0.002+0.0001);
+      expect(events(s,'FirstBaseOverrun').some(e=>e.player==='BR')).toBe(true);
+    } else {
+      expect(metres(before,after)).toBeLessThan(0.0001); // stop before the turn
+      expect(events(s,'FirstBaseOverrun').filter(e=>e.player==='BR')).toEqual([]);
+    }
+    if(fixture.expectedOutcome==='hold') {
+      expect(events(s,'RunnerOut').some(e=>e.player==='BR')).toBe(false);
+      expect(sample(s,duration(s)).state.runners.BR).toBe(1);
+      expect(metres(sample(s,duration(s)).players.find(p=>p.id==='BR')!.position,bases[1])).toBeLessThan(0.001);
+    }
+    if(fixture.expectedOutcome==='tag') {
       const out=events(s,'RunnerOut').find(e=>e.player==='BR')!;
       expect(out).toMatchObject({base:2,force:false});expect(out.time).toBeGreaterThan(control);
       const finalThrow=events(s,'ThrowStarted').filter(e=>e.time>=control).at(-1)!;
@@ -241,7 +258,8 @@ describe('independent recovered out / first-base motion fixtures',()=> {
         expect(sample(s,duration(s)).state.runs).toBe(validRuns);
         expect(sample(s,duration(s)).state.runners).toEqual({});
       }
-    } else {
+    } else if(fixture.expectedOutcome==='safe-extra') {
+      expect(events(s,'RunnerOut').some(e=>e.player==='BR')).toBe(false);
       const second=events(s,'RunnerAdvanced').find(e=>e.player==='BR'&&e.base===2)!;
       expect(second).toBeDefined();
       const readTime=meta.selected!.recognitionTime;

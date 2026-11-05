@@ -401,4 +401,17 @@ export const jaPlaybook: Record<string, string> = {
   "Cover second; watch R1.": "二塁をカバーし、R1の動きを見ます。",
   "The second baseman has vacated the middle to cover first.":
     "二塁手が一塁のカバーに回り、二塁を離れているためです。",
+  // All-nine responsibility review: explicit support and coverage.
+  "Back up the throw to first from foul ground.": "ファウル側から一塁への送球をバックアップします。",
+  "Move behind the receiving player; call any new advance before changing jobs.": "受け手の後方へ入り、新たな進塁を声で伝えてから役割を変えます。",
+  "Support the second-base receiver from the left outfield shoulder.": "二塁の受け手を外野側の左横から支援します。",
+  "Support the second-base receiver from the right outfield shoulder.": "二塁の受け手を外野側の右横から支援します。",
+  "Leave the bag and running lane clear; cover second if the receiver leaves.": "ベースと走路を空け、受け手が離れたら二塁をカバーします。",
+  "Move to second and track the runners.": "二塁へ入り、走者を確認します。",
+  "Keep the middle covered while the other infielder handles the ball.": "もう一人の内野手が打球を処理する間、二塁付近を守ります。",
+  "Move off the mound into an available infield return position.": "マウンドを離れ、内野への返球を受けられる位置へ動きます。",
+  "Keep the throwing lane clear, call the runners, and be ready to receive a controlled return.": "送球路を空け、走者を声で伝え、確実な返球を受ける準備をします。",
+  "Close the outfield gap behind the infield catch.": "内野の捕球地点の後方へ寄り、外野の間を狭めます。",
+  "Leave the called catch to the infielder; protect a ball that gets beyond the play.": "声を出した内野手に捕球を任せ、その後方へ抜けたボールに備えます。",
+  "After the catch, adjust behind the actual return or appeal throw.": "捕球後は実際の返球や踏み直しのアピール送球の後方へ位置を調整します。",
 };

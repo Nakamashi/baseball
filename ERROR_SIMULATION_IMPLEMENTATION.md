@@ -1,5 +1,7 @@
 # Defensive Throwing Errors and Live-Ball Recovery
 
+> Follow-up, 2026-11-05: [the all-nine responsibility review](DEFENSIVE_RESPONSIBILITIES_REVIEW.md) changes previously idle support assignments. Historical RF/CF positions and recovery times below describe the original error release. CF now begins a deeper support layer before the miss; recovery and runner outcomes are evaluated from those revised actual positions. No throw-physics or error-selection rule is changed.
+
 ## Implementation summary
 
 Implemented an optional **Include Error** setting, OFF by default. The first actually released eligible direct infield throw toward second can become one deterministic elevated overthrow. The ball passes above the intended receiver, continues with gravity and drag, lands/bounces/rolls if not intercepted, and is recovered by a defender selected from actual movement and timing. Runners read the observed miss; subsequent defense is ranked afresh after secure recovery. A miss grants neither possession, an out nor an extra base.

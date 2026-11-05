@@ -69,6 +69,19 @@ export const conventions = {
   backupDepth: 8,
   secondaryBackupDepth: 13,
   trailSeparation: 4,
+  // Purposeful support spacing, in world metres. Provisional team conventions,
+  // not measured youth performance or a requirement to keep moving after arrival.
+  support: {
+    middleLateral: 4,
+    middleDepth: 2,
+    cornerLateral: 0.5,
+    cornerDepth: 3,
+    catcherStep: 0.75,
+    pitcherLateral: 6,
+    pitcherInsideSecond: 12,
+    gapShade: 5,
+    layeredBackupDepth: 21,
+  },
   cutoff: { 1: "2B", 2: "2B", 3: "SS", home: "1B" } as Record<Base, Position>,
   coverage: {
     1: ["1B", "2B", "P", "SS", "3B", "C"],

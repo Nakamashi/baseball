@@ -14,6 +14,10 @@ export type RunnerSpeed = "slow" | "average" | "fast";
 export type Strategy = "standard" | "prevent" | "conservative";
 export type ThrowTarget = Base | "auto" | "hold" | "cutoff";
 export type AssignmentType =
+  | "SupportReceiver"
+  | "GuardBase"
+  | "ShadeField"
+  | "DirectDefense"
   | "PursueLooseBall"
   | "FieldBall"
   | "CoverBase"
@@ -106,6 +110,14 @@ export interface DefensiveAssignment {
   receivingPoint?: Point;
 }
 export type AssignmentReason =
+  | "returnSupport"
+  | "middleSupport"
+  | "infieldSafety"
+  | "guardBase"
+  | "gapSupport"
+  | "directDefense"
+  | "layeredBackup"
+  | "containRunners"
   | "loosePursuit"
   | "priorityCatch"
   | "primary"

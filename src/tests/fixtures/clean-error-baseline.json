@@ -34,14 +34,62 @@
         "runnerSpeed": "average",
         "throwTarget": "auto"
       },
-      "sha256": "96666cb02295f7e797081bf7115268e8e1aa27bd7e932ac6d44c4417735654e9",
+      "sha256": "a4fbcfc1e870b9b32c120721ca178f35cdeddc889e6f032c491aef588908c165",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"2B\"}"
+        },
+        {
+          "id": "event-1",
+          "time": 1.314584,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 1.664462,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-3",
+          "time": 2.95936,
+          "type": "BallTouched",
+          "explanation": "@v2:gatherWhy:{\"fielder\":\"2B\"}",
+          "player": "2B"
+        },
+        {
+          "id": "event-4",
+          "time": 3.20936,
+          "type": "BallFielded",
+          "explanation": "@v2:fielded:{\"fielder\":\"2B\"}",
+          "player": "2B"
+        },
         {
           "id": "event-5",
           "time": 3.559361,
           "type": "ThrowStarted",
           "explanation": "@v2:throw:{\"from\":\"2B\",\"to\":\"1B\"}",
           "player": "2B",
+          "base": 1
+        },
+        {
+          "id": "event-6",
+          "time": 4.140125,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"1B\",\"base\":1}",
+          "player": "1B",
+          "base": 1
+        },
+        {
+          "id": "event-7",
+          "time": 4.260125,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"1B\",\"base\":1}",
+          "player": "1B",
           "base": 1
         },
         {
@@ -52,8 +100,31 @@
           "player": "BR",
           "base": 1,
           "force": true
+        },
+        {
+          "id": "event-9",
+          "time": 5.699996,
+          "type": "RunnerBaseTouch",
+          "explanation": "@v2:runnerFinishOut:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-10",
+          "time": 7.486271,
+          "type": "RunThroughAfterOut",
+          "explanation": "@v2:runnerFinishOut:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-11",
+          "time": 8.867358,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":1,\"runs\":0,\"safe\":0}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "96666cb02295f7e797081bf7115268e8e1aa27bd7e932ac6d44c4417735654e9"
     },
     {
       "id": "ground-short",
@@ -88,14 +159,62 @@
         "runnerSpeed": "average",
         "throwTarget": "auto"
       },
-      "sha256": "c12fc8f13afff7f4b1ba444bb677ddd52591452fdb7aa68ddb4bdbe226738579",
+      "sha256": "0d581b406edbcade7a5414bda430fabab28f3ea82425ff5491e2e1f9103cb9e0",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"SS\"}"
+        },
+        {
+          "id": "event-1",
+          "time": 1.314584,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 1.664462,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-3",
+          "time": 2.978296,
+          "type": "BallTouched",
+          "explanation": "@v2:gatherWhy:{\"fielder\":\"SS\"}",
+          "player": "SS"
+        },
+        {
+          "id": "event-4",
+          "time": 3.228296,
+          "type": "BallFielded",
+          "explanation": "@v2:fielded:{\"fielder\":\"SS\"}",
+          "player": "SS"
+        },
         {
           "id": "event-5",
           "time": 3.578296,
           "type": "ThrowStarted",
           "explanation": "@v2:throw:{\"from\":\"SS\",\"to\":\"1B\"}",
           "player": "SS",
+          "base": 1
+        },
+        {
+          "id": "event-6",
+          "time": 5.311178,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"1B\",\"base\":1}",
+          "player": "1B",
+          "base": 1
+        },
+        {
+          "id": "event-7",
+          "time": 5.431178,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"1B\",\"base\":1}",
+          "player": "1B",
           "base": 1
         },
         {
@@ -106,8 +225,31 @@
           "player": "BR",
           "base": 1,
           "force": true
+        },
+        {
+          "id": "event-9",
+          "time": 5.699995,
+          "type": "RunnerBaseTouch",
+          "explanation": "@v2:runnerFinishOut:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-10",
+          "time": 7.48627,
+          "type": "RunThroughAfterOut",
+          "explanation": "@v2:runnerFinishOut:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-11",
+          "time": 8.803975,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":1,\"runs\":0,\"safe\":0}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "c12fc8f13afff7f4b1ba444bb677ddd52591452fdb7aa68ddb4bdbe226738579"
     },
     {
       "id": "double-play",
@@ -144,14 +286,70 @@
         "runnerSpeed": "slow",
         "throwTarget": "auto"
       },
-      "sha256": "245e77901d2c674d07676bc4fb9755ce7cd060627977977d5c1a2ac049c4fcf0",
+      "sha256": "8b5c169e4cc5b044fd3e5fafbd7fb2df7e7e70051a02e8efa8dfb12aa75721e6",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"SS\"}"
+        },
+        {
+          "id": "event-1",
+          "time": 1.314584,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 1.664462,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-3",
+          "time": 2.223991,
+          "type": "BallTouched",
+          "explanation": "@v2:gatherWhy:{\"fielder\":\"SS\"}",
+          "player": "SS"
+        },
+        {
+          "id": "event-4",
+          "time": 2.473991,
+          "type": "BallFielded",
+          "explanation": "@v2:fielded:{\"fielder\":\"SS\"}",
+          "player": "SS"
+        },
         {
           "id": "event-5",
           "time": 2.895032,
           "type": "ThrowStarted",
           "explanation": "@v2:throw:{\"from\":\"SS\",\"to\":\"2B\"}",
           "player": "SS",
+          "base": 2
+        },
+        {
+          "id": "event-6",
+          "time": 3.597565,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"2B\",\"base\":2}",
+          "player": "2B",
+          "base": 2
+        },
+        {
+          "id": "event-7",
+          "time": 3.717565,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"2B\",\"base\":2}",
+          "player": "2B",
+          "base": 2
+        },
+        {
+          "id": "event-8",
+          "time": 3.717565,
+          "type": "BaseTouched",
+          "explanation": "@v2:baseContact:{\"player\":\"2B\",\"base\":2}",
+          "player": "2B",
           "base": 2
         },
         {
@@ -172,6 +370,22 @@
           "base": 1
         },
         {
+          "id": "event-11",
+          "time": 5.275769,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"1B\",\"base\":1}",
+          "player": "1B",
+          "base": 1
+        },
+        {
+          "id": "event-12",
+          "time": 5.395769,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"1B\",\"base\":1}",
+          "player": "1B",
+          "base": 1
+        },
+        {
           "id": "event-13",
           "time": 5.395769,
           "type": "RunnerOut",
@@ -179,8 +393,31 @@
           "player": "BR",
           "base": 1,
           "force": true
+        },
+        {
+          "id": "event-14",
+          "time": 6.299998,
+          "type": "RunnerBaseTouch",
+          "explanation": "@v2:runnerFinishOut:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-15",
+          "time": 8.195185,
+          "type": "RunThroughAfterOut",
+          "explanation": "@v2:runnerFinishOut:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-16",
+          "time": 9.576272,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":2,\"runs\":0,\"safe\":0}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "245e77901d2c674d07676bc4fb9755ce7cd060627977977d5c1a2ac049c4fcf0"
     },
     {
       "id": "third-ground-second",
@@ -217,14 +454,70 @@
         "runnerSpeed": "average",
         "throwTarget": "auto"
       },
-      "sha256": "0169730ea3ff5e1a8b6b683f3dfb9efb1521a84944d536a950c5be1d903824c6",
+      "sha256": "d7a87dcaac85c0cedb6008badc2db8c3c2082ac08ec722677fee94aa12f2a94f",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"2B\"}"
+        },
+        {
+          "id": "event-1",
+          "time": 1.314584,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 1.664462,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-3",
+          "time": 2.513298,
+          "type": "RunnerRetreated",
+          "explanation": "@v2:runnerRetreat:{\"base\":3}",
+          "player": "R3",
+          "base": 3
+        },
+        {
+          "id": "event-4",
+          "time": 2.95936,
+          "type": "BallTouched",
+          "explanation": "@v2:gatherWhy:{\"fielder\":\"2B\"}",
+          "player": "2B"
+        },
+        {
+          "id": "event-5",
+          "time": 3.20936,
+          "type": "BallFielded",
+          "explanation": "@v2:fielded:{\"fielder\":\"2B\"}",
+          "player": "2B"
+        },
         {
           "id": "event-6",
           "time": 3.559361,
           "type": "ThrowStarted",
           "explanation": "@v2:throw:{\"from\":\"2B\",\"to\":\"1B\"}",
           "player": "2B",
+          "base": 1
+        },
+        {
+          "id": "event-7",
+          "time": 4.140125,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"1B\",\"base\":1}",
+          "player": "1B",
+          "base": 1
+        },
+        {
+          "id": "event-8",
+          "time": 4.260125,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"1B\",\"base\":1}",
+          "player": "1B",
           "base": 1
         },
         {
@@ -235,8 +528,31 @@
           "player": "BR",
           "base": 1,
           "force": true
+        },
+        {
+          "id": "event-10",
+          "time": 5.699996,
+          "type": "RunnerBaseTouch",
+          "explanation": "@v2:runnerFinishOut:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-11",
+          "time": 7.486271,
+          "type": "RunThroughAfterOut",
+          "explanation": "@v2:runnerFinishOut:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-12",
+          "time": 8.867358,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":1,\"runs\":0,\"safe\":1}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "0169730ea3ff5e1a8b6b683f3dfb9efb1521a84944d536a950c5be1d903824c6"
     },
     {
       "id": "single-left",
@@ -271,8 +587,46 @@
         "runnerSpeed": "average",
         "throwTarget": "auto"
       },
-      "sha256": "03f8d404f9f83c45a6385c29d010a15cfe492bdf5f68dd4e6f08495eea1ac544",
+      "sha256": "0313fb4fb2464b4fe166fc55077c72da1d15e9a6b54a82c514b9f977d413ad74",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"LF\"}"
+        },
+        {
+          "id": "event-1",
+          "time": 1.314584,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 1.664462,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-3",
+          "time": 3.114462,
+          "type": "BallPassedInfield",
+          "explanation": "@v2:passedWhy:{}"
+        },
+        {
+          "id": "event-4",
+          "time": 4.287647,
+          "type": "BallTouched",
+          "explanation": "@v2:gatherWhy:{\"fielder\":\"LF\"}",
+          "player": "LF"
+        },
+        {
+          "id": "event-5",
+          "time": 4.537647,
+          "type": "BallFielded",
+          "explanation": "@v2:fielded:{\"fielder\":\"LF\"}",
+          "player": "LF"
+        },
         {
           "id": "event-6",
           "time": 4.917647,
@@ -280,8 +634,63 @@
           "explanation": "@v2:throw:{\"from\":\"LF\",\"to\":\"SS\"}",
           "player": "LF",
           "base": 2
+        },
+        {
+          "id": "event-7",
+          "time": 5.454647,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"SS\",\"base\":2}",
+          "player": "SS",
+          "base": 2
+        },
+        {
+          "id": "event-8",
+          "time": 5.574647,
+          "type": "CutoffIntercepted",
+          "explanation": "@v2:cutoffIntercepted:{\"player\":\"SS\"}",
+          "player": "SS",
+          "base": 2
+        },
+        {
+          "id": "event-9",
+          "time": 5.574647,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"SS\",\"base\":2}",
+          "player": "SS",
+          "base": 2
+        },
+        {
+          "id": "event-10",
+          "time": 6.268921,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":1}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-11",
+          "time": 6.268921,
+          "type": "FirstBaseRounded",
+          "explanation": "@v2:runnerRound:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-12",
+          "time": 9.861342,
+          "type": "RunnerReturned",
+          "explanation": "@v2:runnerReturnFirst:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-13",
+          "time": 9.861342,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":0,\"runs\":0,\"safe\":1}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "03f8d404f9f83c45a6385c29d010a15cfe492bdf5f68dd4e6f08495eea1ac544"
     },
     {
       "id": "first-single-left",
@@ -318,8 +727,46 @@
         "runnerSpeed": "average",
         "throwTarget": 2
       },
-      "sha256": "439cc7d5c4c1848ddd0e970ea6ec523cc0ea28bb5c6c0b7773eff09572488308",
+      "sha256": "b8090d7f9b88937d1dc827c9bb4b5e77cbcbacf7f5185d0710fd118775d7ddaf",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"LF\"}"
+        },
+        {
+          "id": "event-1",
+          "time": 1.314584,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 1.664462,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-3",
+          "time": 3.114462,
+          "type": "BallPassedInfield",
+          "explanation": "@v2:passedWhy:{}"
+        },
+        {
+          "id": "event-4",
+          "time": 4.287647,
+          "type": "BallTouched",
+          "explanation": "@v2:gatherWhy:{\"fielder\":\"LF\"}",
+          "player": "LF"
+        },
+        {
+          "id": "event-5",
+          "time": 4.537647,
+          "type": "BallFielded",
+          "explanation": "@v2:fielded:{\"fielder\":\"LF\"}",
+          "player": "LF"
+        },
         {
           "id": "event-6",
           "time": 4.917647,
@@ -327,8 +774,63 @@
           "explanation": "@v2:throw:{\"from\":\"LF\",\"to\":\"2B\"}",
           "player": "LF",
           "base": 2
+        },
+        {
+          "id": "event-7",
+          "time": 5.704859,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":2}",
+          "player": "R1",
+          "base": 2
+        },
+        {
+          "id": "event-8",
+          "time": 5.911846,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"2B\",\"base\":2}",
+          "player": "2B",
+          "base": 2
+        },
+        {
+          "id": "event-9",
+          "time": 6.031846,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"2B\",\"base\":2}",
+          "player": "2B",
+          "base": 2
+        },
+        {
+          "id": "event-10",
+          "time": 6.268929,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":1}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-11",
+          "time": 6.268929,
+          "type": "FirstBaseRounded",
+          "explanation": "@v2:runnerRound:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-12",
+          "time": 9.861353,
+          "type": "RunnerReturned",
+          "explanation": "@v2:runnerReturnFirst:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-13",
+          "time": 10.021009,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":0,\"runs\":0,\"safe\":2}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "439cc7d5c4c1848ddd0e970ea6ec523cc0ea28bb5c6c0b7773eff09572488308"
     },
     {
       "id": "second-single-right",
@@ -365,14 +867,84 @@
         "runnerSpeed": "fast",
         "throwTarget": "auto"
       },
-      "sha256": "baa2992f0e01365114e257772bc088669ec3efd252a94b46933f8b34b8bb88df",
+      "sha256": "ef142a1aa8fc2dca58d1169fb7728f514865c9b8b1d3c11b85e8ae483c36f8a6",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"RF\"}"
+        },
+        {
+          "id": "event-1",
+          "time": 1.314584,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 1.664462,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-3",
+          "time": 2.414462,
+          "type": "BallPassedInfield",
+          "explanation": "@v2:passedWhy:{}"
+        },
+        {
+          "id": "event-4",
+          "time": 3.443674,
+          "type": "BallTouched",
+          "explanation": "@v2:gatherWhy:{\"fielder\":\"RF\"}",
+          "player": "RF"
+        },
+        {
+          "id": "event-5",
+          "time": 3.693674,
+          "type": "BallFielded",
+          "explanation": "@v2:fielded:{\"fielder\":\"RF\"}",
+          "player": "RF"
+        },
         {
           "id": "event-6",
           "time": 4.073674,
           "type": "ThrowStarted",
           "explanation": "@v2:throw:{\"from\":\"RF\",\"to\":\"C\"}",
           "player": "RF",
+          "base": "home"
+        },
+        {
+          "id": "event-7",
+          "time": 5.081419,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":3}",
+          "player": "R2",
+          "base": 3
+        },
+        {
+          "id": "event-8",
+          "time": 5.586913,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":1}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-9",
+          "time": 6.56031,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"C\",\"base\":\"home\"}",
+          "player": "C",
+          "base": "home"
+        },
+        {
+          "id": "event-10",
+          "time": 6.68031,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"C\",\"base\":\"home\"}",
+          "player": "C",
           "base": "home"
         },
         {
@@ -383,8 +955,23 @@
           "player": "R2",
           "base": "home",
           "force": false
+        },
+        {
+          "id": "event-12",
+          "time": 9.686913,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":2}",
+          "player": "BR",
+          "base": 2
+        },
+        {
+          "id": "event-13",
+          "time": 11.015174,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":1,\"runs\":0,\"safe\":1}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "baa2992f0e01365114e257772bc088669ec3efd252a94b46933f8b34b8bb88df"
     },
     {
       "id": "extra-base-trail",
@@ -419,8 +1006,84 @@
         "runnerSpeed": "average",
         "throwTarget": 3
       },
-      "sha256": "9636095614a8cc0da5e8f65bcf6e722ff5d5d235e559364bc050b3380e6d3d0f",
+      "sha256": "bed1aaf36e644321a57f0e2fcbee6291566f207fa08bf1fb2fda0b065f38ef19",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"CF\"}"
+        },
+        {
+          "id": "event-1",
+          "time": 1.35,
+          "type": "AirborneRead",
+          "explanation": "@v2:readUncertainWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 1.7,
+          "type": "AirborneRead",
+          "explanation": "@v2:readUncatchableWhy:{}"
+        },
+        {
+          "id": "event-3",
+          "time": 2.05,
+          "type": "AirborneRead",
+          "explanation": "@v2:readUncatchableWhy:{}"
+        },
+        {
+          "id": "event-4",
+          "time": 2.6,
+          "type": "AirborneRead",
+          "explanation": "@v2:readUncatchableWhy:{}"
+        },
+        {
+          "id": "event-5",
+          "time": 2.701195,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-6",
+          "time": 3.455964,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-7",
+          "time": 3.772967,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-8",
+          "time": 5.080373,
+          "type": "BallWallContact",
+          "explanation": "@v2:wallCaromWhy:{}"
+        },
+        {
+          "id": "event-9",
+          "time": 6.15779,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":1}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-10",
+          "time": 6.432936,
+          "type": "BallTouched",
+          "explanation": "@v2:gatherWhy:{\"fielder\":\"CF\"}",
+          "player": "CF"
+        },
+        {
+          "id": "event-11",
+          "time": 6.682936,
+          "type": "BallFielded",
+          "explanation": "@v2:fielded:{\"fielder\":\"CF\"}",
+          "player": "CF"
+        },
         {
           "id": "event-12",
           "time": 7.062936,
@@ -430,14 +1093,61 @@
           "base": 3
         },
         {
+          "id": "event-13",
+          "time": 8.92036,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"SS\",\"base\":3}",
+          "player": "SS",
+          "base": 3
+        },
+        {
+          "id": "event-14",
+          "time": 9.04036,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"SS\",\"base\":3}",
+          "player": "SS",
+          "base": 3
+        },
+        {
           "id": "event-15",
           "time": 9.45036,
           "type": "ThrowStarted",
           "explanation": "@v2:throw:{\"from\":\"SS\",\"to\":\"3B\"}",
           "player": "SS",
           "base": 3
+        },
+        {
+          "id": "event-16",
+          "time": 10.757792,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":2}",
+          "player": "BR",
+          "base": 2
+        },
+        {
+          "id": "event-17",
+          "time": 11.048974,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"3B\",\"base\":3}",
+          "player": "3B",
+          "base": 3
+        },
+        {
+          "id": "event-18",
+          "time": 11.168974,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"3B\",\"base\":3}",
+          "player": "3B",
+          "base": 3
+        },
+        {
+          "id": "event-19",
+          "time": 12.550061,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":0,\"runs\":0,\"safe\":1}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "9636095614a8cc0da5e8f65bcf6e722ff5d5d235e559364bc050b3380e6d3d0f"
     },
     {
       "id": "deep-left-centre",
@@ -475,14 +1185,122 @@
         "runnerSpeed": "average",
         "throwTarget": "home"
       },
-      "sha256": "a7cecb3f32e854a97c7354ab413a25c1604cad870a502744fc16b8f51416c093",
+      "sha256": "4c0febec043e4c87a5f3fbdde88c5c63e914d44da61337829c51e997af2ba521",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"LF\"}"
+        },
+        {
+          "id": "event-1",
+          "time": 1.35,
+          "type": "AirborneRead",
+          "explanation": "@v2:readUncertainWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 1.7,
+          "type": "AirborneRead",
+          "explanation": "@v2:readUncertainWhy:{}"
+        },
+        {
+          "id": "event-3",
+          "time": 2.05,
+          "type": "AirborneRead",
+          "explanation": "@v2:readUncatchableWhy:{}"
+        },
+        {
+          "id": "event-4",
+          "time": 2.6,
+          "type": "AirborneRead",
+          "explanation": "@v2:readUncatchableWhy:{}"
+        },
+        {
+          "id": "event-5",
+          "time": 3.4,
+          "type": "AirborneRead",
+          "explanation": "@v2:readUncatchableWhy:{}"
+        },
+        {
+          "id": "event-6",
+          "time": 4.794397,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-7",
+          "time": 5.189036,
+          "type": "BallWallContact",
+          "explanation": "@v2:wallCaromWhy:{}"
+        },
+        {
+          "id": "event-8",
+          "time": 5.740191,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":3}",
+          "player": "R2",
+          "base": 3
+        },
+        {
+          "id": "event-9",
+          "time": 5.740191,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":2}",
+          "player": "R1",
+          "base": 2
+        },
+        {
+          "id": "event-10",
+          "time": 6.157787,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":1}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-11",
+          "time": 6.398004,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-12",
+          "time": 6.764957,
+          "type": "BallTouched",
+          "explanation": "@v2:gatherWhy:{\"fielder\":\"LF\"}",
+          "player": "LF"
+        },
+        {
+          "id": "event-13",
+          "time": 7.014957,
+          "type": "BallFielded",
+          "explanation": "@v2:fielded:{\"fielder\":\"LF\"}",
+          "player": "LF"
+        },
         {
           "id": "event-14",
           "time": 7.394957,
           "type": "ThrowStarted",
           "explanation": "@v2:throw:{\"from\":\"LF\",\"to\":\"SS\"}",
           "player": "LF",
+          "base": "home"
+        },
+        {
+          "id": "event-15",
+          "time": 9.599025,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"SS\",\"base\":\"home\"}",
+          "player": "SS",
+          "base": "home"
+        },
+        {
+          "id": "event-16",
+          "time": 9.71242,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":\"home\"}",
+          "player": "R2",
           "base": "home"
         },
         {
@@ -494,14 +1312,61 @@
           "base": "home"
         },
         {
+          "id": "event-18",
+          "time": 9.719025,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"SS\",\"base\":\"home\"}",
+          "player": "SS",
+          "base": "home"
+        },
+        {
+          "id": "event-19",
+          "time": 9.883612,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":3}",
+          "player": "R1",
+          "base": 3
+        },
+        {
           "id": "event-20",
           "time": 10.129025,
           "type": "ThrowStarted",
           "explanation": "@v2:throw:{\"from\":\"SS\",\"to\":\"C\"}",
           "player": "SS",
           "base": "home"
+        },
+        {
+          "id": "event-21",
+          "time": 10.754554,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":2}",
+          "player": "BR",
+          "base": 2
+        },
+        {
+          "id": "event-22",
+          "time": 12.011925,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"C\",\"base\":\"home\"}",
+          "player": "C",
+          "base": "home"
+        },
+        {
+          "id": "event-23",
+          "time": 12.131925,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"C\",\"base\":\"home\"}",
+          "player": "C",
+          "base": "home"
+        },
+        {
+          "id": "event-24",
+          "time": 13.513012,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":0,\"runs\":1,\"safe\":2}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "a7cecb3f32e854a97c7354ab413a25c1604cad870a502744fc16b8f51416c093"
     },
     {
       "id": "home-to-second",
@@ -538,8 +1403,46 @@
         "runnerSpeed": "average",
         "throwTarget": "home"
       },
-      "sha256": "d15465dee3aecef5d86b15f329de36d62878dbec962c45542e02c4e2aa4f7c40",
+      "sha256": "0440b024cb48652a4513357c1d4a829dccbb5e15a2f9db8d3b4c6a1f1d6fffed",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"RF\"}"
+        },
+        {
+          "id": "event-1",
+          "time": 1.314584,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 1.664462,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-3",
+          "time": 3.114462,
+          "type": "BallPassedInfield",
+          "explanation": "@v2:passedWhy:{}"
+        },
+        {
+          "id": "event-4",
+          "time": 4.287071,
+          "type": "BallTouched",
+          "explanation": "@v2:gatherWhy:{\"fielder\":\"RF\"}",
+          "player": "RF"
+        },
+        {
+          "id": "event-5",
+          "time": 4.537071,
+          "type": "BallFielded",
+          "explanation": "@v2:fielded:{\"fielder\":\"RF\"}",
+          "player": "RF"
+        },
         {
           "id": "event-6",
           "time": 4.917071,
@@ -547,8 +1450,63 @@
           "explanation": "@v2:throw:{\"from\":\"RF\",\"to\":\"C\"}",
           "player": "RF",
           "base": "home"
+        },
+        {
+          "id": "event-7",
+          "time": 5.704859,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":3}",
+          "player": "R2",
+          "base": 3
+        },
+        {
+          "id": "event-8",
+          "time": 6.268925,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":1}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-9",
+          "time": 6.268925,
+          "type": "FirstBaseRounded",
+          "explanation": "@v2:runnerRound:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-10",
+          "time": 7.082937,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"C\",\"base\":\"home\"}",
+          "player": "C",
+          "base": "home"
+        },
+        {
+          "id": "event-11",
+          "time": 7.202937,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"C\",\"base\":\"home\"}",
+          "player": "C",
+          "base": "home"
+        },
+        {
+          "id": "event-12",
+          "time": 9.861349,
+          "type": "RunnerReturned",
+          "explanation": "@v2:runnerReturnFirst:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-13",
+          "time": 10.051891,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":0,\"runs\":0,\"safe\":2}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "d15465dee3aecef5d86b15f329de36d62878dbec962c45542e02c4e2aa4f7c40"
     },
     {
       "id": "aggressive-home",
@@ -585,14 +1543,84 @@
         "runnerSpeed": "fast",
         "throwTarget": "auto"
       },
-      "sha256": "baa2992f0e01365114e257772bc088669ec3efd252a94b46933f8b34b8bb88df",
+      "sha256": "ef142a1aa8fc2dca58d1169fb7728f514865c9b8b1d3c11b85e8ae483c36f8a6",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"RF\"}"
+        },
+        {
+          "id": "event-1",
+          "time": 1.314584,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 1.664462,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-3",
+          "time": 2.414462,
+          "type": "BallPassedInfield",
+          "explanation": "@v2:passedWhy:{}"
+        },
+        {
+          "id": "event-4",
+          "time": 3.443674,
+          "type": "BallTouched",
+          "explanation": "@v2:gatherWhy:{\"fielder\":\"RF\"}",
+          "player": "RF"
+        },
+        {
+          "id": "event-5",
+          "time": 3.693674,
+          "type": "BallFielded",
+          "explanation": "@v2:fielded:{\"fielder\":\"RF\"}",
+          "player": "RF"
+        },
         {
           "id": "event-6",
           "time": 4.073674,
           "type": "ThrowStarted",
           "explanation": "@v2:throw:{\"from\":\"RF\",\"to\":\"C\"}",
           "player": "RF",
+          "base": "home"
+        },
+        {
+          "id": "event-7",
+          "time": 5.081419,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":3}",
+          "player": "R2",
+          "base": 3
+        },
+        {
+          "id": "event-8",
+          "time": 5.586913,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":1}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-9",
+          "time": 6.56031,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"C\",\"base\":\"home\"}",
+          "player": "C",
+          "base": "home"
+        },
+        {
+          "id": "event-10",
+          "time": 6.68031,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"C\",\"base\":\"home\"}",
+          "player": "C",
           "base": "home"
         },
         {
@@ -603,8 +1631,23 @@
           "player": "R2",
           "base": "home",
           "force": false
+        },
+        {
+          "id": "event-12",
+          "time": 9.686913,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":2}",
+          "player": "BR",
+          "base": 2
+        },
+        {
+          "id": "event-13",
+          "time": 11.015174,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":1,\"runs\":0,\"safe\":1}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "baa2992f0e01365114e257772bc088669ec3efd252a94b46933f8b34b8bb88df"
     },
     {
       "id": "infield-in",
@@ -641,14 +1684,70 @@
         "runnerSpeed": "average",
         "throwTarget": "auto"
       },
-      "sha256": "9a4ccdf9a5e3859b5e6eb33149a4d41c631a7c270f30f42e75e223865a7cca65",
+      "sha256": "1cabdedb99633d0a1127ef7564c4e116b9ad0f1e9b193376bfd0f002ae45756a",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"2B\"}"
+        },
+        {
+          "id": "event-1",
+          "time": 1.314584,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 1.664462,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-3",
+          "time": 2.493416,
+          "type": "BallTouched",
+          "explanation": "@v2:gatherWhy:{\"fielder\":\"2B\"}",
+          "player": "2B"
+        },
+        {
+          "id": "event-4",
+          "time": 2.513391,
+          "type": "RunnerRetreated",
+          "explanation": "@v2:runnerRetreat:{\"base\":3}",
+          "player": "R3",
+          "base": 3
+        },
+        {
+          "id": "event-5",
+          "time": 2.743416,
+          "type": "BallFielded",
+          "explanation": "@v2:fielded:{\"fielder\":\"2B\"}",
+          "player": "2B"
+        },
         {
           "id": "event-6",
           "time": 3.093417,
           "type": "ThrowStarted",
           "explanation": "@v2:throw:{\"from\":\"2B\",\"to\":\"1B\"}",
           "player": "2B",
+          "base": 1
+        },
+        {
+          "id": "event-7",
+          "time": 3.774733,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"1B\",\"base\":1}",
+          "player": "1B",
+          "base": 1
+        },
+        {
+          "id": "event-8",
+          "time": 3.894733,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"1B\",\"base\":1}",
+          "player": "1B",
           "base": 1
         },
         {
@@ -659,8 +1758,31 @@
           "player": "BR",
           "base": 1,
           "force": true
+        },
+        {
+          "id": "event-10",
+          "time": 5.699998,
+          "type": "RunnerBaseTouch",
+          "explanation": "@v2:runnerFinishOut:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-11",
+          "time": 7.486273,
+          "type": "RunThroughAfterOut",
+          "explanation": "@v2:runnerFinishOut:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-12",
+          "time": 8.86736,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":1,\"runs\":0,\"safe\":1}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "9a4ccdf9a5e3859b5e6eb33149a4d41c631a7c270f30f42e75e223865a7cca65"
     },
     {
       "id": "center-home-close",
@@ -697,14 +1819,84 @@
         "runnerSpeed": "average",
         "throwTarget": "auto"
       },
-      "sha256": "dbc2e2481fe9418015967571b50947a9ec07ad9f72f6da5fb2ec75db23aca67a",
+      "sha256": "b51f3fd7d6c14e3786fe0d36cadd1e6e67916c318cea7591b513fdf5f0c09c2e",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"CF\"}"
+        },
+        {
+          "id": "event-1",
+          "time": 1.314584,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 1.664462,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-3",
+          "time": 2.456129,
+          "type": "BallPassedInfield",
+          "explanation": "@v2:passedWhy:{}"
+        },
+        {
+          "id": "event-4",
+          "time": 4.322629,
+          "type": "BallTouched",
+          "explanation": "@v2:gatherWhy:{\"fielder\":\"CF\"}",
+          "player": "CF"
+        },
+        {
+          "id": "event-5",
+          "time": 4.572629,
+          "type": "BallFielded",
+          "explanation": "@v2:fielded:{\"fielder\":\"CF\"}",
+          "player": "CF"
+        },
         {
           "id": "event-6",
           "time": 4.952629,
           "type": "ThrowStarted",
           "explanation": "@v2:throw:{\"from\":\"CF\",\"to\":\"2B\"}",
           "player": "CF",
+          "base": "home"
+        },
+        {
+          "id": "event-7",
+          "time": 5.532222,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":3}",
+          "player": "R2",
+          "base": 3
+        },
+        {
+          "id": "event-8",
+          "time": 6.15779,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":1}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-9",
+          "time": 6.520711,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"2B\",\"base\":\"home\"}",
+          "player": "2B",
+          "base": "home"
+        },
+        {
+          "id": "event-10",
+          "time": 6.640711,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"2B\",\"base\":\"home\"}",
+          "player": "2B",
           "base": "home"
         },
         {
@@ -716,6 +1908,22 @@
           "base": "home"
         },
         {
+          "id": "event-12",
+          "time": 8.854041,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"C\",\"base\":\"home\"}",
+          "player": "C",
+          "base": "home"
+        },
+        {
+          "id": "event-13",
+          "time": 8.974041,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"C\",\"base\":\"home\"}",
+          "player": "C",
+          "base": "home"
+        },
+        {
           "id": "event-14",
           "time": 9.424457,
           "type": "RunnerOut",
@@ -723,8 +1931,23 @@
           "player": "R2",
           "base": "home",
           "force": false
+        },
+        {
+          "id": "event-15",
+          "time": 10.757792,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":2}",
+          "player": "BR",
+          "base": 2
+        },
+        {
+          "id": "event-16",
+          "time": 12.091127,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":1,\"runs\":0,\"safe\":1}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "dbc2e2481fe9418015967571b50947a9ec07ad9f72f6da5fb2ec75db23aca67a"
     },
     {
       "id": "pitcher-bunt",
@@ -762,14 +1985,62 @@
         "throwTarget": "auto",
         "anticipateBunt": true
       },
-      "sha256": "15cf2d997866dfd28d726da62bdfbbbafea7ca75a4275c4bd68e4d8758692d0f",
+      "sha256": "410994c3ebb4f9b0db403eafeafc6fd06b4a643d4b6eb17adc73cdb8d8544470",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"P\"}"
+        },
+        {
+          "id": "event-1",
+          "time": 1.314584,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 1.664462,
+          "type": "BallBounce",
+          "explanation": "@v2:bounceWhy:{}"
+        },
+        {
+          "id": "event-3",
+          "time": 3.10932,
+          "type": "BallTouched",
+          "explanation": "@v2:gatherWhy:{\"fielder\":\"P\"}",
+          "player": "P"
+        },
+        {
+          "id": "event-4",
+          "time": 3.35932,
+          "type": "BallFielded",
+          "explanation": "@v2:fielded:{\"fielder\":\"P\"}",
+          "player": "P"
+        },
         {
           "id": "event-5",
           "time": 3.70932,
           "type": "ThrowStarted",
           "explanation": "@v2:throw:{\"from\":\"P\",\"to\":\"SS\"}",
           "player": "P",
+          "base": 2
+        },
+        {
+          "id": "event-6",
+          "time": 4.99337,
+          "type": "ThrowGloveContact",
+          "explanation": "@v2:gloveContact:{\"player\":\"SS\",\"base\":2}",
+          "player": "SS",
+          "base": 2
+        },
+        {
+          "id": "event-7",
+          "time": 5.11337,
+          "type": "ThrowReceived",
+          "explanation": "@v2:throwSecured:{\"player\":\"SS\",\"base\":2}",
+          "player": "SS",
           "base": 2
         },
         {
@@ -780,8 +2051,39 @@
           "player": "R1",
           "base": 2,
           "force": true
+        },
+        {
+          "id": "event-9",
+          "time": 5.699997,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":1}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-10",
+          "time": 5.699997,
+          "type": "FirstBaseOverrun",
+          "explanation": "@v2:runnerOverrun:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-11",
+          "time": 11.048393,
+          "type": "RunnerReturned",
+          "explanation": "@v2:runnerReturnFirst:{}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-12",
+          "time": 11.660677,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":1,\"runs\":0,\"safe\":1}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "15cf2d997866dfd28d726da62bdfbbbafea7ca75a4275c4bd68e4d8758692d0f"
     },
     {
       "id": "caught-fly",
@@ -816,8 +2118,51 @@
         "runnerSpeed": "average",
         "throwTarget": "auto"
       },
-      "sha256": "8a01aa8356baf10b66cd8263addb8389bb5f7cdda2be50c1e55fe070e6db7388",
+      "sha256": "cefc9fcf0a6eea186e59812f45fd1d11f3f796aa1fa5755981abdf7c92aeae7c",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"SS\"}"
+        },
+        {
+          "id": "event-1",
+          "time": 1.35,
+          "type": "AirborneRead",
+          "explanation": "@v2:readUncertainWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 1.7,
+          "type": "AirborneRead",
+          "explanation": "@v2:readCatchableWhy:{}"
+        },
+        {
+          "id": "event-3",
+          "time": 2.05,
+          "type": "AirborneRead",
+          "explanation": "@v2:readCatchableWhy:{}"
+        },
+        {
+          "id": "event-4",
+          "time": 2.6,
+          "type": "AirborneRead",
+          "explanation": "@v2:readCatchableWhy:{}"
+        },
+        {
+          "id": "event-5",
+          "time": 3.4,
+          "type": "AirborneRead",
+          "explanation": "@v2:readCatchableWhy:{}"
+        },
+        {
+          "id": "event-6",
+          "time": 3.688339,
+          "type": "BallTouched",
+          "explanation": "@v2:gatherWhy:{\"fielder\":\"SS\"}",
+          "player": "SS"
+        },
         {
           "id": "event-7",
           "time": 3.808339,
@@ -833,8 +2178,22 @@
           "player": "BR",
           "base": 1,
           "force": false
+        },
+        {
+          "id": "event-9",
+          "time": 3.808339,
+          "type": "BallFielded",
+          "explanation": "@v2:fielded:{\"fielder\":\"SS\"}",
+          "player": "SS"
+        },
+        {
+          "id": "event-10",
+          "time": 5.189426,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":1,\"runs\":0,\"safe\":0}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "8a01aa8356baf10b66cd8263addb8389bb5f7cdda2be50c1e55fe070e6db7388"
     },
     {
       "id": "boundary",
@@ -871,13 +2230,59 @@
         "runnerSpeed": "average",
         "throwTarget": "auto"
       },
-      "sha256": "08966a7dff5ef522c5887cf27a5b2bf2cca5a4a9f55647a0d6635dca1e5dd7d1",
+      "sha256": "dc030e8623a16cf02cf630fb3f1c748d7577bdf59cdac98cacb59c11bc80e861",
       "events": [
+        {
+          "id": "event-0",
+          "time": 1,
+          "type": "BallContact",
+          "explanation": "@v2:contact:{\"fielder\":\"CF\"}"
+        },
         {
           "id": "event-1",
           "time": 5.018984,
           "type": "BallBoundary",
           "explanation": "@v2:homeRunWhy:{}"
+        },
+        {
+          "id": "event-2",
+          "time": 5.53222,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":2}",
+          "player": "R1",
+          "base": 2
+        },
+        {
+          "id": "event-3",
+          "time": 6.157788,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":1}",
+          "player": "BR",
+          "base": 1
+        },
+        {
+          "id": "event-4",
+          "time": 9.504454,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":3}",
+          "player": "R1",
+          "base": 3
+        },
+        {
+          "id": "event-5",
+          "time": 10.130021,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":2}",
+          "player": "BR",
+          "base": 2
+        },
+        {
+          "id": "event-6",
+          "time": 13.476687,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":\"home\"}",
+          "player": "R1",
+          "base": "home"
         },
         {
           "id": "event-7",
@@ -888,14 +2293,38 @@
           "base": "home"
         },
         {
+          "id": "event-8",
+          "time": 14.102254,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":3}",
+          "player": "BR",
+          "base": 3
+        },
+        {
+          "id": "event-9",
+          "time": 18.074487,
+          "type": "RunnerAdvanced",
+          "explanation": "@v2:runnerAdvance:{\"base\":\"home\"}",
+          "player": "BR",
+          "base": "home"
+        },
+        {
           "id": "event-10",
           "time": 18.074487,
           "type": "RunScored",
           "explanation": "@v2:runnerScored:{}",
           "player": "BR",
           "base": "home"
+        },
+        {
+          "id": "event-11",
+          "time": 18.074487,
+          "type": "PlayCompleted",
+          "explanation": "@v2:outcome:{\"outs\":0,\"runs\":2,\"safe\":0}"
         }
-      ]
+      ],
+      "preResponsibilityReviewSha256": "08966a7dff5ef522c5887cf27a5b2bf2cca5a4a9f55647a0d6635dca1e5dd7d1"
     }
-  ]
+  ],
+  "responsibilityRevision": "all-nine-support-2026-11-05; previous hashes retained; trajectories, initial positions and out identities independently compared"
 }
