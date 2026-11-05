@@ -17,6 +17,7 @@ import { throwingProfile, directThrowRange, throwFlight, throwPhysics } from "./
 import { planMovingReception } from "./receiving";
 import {
   bases,
+  defaults,
   beyond,
   metres,
   mixPhysical,
@@ -100,6 +101,14 @@ export class ThrowingEngine {
   }
 }
 const reasonKeys: Record<AssignmentReason, DynamicMessageKey> = {
+  returnSupport: "returnSupportWhy",
+  middleSupport: "middleSupportWhy",
+  infieldSafety: "infieldSafetyWhy",
+  guardBase: "guardBaseWhy",
+  gapSupport: "gapSupportWhy",
+  directDefense: "directDefenseWhy",
+  layeredBackup: "layeredBackupWhy",
+  containRunners: "containRunnersWhy",
   loosePursuit: "loosePursuitWhy",
   priorityCatch: "priorityCatchWhy",
   primary: "fieldWhy",
@@ -140,6 +149,10 @@ export function assignmentText(a: DefensiveAssignment): Responsibility {
     DefensiveAssignment["type"],
     readonly [DynamicMessageKey, DynamicMessageKey]
   > = {
+    SupportReceiver: ["middleSupportAction", "middleSupportNext"],
+    GuardBase: ["guardBaseAction", "guardBaseNext"],
+    ShadeField: ["gapSupportAction", "gapSupportNext"],
+    DirectDefense: ["directDefenseAction", "directDefenseNext"],
     PursueLooseBall: ["loosePursuitAction", "fieldNext"],
     FieldBall: ["fieldAction", "fieldNext"],
     CoverBase: ["coverAction", "coverNext"],
@@ -160,7 +173,15 @@ export function assignmentText(a: DefensiveAssignment): Responsibility {
     SupportBase: ["supportBaseAction", "backupNext"],
     TrailRunner: ["trailAction", "trailNext"],
   };
-  const [action, support] = keys[a.type];
+  const [action, support] = a.reason === "complete"
+    ? ["completeAction", "completeAction"] as const
+    : a.reason === "returnSupport"
+      ? ["returnSupportAction", "returnSupportNext"] as const
+    : a.reason === "infieldSafety"
+    ? ["infieldSafetyAction", "middleSupportNext"] as const
+    : a.reason === "containRunners"
+      ? ["containRunnersAction", "containRunnersNext"] as const
+      : keys[a.type];
   return {
     action: m(
       a.reason === "wallSupport"
@@ -790,7 +811,7 @@ export class DefensiveDecisionEngine {
         teammate,
         reason,
         replacesOn:
-          "BallFielded, ThrowStarted, ThrowReceived, RunnerAdvanced, RunnerRetreated, RunnerOut, PlayCompleted",
+          "BallFielded, ThrowStarted, ThrowReceived, ThrowMissed, RecoveryStarted, RecoverySecured, RunnerAdvanced, RunnerRetreated, RunnerOut, PlayCompleted",
         explanation: "",
       };
       a.arrivalTime = this.travel(player, locations[player], a.target);
@@ -1263,9 +1284,54 @@ export class DefensiveDecisionEngine {
       )
     )
       cover(3, 80, "buntRecoverThird");
+    // Every unreserved defender has a concrete support location and a next
+    // responsibility. These targets are anchored to bases/original contact,
+    // never a fresh offset from the current location on each reassessment.
+    // A defender can settle at that location; readiness is not perpetual motion.
+    const finishSupport = (closing = false) => {
+      for (const p of positions) {
+        if (map.has(p)) continue;
+        if (p === "2B" || p === "SS") {
+          const b = toWorld(bases[2]);
+          const middleReceiver = [...map.values()].find(a =>
+            a.base === 2 && ["CoverBase", "PrepareForThrow"].includes(a.type));
+          put(p, "SupportReceiver", fromWorld({x:b.x + (p === "2B" ? 1 : -1) * conventions.support.middleLateral, y:b.y - conventions.support.middleDepth}),
+            38, middleReceiver ? "middleSupport" : "returnSupport", 2, middleReceiver?.player ?? owner);
+        } else if (p === "1B" || p === "3B") {
+          const base = p === "1B" ? 1 : 3;
+          const b = toWorld(bases[base]);
+          put(p, "GuardBase", fromWorld({x:b.x + (p === "1B" ? 1 : -1) * conventions.support.cornerLateral, y:b.y - conventions.support.cornerDepth}),
+            36, "guardBase", base);
+        } else if (p === "C") {
+          // A small, real step to see the field; retain the calibrated depth.
+          const side = (ball.touchPoint ?? ball.fieldingPoint).x < bases.home.x ? -1 : 1;
+          put(p, "DirectDefense", fromWorld({x:side * conventions.support.catcherStep,y:assumptions.catcherDepth}),
+            35, "directDefense", "home");
+        } else if (p === "P") {
+          const b = toWorld(bases[2]);
+          const side = source.x < bases.home.x ? 1 : -1;
+          put(p, "SupportReceiver", fromWorld({x:side * conventions.support.pitcherLateral,y:b.y + conventions.support.pitcherInsideSecond}),
+            34, "infieldSafety", 2, owner);
+        } else if (closing) {
+          // Stop obsolete backups rather than forcing a long return while a
+          // runner finishes. The ball is secure; watch a specific live base.
+          const base = runners.filter(active).sort((a,b)=>b.progress-a.progress)[0]?.goal ?? 2;
+          put(p, "Communicate", this.release(p, locations[p]).point,
+            30, "containRunners", base === 4 ? "home" : base as Base);
+          // put() changes a moving Communicate to Decelerate; retain its actual
+          // stop target and the more specific containment explanation.
+          const assignment = map.get(p)!;
+          assignment.reason = "containRunners";
+          assignment.explanation = assignmentText(assignment).why;
+        } else {
+          const anchor = defaults[p];
+          const point = toward(anchor, ball.touchPoint ?? ball.fieldingPoint, conventions.support.gapShade);
+          put(p, "ShadeField", point, 32, "gapSupport", undefined, ball.fielder);
+        }
+      }
+    };
     if (context?.opportunitiesClosed) {
-      for (const p of positions)
-        if (!map.has(p)) put(p, "HoldPosition", locations[p], 20, "guardSpace");
+      finishSupport(true);
       return {
         assignments: [...map.values()],
         issues,
@@ -1617,61 +1683,29 @@ export class DefensiveDecisionEngine {
       put("1B", "TrailRunner", trailingPoint(br), 55, "trailing", 2);
       map.get("1B")!.runner = "BR";
     }
-    // A nonreceiving catcher protects home and directs play. Deliberate holding
-    // is explicit and has a stationary destination rather than hidden shading.
-    const catcherHome = beyond(bases[2], bases.home, assumptions.catcherDepth);
-    if (!map.has("C"))
-      put(
-        "C",
-        metres(locations.C, catcherHome) > 1
-          ? "RecoverPosition"
-          : "HoldPosition",
-        metres(locations.C, catcherHome) > 1 ? catcherHome : locations.C,
-        35,
-        "homeGuard",
-        "home",
-      );
     for (const p of positions) {
-      if (map.has(p)) continue;
-      // Free outfielders still protect a possible next-base throw. Do not keep
-      // pursuing a fielded ball or send all three outfielders across the field.
-      if (
-        ["LF", "CF", "RF"].includes(p) &&
-        (liveAt(2) || liveAt(3) || (firstPlay && (p === "RF" || p === "CF")))
-      ) {
-        const base: Base =
-          firstPlay && p === "RF" ? 1 : p === "LF" && liveAt(3) ? 3 : 2;
-        if (
-          base !== 1 &&
-          [...map.values()].some(
-            (a) =>
-              ["LF", "CF", "RF"].includes(a.player) &&
-              a.base === base &&
-              (a.type === "SupportBase" ||
-                (a.type === "BackupThrow" && (!a.receivingPoint || metres(a.receivingPoint, bases[base]) < 0.1))),
-          )
-        ) {
-          put(p, "HoldPosition", locations[p], 20, "guardSpace");
-          continue;
-        }
-        put(
-          p,
-          "SupportBase",
-          backupPoint(base === 2 && outfieldReturn ? bases.home : source, bases[base], 12),
-          40,
-          base === 2 ? "secondSupport" : "throwBackup",
-          base,
-        );
-        map.get(p)!.throwOrigin = base === 2 && outfieldReturn ? bases.home : source;
-      } else
-        put(
-          p,
-          "HoldPosition",
-          locations[p],
-          20,
-          p === "3B" ? "guardThird" : "guardSpace",
-        );
+      if (map.has(p) || !["LF", "CF", "RF"].includes(p)) continue;
+      // Separate the primary backup from a deeper safety layer. Previously the
+      // duplicate-base guard left CF motionless while RF's late second-base
+      // route was developing. Both layers start at contact and retain timing.
+      const usefulBase = liveAt(2) || liveAt(3) || firstPlay;
+      if (!usefulBase) continue;
+      const base: Base = firstPlay && p === "RF" ? 1 : p === "LF" && liveAt(3) ? 3 : 2;
+      const primary = [...map.values()].find(a =>
+        ["LF", "CF", "RF"].includes(a.player) && a.base === base &&
+        (a.type === "SupportBase" || (a.type === "BackupThrow" &&
+          (!a.receivingPoint || metres(a.receivingPoint, bases[base]) < 0.1))));
+      // On an outfield return, retain the far-outfielder/neighbor division:
+      // spare outfielders shade the gap instead of all collapsing on second.
+      if (primary && outfieldReturn) continue;
+      const origin = base === 2 && outfieldReturn ? bases.home : source;
+      const point = backupPoint(origin, bases[base], primary ? conventions.support.layeredBackupDepth : 12);
+      put(p, "SupportBase", point, primary ? 39 : 40,
+        primary ? "layeredBackup" : base === 2 ? "secondSupport" : "throwBackup", base,
+        primary?.player);
+      map.get(p)!.throwOrigin = origin;
     }
+    finishSupport();
     const result: DefensiveLayout = {
       assignments: [...map.values()],
       receiver,

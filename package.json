@@ -12,6 +12,7 @@
     "test:pages": "node scripts/pages-smoke.mjs",
     "test:dynamic:browser": "node scripts/dynamic-browser-smoke.mjs",
     "test:mobile:browser": "node scripts/mobile-generate-browser.mjs",
+    "audit:responsibilities": "node scripts/audit-responsibilities.mjs",
     "audit:defense": "node scripts/defensive-audit.mjs",
     "audit:bunts": "node scripts/audit-bunts-and-support.mjs",
     "audit:defense:v2": "node scripts/defensive-audit-v2.mjs",

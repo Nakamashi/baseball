@@ -559,8 +559,8 @@ describe("reusable tactical rules and diagnostics", () => {
     try {
       const s = provider.generate(cases["ground-second"]);
       expect(assignment(s, "C")).toMatchObject({
-        type: "HoldPosition",
-        reason: "homeGuard",
+        type: "DirectDefense",
+        reason: "directDefense",
       });
       expect(assignment(s, "P")).toMatchObject({
         type: "BackupThrow",

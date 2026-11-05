@@ -134,6 +134,30 @@ try {
   await generate();
   await end();
   assert.match(await page.locator(".scoreboard").innerText(), /Outs\s*2/);
+  // Exact reported pitcher grounder: purpose and visible motion for the spare
+  // middle infielder, in both languages and with either throw outcome.
+  for (const includeError of [false, true]) {
+    await configure({ x: 495, y: 618, strength: "normal", aggression: "normal", runners: [1] });
+    await page.getByRole("checkbox", { name: "Include Error", exact: true }).setChecked(includeError);
+    await generate(); await slider.fill("1");
+    const at = async (id) => page.locator(`[data-player="${id}"]`).evaluate(node => {
+      const m = node.transform.baseVal.consolidate().matrix; return [m.e, m.f];
+    });
+    const before = await at("2B");
+    await slider.fill("2.5"); const moved = await at("2B");
+    assert.ok(Math.hypot(moved[0]-before[0], moved[1]-before[1]) > 1, "2B starts real support movement before the throw");
+    await page.locator('[data-player="2B"]').click();
+    assert.match(await page.locator(".focus-action").innerText(), /Support SS beside second/);
+    await language("ja"); assert.match(await page.locator(".focus-action").innerText(), /二塁.*SS/);
+    await language("en");
+    await slider.fill("1"); assert.deepEqual(await at("2B"), before);
+    await slider.fill("2.5"); assert.deepEqual(await at("2B"), moved);
+    if (includeError) {
+      await end(); assert.match(await eventText(), /CF secures the recovered ball/);
+      assert.doesNotMatch(await eventText(), /R1 is forced out/);
+    }
+  }
+  await page.getByRole("checkbox", { name: "Include Error", exact: true }).setChecked(false);
   // Automatic home priority remains translated and uses one clock across language changes.
   await configure({ x: 558, y: 284, runners: [2], strategy: "prevent" });
   await generate();

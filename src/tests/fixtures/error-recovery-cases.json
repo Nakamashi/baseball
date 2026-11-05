@@ -1,6 +1,6 @@
 [
   {
-    "name": "recovered-tag-0",
+    "name": "supported-safe-turn-0",
     "settings": {
       "includeError": true,
       "field": {
@@ -38,10 +38,13 @@
       "throwTarget": 2,
       "armStrength": "developing",
       "anticipateBunt": true
-    }
+    },
+    "preResponsibilityReviewName": "recovered-tag-0",
+    "expectedOutcome": "safe-extra",
+    "firstBaseTransition": "stop-turn"
   },
   {
-    "name": "recovered-tag-1",
+    "name": "supported-safe-turn-1",
     "settings": {
       "includeError": true,
       "field": {
@@ -79,7 +82,10 @@
       "throwTarget": 2,
       "armStrength": "developing",
       "anticipateBunt": false
-    }
+    },
+    "preResponsibilityReviewName": "recovered-tag-1",
+    "expectedOutcome": "safe-extra",
+    "firstBaseTransition": "stop-turn"
   },
   {
     "name": "recovered-tag-2",
@@ -120,10 +126,13 @@
       "throwTarget": 2,
       "armStrength": "developing",
       "anticipateBunt": true
-    }
+    },
+    "preResponsibilityReviewName": "recovered-tag-2",
+    "expectedOutcome": "tag",
+    "firstBaseTransition": "stop-turn"
   },
   {
-    "name": "recovered-tag-3",
+    "name": "supported-safe-turn-3",
     "settings": {
       "includeError": true,
       "field": {
@@ -160,10 +169,13 @@
       "throwTarget": 2,
       "armStrength": "developing",
       "anticipateBunt": false
-    }
+    },
+    "preResponsibilityReviewName": "recovered-tag-3",
+    "expectedOutcome": "safe-extra",
+    "firstBaseTransition": "stop-turn"
   },
   {
-    "name": "recovered-tag-4",
+    "name": "supported-safe-turn-4",
     "settings": {
       "includeError": true,
       "field": {
@@ -200,10 +212,13 @@
       "throwTarget": 2,
       "armStrength": "developing",
       "anticipateBunt": false
-    }
+    },
+    "preResponsibilityReviewName": "recovered-tag-4",
+    "expectedOutcome": "safe-extra",
+    "firstBaseTransition": "stop-turn"
   },
   {
-    "name": "recovered-tag-5",
+    "name": "supported-safe-turn-5",
     "settings": {
       "includeError": true,
       "field": {
@@ -240,10 +255,13 @@
       "throwTarget": 2,
       "armStrength": "developing",
       "anticipateBunt": true
-    }
+    },
+    "preResponsibilityReviewName": "recovered-tag-5",
+    "expectedOutcome": "safe-extra",
+    "firstBaseTransition": "stop-turn"
   },
   {
-    "name": "controlled-first-turn-0",
+    "name": "supported-safe-turn-6",
     "settings": {
       "includeError": true,
       "field": {
@@ -281,10 +299,13 @@
       "throwTarget": 2,
       "armStrength": "standard",
       "anticipateBunt": false
-    }
+    },
+    "preResponsibilityReviewName": "controlled-first-turn-0",
+    "expectedOutcome": "safe-extra",
+    "firstBaseTransition": "stop-turn"
   },
   {
-    "name": "controlled-first-turn-1",
+    "name": "faster-support-hold-7",
     "settings": {
       "includeError": true,
       "field": {
@@ -320,6 +341,95 @@
       "throwTarget": 2,
       "armStrength": "developing",
       "anticipateBunt": true
-    }
+    },
+    "preResponsibilityReviewName": "controlled-first-turn-1",
+    "expectedOutcome": "hold",
+    "firstBaseTransition": "run-through-hold"
+  },
+  {
+    "name": "recovered-third-out-with-support-0",
+    "settings": {
+      "includeError": true,
+      "field": {
+        "fenceHeight": 8,
+        "fenceMode": "keep-in-play"
+      },
+      "state": {
+        "outs": 2,
+        "balls": 0,
+        "strikes": 0,
+        "runners": {
+          "R1": 1,
+          "R2": 2,
+          "R3": 3
+        },
+        "phase": "Ready",
+        "runs": 0,
+        "inning": 1,
+        "half": "top",
+        "homeScore": 0,
+        "awayScore": 0,
+        "fieldingTeam": "home",
+        "strategy": "standard"
+      },
+      "ball": {
+        "type": "Bunt",
+        "strength": "hard",
+        "destination": {
+          "x": 448.25323333595,
+          "y": 635.1228622817406
+        }
+      },
+      "aggression": "aggressive",
+      "runnerSpeed": "fast",
+      "throwTarget": 2,
+      "armStrength": "standard",
+      "anticipateBunt": true
+    },
+    "expectedOutcome": "tag",
+    "firstBaseTransition": "run-through-advance"
+  },
+  {
+    "name": "recovered-third-out-with-support-1",
+    "settings": {
+      "includeError": true,
+      "field": {
+        "fenceHeight": 8,
+        "fenceMode": "keep-in-play"
+      },
+      "state": {
+        "outs": 2,
+        "balls": 0,
+        "strikes": 0,
+        "runners": {
+          "R1": 1,
+          "R2": 2,
+          "R3": 3
+        },
+        "phase": "Ready",
+        "runs": 0,
+        "inning": 1,
+        "half": "top",
+        "homeScore": 0,
+        "awayScore": 0,
+        "fieldingTeam": "home",
+        "strategy": "standard"
+      },
+      "ball": {
+        "type": "Bunt",
+        "strength": "hard",
+        "destination": {
+          "x": 448.25323333595,
+          "y": 645.1228622817406
+        }
+      },
+      "aggression": "aggressive",
+      "runnerSpeed": "fast",
+      "throwTarget": 2,
+      "armStrength": "standard",
+      "anticipateBunt": true
+    },
+    "expectedOutcome": "tag",
+    "firstBaseTransition": "run-through-advance"
   }
 ]

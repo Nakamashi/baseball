@@ -1,5 +1,10 @@
 # Defensive fundamentals audit
 
+## Current all-nine responsibility correction — 2026-11-05
+
+[DEFENSIVE_RESPONSIBILITIES_REVIEW.md](../DEFENSIVE_RESPONSIBILITIES_REVIEW.md) supersedes the generic deliberate-hold fallback described in the historical sections below. Every live defender now receives a concrete ball, receiving, base, backup, support, guarding, directing or containment job. Spare middle infielders support the receiving shoulder; free corners guard near their bags; spare outfielders shade their gap or form a separate deeper infield-throw backup layer. Set receivers and completed support positions may wait with explicit next-action cues. RF's late primary backup in the P-to-second example is still reported; CF now starts a deeper support role before the miss. All nine positions are checked across 720 generated situations and all 24 guided plays.
+
+
 ## Throwing-error recovery follow-up
 
 Optional eligible infield-to-second overthrows now have real live-ball pursuit and gathering. Clean all-nine allocation remains unchanged: in the verified P-fielded bunt, RF has the late second-backup duty and CF initially holds. Once the miss is observed, current-state reachability selects CF for the rolling recovery; RF retains its actual momentum. This does not prove the clean CF hold is the preferred coaching convention. Review that separately rather than assigning CF an artificial catch or changing normal positions. New tests independently check all-nine uniqueness, early backups, current-motion recovery, real subsequent tags and clean-output hashes. Details and verification limits: [ERROR_SIMULATION_IMPLEMENTATION.md](../ERROR_SIMULATION_IMPLEMENTATION.md).
