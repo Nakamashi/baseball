@@ -94,9 +94,23 @@ Local verification:
 - Full Vitest suite: **452/452 passed in 16 files**, including both existing 576-case tactical/physical matrices.
 - Responsibility CLI: **720/720 generated**, no structural failures, no generic live fallback duties, no permanently stationary defenders in this matrix; **24/24 guided plays** have all-nine contact motion.
 - Bunt audit: **3,360 plays**, zero implemented integrity errors; **2,760 Soft fielding inputs** and **87 LF-return cases** also checked. Existing bunt success counts and primary pickups are unchanged.
-- Strict defensive audit: **2,522/2,522 generated**, zero Critical/High findings and 60 deterministic replays. Late/optional support advisories remain visible.
+- Strict defensive audit: **2,522/2,522 generated**, zero Critical/High findings and 60 deterministic replays. **2,173 scenarios still have Medium advisories** for late/optional coverage; those remain visible rather than being relabeled as ready.
 - Production TypeScript/Vite build and whitespace/script syntax checks pass.
 - Local browser startup is blocked by workspace socket permissions (`listen EPERM`; Chromium `setsockopt: Operation not permitted`). Browser CI results are recorded separately when available; local compilation/unit checks are not presented as a visual inspection.
+
+Browser/remote verification: [GitHub regression run 41981312849](https://github.com/Nakamashi/baseball/actions/runs/41981312849) completed successfully for code commit `420796c86c0337d3306fa24aa7b5dd21d24c9015`. All three jobs passed: engine, bunts/support, and browser. The browser job passed encyclopedia, dynamic, mobile generation, field-first UX, throwing-error recovery and production Pages suites. The dynamic suite includes the new real 2B movement, EN/JA responsibility and seeking checks. These are automated browser results; no manual screenshot inspection is claimed.
+
+## Relevant code map
+
+| Location | Responsibility |
+| --- | --- |
+| `src/dynamic/defense.ts`: `assignmentText()`, `DefensiveDecisionEngine.assign()`, nested `finishSupport()` | Prioritized allocation, specific action/why/next messages, fixed support anchors, layered infield-throw support and opportunities-closed containment. |
+| `src/dynamic/conventions.ts`: `conventions.support` | Central spacing values for the newly explicit support duties. |
+| `src/dynamic/types.ts`: `AssignmentType`, `AssignmentReason` | Typed distinction between support, guarding, directing, ordinary position recovery and actual loose-ball pursuit. |
+| `src/dynamic/messages.ts` | Matching English/Japanese dynamic instruction templates and a completion-specific action. |
+| `src/scenarios/index.ts`: `ground()`, `aerial()`; `src/i18n/ja-playbook.ts` | Explicit guided contact destinations, role-specific text and exact Japanese translations. |
+| `src/tests/defensiveResponsibilities.test.ts`; `scripts/audit-responsibilities.mjs` | Independent tactical assertions, physical movement/clearance checks, 720-case coverage and review evidence. |
+| `scripts/dynamic-browser-smoke.mjs` | Rendered grounder support, locale switching and deterministic seek regression. |
 
 ## Scope limits and follow-up
 
